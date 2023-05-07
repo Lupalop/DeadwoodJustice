@@ -3,7 +3,7 @@ package game.scenes;
 import java.util.ArrayList;
 import java.util.Random;
 
-import game.GameManager;
+import game.Game;
 import game.entities.Bullet;
 import game.entities.Fish;
 import game.entities.Ship;
@@ -25,12 +25,12 @@ public class LevelScene implements GameScene {
 
     public static final int MAX_NUM_FISHES = 3;
 
-    public LevelScene(GameManager manager) {
+    public LevelScene(Game manager) {
         this.root = new Group();
-        this.scene = new Scene(root, GameManager.WINDOW_WIDTH,
-                GameManager.WINDOW_HEIGHT, Color.CADETBLUE);
-        this.canvas = new Canvas(GameManager.WINDOW_WIDTH,
-                GameManager.WINDOW_HEIGHT);
+        this.scene = new Scene(root, Game.WINDOW_WIDTH,
+                Game.WINDOW_HEIGHT, Color.CADETBLUE);
+        this.canvas = new Canvas(Game.WINDOW_WIDTH,
+                Game.WINDOW_HEIGHT);
         this.gc = canvas.getGraphicsContext2D();
         this.root.getChildren().add(canvas);
         this.myShip = new Ship("Going merry", 100, 100);
@@ -54,8 +54,8 @@ public class LevelScene implements GameScene {
 
     @Override
     public void draw(long currentNanoTime) {
-        this.gc.clearRect(0, 0, GameManager.WINDOW_WIDTH,
-                GameManager.WINDOW_HEIGHT);
+        this.gc.clearRect(0, 0, Game.WINDOW_WIDTH,
+                Game.WINDOW_HEIGHT);
 
         this.myShip.draw(this.gc);
         this.drawFishes();
@@ -115,8 +115,8 @@ public class LevelScene implements GameScene {
     private void spawnFishes() {
         Random r = new Random();
         for (int i = 0; i < MAX_NUM_FISHES; i++) {
-            int x = r.nextInt(GameManager.WINDOW_WIDTH / 2, GameManager.WINDOW_WIDTH - Fish.FISH_WIDTH);
-            int y = r.nextInt(GameManager.WINDOW_HEIGHT);
+            int x = r.nextInt(Game.WINDOW_WIDTH / 2, Game.WINDOW_WIDTH - Fish.FISH_WIDTH);
+            int y = r.nextInt(Game.WINDOW_HEIGHT);
 
             Fish fish = new Fish(x, y);
             this.fishes.add(fish);

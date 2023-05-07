@@ -3,7 +3,7 @@ package game.entities;
 import java.util.ArrayList;
 import java.util.Random;
 
-import game.GameManager;
+import game.Game;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.canvas.GraphicsContext;
@@ -84,10 +84,10 @@ public class Ship extends Sprite {
             return;
         }
         
-        if (x + dx > 0 && this.x + this.dx < GameManager.WINDOW_WIDTH - this.width) { 
+        if (x + dx > 0 && this.x + this.dx < Game.WINDOW_WIDTH - this.width) { 
             this.x += this.dx;
         }
-        if (y + dy > 0 && y + dy < GameManager.WINDOW_HEIGHT - this.height) {
+        if (y + dy > 0 && y + dy < Game.WINDOW_HEIGHT - this.height) {
             this.y += this.dy;
         }
     }

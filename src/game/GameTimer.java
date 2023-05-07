@@ -4,9 +4,9 @@ import javafx.animation.AnimationTimer;
 
 public class GameTimer extends AnimationTimer {
 
-    private GameManager manager;
+    private Game manager;
     
-    GameTimer(GameManager manager) {
+    GameTimer(Game manager) {
         this.manager = manager;
     }
     

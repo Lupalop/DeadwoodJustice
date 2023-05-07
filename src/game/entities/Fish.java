@@ -2,7 +2,7 @@ package game.entities;
 
 import java.util.Random;
 
-import game.GameManager;
+import game.Game;
 import javafx.scene.image.Image;
 
 public class Fish extends Sprite {
@@ -37,7 +37,7 @@ public class Fish extends Sprite {
         this.dx = this.moveRight ? this.speed : -this.speed;
         this.x += this.dx;
 
-        if (x + dx > 0 && this.x + this.dx < GameManager.WINDOW_WIDTH - this.width) { 
+        if (x + dx > 0 && this.x + this.dx < Game.WINDOW_WIDTH - this.width) { 
             this.x += this.dx;
         } else {
             this.moveRight = !this.moveRight;

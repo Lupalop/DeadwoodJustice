@@ -4,7 +4,7 @@ import game.scenes.GameScene;
 import game.scenes.LevelScene;
 import javafx.stage.Stage;
 
-public class GameManager {
+public class Game {
 
     public static final String GAME_NAME = "Mini Ship Shooting Game";
     public static final int WINDOW_WIDTH = 800;
@@ -15,7 +15,7 @@ public class GameManager {
     private GameTimer gameTimer;
     private boolean initialized;
 
-    public GameManager(Stage primaryStage) {
+    public Game(Stage primaryStage) {
         this.primaryStage = primaryStage;
         this.primaryStage.setResizable(false);
         this.primaryStage.setTitle(GAME_NAME);

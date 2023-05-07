@@ -1,6 +1,6 @@
 package game.entities;
 
-import game.GameManager;
+import game.Game;
 import javafx.scene.image.Image;
 
 public class Bullet extends Sprite {
@@ -22,7 +22,7 @@ public class Bullet extends Sprite {
         this.x += this.dx;
         this.y += this.dy;
 
-        if (this.x > GameManager.WINDOW_WIDTH) {
+        if (this.x > Game.WINDOW_WIDTH) {
             this.setVisible(false);
         }
     }
