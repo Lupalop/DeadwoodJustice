@@ -104,7 +104,7 @@ public class Ship extends Sprite {
         scene.setOnKeyReleased(new EventHandler<KeyEvent>() {
             public void handle(KeyEvent e) {
                 KeyCode code = e.getCode();
-                stopMyShip(code);
+                stopMoving(code);
             }
         });
     }
@@ -130,9 +130,19 @@ public class Ship extends Sprite {
     }
 
     // method that will stop the ship's movement; set the ship's DX and DY to 0
-    private void stopMyShip(KeyCode ke) {
-        this.setDX(0);
-        this.setDY(0);
+    private void stopMoving(KeyCode keyCode) {
+        switch (keyCode) {
+        case UP:
+        case DOWN:
+            this.setDY(0);
+            break;
+        case LEFT:
+        case RIGHT:
+            this.setDX(0);
+            break;
+        default:
+            break;
+        }
     }
 
 }
