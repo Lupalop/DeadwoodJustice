@@ -9,7 +9,7 @@ public class Fish extends Sprite {
 
     public static final int MAX_FISH_SPEED = 5;
     public final static Image FISH_IMAGE = new Image(
-            Fish.class.getResource("/game/assets/fish.png").toExternalForm(),
+            Game.getAsset("fish.png"),
             Fish.FISH_WIDTH, Fish.FISH_WIDTH, false, false);
     public final static int FISH_WIDTH = 50;
     public final static int MAX_DAMAGE = 40;

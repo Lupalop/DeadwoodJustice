@@ -18,7 +18,7 @@ public class Ship extends Sprite {
 
     private ArrayList<Bullet> bullets;
     public final static Image SHIP_IMAGE = new Image(
-            Ship.class.getResource("/game/assets/ship.png").toExternalForm(),
+            Game.getAsset("ship.png"),
             Ship.SHIP_WIDTH, Ship.SHIP_WIDTH, false, false);
     private final static int SHIP_WIDTH = 50;
 

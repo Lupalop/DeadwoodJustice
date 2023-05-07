@@ -7,7 +7,7 @@ public class Bullet extends Sprite {
 
     private final int BULLET_SPEED = 20;
     public final static Image BULLET_IMAGE = new Image(
-            Bullet.class.getResource("/game/assets/bullet.png").toExternalForm(),
+            Game.getAsset("bullet.png"),
             Bullet.BULLET_WIDTH, Bullet.BULLET_WIDTH, false, false);
     public final static int BULLET_WIDTH = 20;
 
