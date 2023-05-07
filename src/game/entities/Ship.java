@@ -21,6 +21,7 @@ public class Ship extends Sprite {
             Game.getAsset("ship.png"),
             Ship.SHIP_WIDTH, Ship.SHIP_WIDTH, false, false);
     private final static int SHIP_WIDTH = 50;
+    private final static int SHIP_SPEED = 10;
 
     public Ship(String name, int x, int y) {
         super(x, y);
@@ -97,7 +98,7 @@ public class Ship extends Sprite {
         scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
             public void handle(KeyEvent e) {
                 KeyCode code = e.getCode();
-                moveMyShip(code);
+                startMoving(code);
             }
         });
 
@@ -110,23 +111,25 @@ public class Ship extends Sprite {
     }
 
     // method that will move the ship depending on the key pressed
-    private void moveMyShip(KeyCode ke) {
-        if (ke == KeyCode.UP)
-            this.setDY(-3);
-
-        if (ke == KeyCode.LEFT)
-            this.setDX(-3);
-
-        if (ke == KeyCode.DOWN)
-            this.setDY(3);
-
-        if (ke == KeyCode.RIGHT)
-            this.setDX(3);
-
-        if (ke == KeyCode.SPACE)
+    private void startMoving(KeyCode keyCode) {
+        switch (keyCode) {
+        case UP:
+            this.setDY(-SHIP_SPEED);
+            break;
+        case DOWN:
+            this.setDY(SHIP_SPEED);
+            break;
+        case LEFT:
+            this.setDX(-SHIP_SPEED);
+            break;
+        case RIGHT:
+            this.setDX(SHIP_SPEED);
+            break;
+        case SPACE:
             this.shoot();
-
-        System.out.println(ke + " key pressed.");
+        default:
+            break;
+        }
     }
 
     // method that will stop the ship's movement; set the ship's DX and DY to 0
