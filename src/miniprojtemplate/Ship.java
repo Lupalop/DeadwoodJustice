@@ -10,7 +10,8 @@ public class Ship extends Sprite {
     private boolean alive;
 
     private ArrayList<Bullet> bullets;
-    public final static Image SHIP_IMAGE = new Image("images/ship.png",
+    public final static Image SHIP_IMAGE = new Image(
+            Ship.class.getResource("/images/ship.png").toExternalForm(),
             Ship.SHIP_WIDTH, Ship.SHIP_WIDTH, false, false);
     private final static int SHIP_WIDTH = 50;
 
