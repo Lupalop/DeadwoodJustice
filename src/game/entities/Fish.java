@@ -1,11 +1,12 @@
-package miniprojtemplate;
+package game.entities;
 
 import javafx.scene.image.Image;
 
 public class Fish extends Sprite {
+
     public static final int MAX_FISH_SPEED = 5;
     public final static Image FISH_IMAGE = new Image(
-            Fish.class.getResource("/images/fish.png").toExternalForm(),
+            Fish.class.getResource("/game/assets/fish.png").toExternalForm(),
             Fish.FISH_WIDTH, Fish.FISH_WIDTH, false, false);
     public final static int FISH_WIDTH = 50;
     private boolean alive;
@@ -41,4 +42,5 @@ public class Fish extends Sprite {
     public boolean isAlive() {
         return this.alive;
     }
+
 }

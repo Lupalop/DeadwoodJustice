@@ -1,4 +1,4 @@
-package miniprojtemplate;
+package game;
 
 import javafx.application.Application;
 import javafx.stage.Stage;
@@ -9,9 +9,9 @@ public class Main extends Application {
         launch(args);
     }
 
-    public void start(Stage stage) {
-        GameStage theGameStage = new GameStage();
-        theGameStage.setStage(stage);
+    public void start(Stage primaryStage) {
+        GameManager manager = new GameManager(primaryStage);
+        manager.run();
     }
 
 }

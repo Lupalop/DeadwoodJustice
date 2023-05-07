@@ -1,10 +1,11 @@
-package miniprojtemplate;
+package game.entities;
 
 import javafx.geometry.Rectangle2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 
 public class Sprite {
+
     protected Image img;
     protected int x, y, dx, dy;
     protected boolean visible;
@@ -27,7 +28,7 @@ public class Sprite {
     }
 
     // method to set the image to the image view node
-    void render(GraphicsContext gc) {
+    public void draw(GraphicsContext gc) {
         gc.drawImage(this.img, this.x, this.y);
 
     }

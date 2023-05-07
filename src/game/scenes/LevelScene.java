@@ -1,67 +1,83 @@
-package miniprojtemplate;
+package game.scenes;
 
 import java.util.ArrayList;
 import java.util.Random;
-import javafx.animation.AnimationTimer;
+
+import game.GameManager;
+import game.entities.Bullet;
+import game.entities.Fish;
+import game.entities.Ship;
 import javafx.event.EventHandler;
+import javafx.scene.Group;
 import javafx.scene.Scene;
+import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.paint.Color;
 
-/*
- * The GameTimer is a subclass of the AnimationTimer class. It must override the handle method. 
- */
+public class LevelScene implements GameScene {
 
-public class GameTimer extends AnimationTimer {
-
+    private Scene scene;
+    private Group root;
+    private Canvas canvas;
     private GraphicsContext gc;
-    private Scene theScene;
+
     private Ship myShip;
     private ArrayList<Fish> fishes;
+
     public static final int MAX_NUM_FISHES = 3;
 
-    GameTimer(GraphicsContext gc, Scene theScene) {
-        this.gc = gc;
-        this.theScene = theScene;
+    public LevelScene(GameManager manager) {
+        this.root = new Group();
+        this.scene = new Scene(root, GameManager.WINDOW_WIDTH,
+                GameManager.WINDOW_HEIGHT, Color.CADETBLUE);
+        this.canvas = new Canvas(GameManager.WINDOW_WIDTH,
+                GameManager.WINDOW_HEIGHT);
+        this.gc = canvas.getGraphicsContext2D();
+        this.root.getChildren().add(canvas);
         this.myShip = new Ship("Going merry", 100, 100);
-        // instantiate the ArrayList of Fish
         this.fishes = new ArrayList<Fish>();
 
-        // call the spawnFishes method
         this.spawnFishes();
-        // call method to handle mouse click event
         this.handleKeyPressEvent();
     }
 
     @Override
-    public void handle(long currentNanoTime) {
-        this.gc.clearRect(0, 0, GameStage.WINDOW_WIDTH,
-                GameStage.WINDOW_HEIGHT);
-
+    public Scene getInnerScene() {
+        return this.scene;
+    }    
+    
+    @Override
+    public void update(long currentNanoTime) {
         this.myShip.move();
         /*
          * TODO: Call the moveBullets and moveFishes methods
          */
+    }
+
+    @Override
+    public void draw(long currentNanoTime) {
+        this.gc.clearRect(0, 0, GameManager.WINDOW_WIDTH,
+                GameManager.WINDOW_HEIGHT);
 
         // render the ship
-        this.myShip.render(this.gc);
+        this.myShip.draw(this.gc);
 
         /*
          * TODO: Call the renderFishes and renderBullets methods
          */
-
     }
 
     // method that will render/draw the fishes to the canvas
-    private void renderFishes() {
+    private void drawFishes() {
         for (Fish f : this.fishes) {
-            f.render(this.gc);
+            f.draw(this.gc);
         }
     }
 
     // method that will render/draw the bullets to the canvas
-    private void renderBullets() {
+    private void drawBullets() {
         /*
          * TODO: Loop through the bullets arraylist of myShip and render each
          * bullet to the canvas
@@ -71,9 +87,9 @@ public class GameTimer extends AnimationTimer {
     // method that will spawn/instantiate three fishes at a random x,y location
     private void spawnFishes() {
         Random r = new Random();
-        for (int i = 0; i < GameTimer.MAX_NUM_FISHES; i++) {
-            int x = r.nextInt(GameStage.WINDOW_WIDTH);
-            int y = r.nextInt(GameStage.WINDOW_HEIGHT);
+        for (int i = 0; i < MAX_NUM_FISHES; i++) {
+            int x = r.nextInt(GameManager.WINDOW_WIDTH);
+            int y = r.nextInt(GameManager.WINDOW_HEIGHT);
             /*
              * TODO: Add a new object Fish to the fishes arraylist
              */
@@ -112,14 +128,14 @@ public class GameTimer extends AnimationTimer {
 
     // method that will listen and handle the key press events
     private void handleKeyPressEvent() {
-        this.theScene.setOnKeyPressed(new EventHandler<KeyEvent>() {
+        this.scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
             public void handle(KeyEvent e) {
                 KeyCode code = e.getCode();
                 moveMyShip(code);
             }
         });
 
-        this.theScene.setOnKeyReleased(new EventHandler<KeyEvent>() {
+        this.scene.setOnKeyReleased(new EventHandler<KeyEvent>() {
             public void handle(KeyEvent e) {
                 KeyCode code = e.getCode();
                 stopMyShip(code);

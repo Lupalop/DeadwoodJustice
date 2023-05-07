@@ -1,17 +1,18 @@
-package miniprojtemplate;
+package game.entities;
 
 import java.util.ArrayList;
 import java.util.Random;
 import javafx.scene.image.Image;
 
 public class Ship extends Sprite {
+
     private String name;
     private int strength;
     private boolean alive;
 
     private ArrayList<Bullet> bullets;
     public final static Image SHIP_IMAGE = new Image(
-            Ship.class.getResource("/images/ship.png").toExternalForm(),
+            Ship.class.getResource("/game/assets/ship.png").toExternalForm(),
             Ship.SHIP_WIDTH, Ship.SHIP_WIDTH, false, false);
     private final static int SHIP_WIDTH = 50;
 

@@ -4,5 +4,7 @@ module FajardoProject {
     requires transitive javafx.graphics;
     requires transitive javafx.media;
 
-    exports miniprojtemplate;
+    exports game;
+    exports game.entities;
+    exports game.scenes;
 }
