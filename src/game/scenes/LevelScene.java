@@ -2,6 +2,7 @@ package game.scenes;
 
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 import game.Game;
 import game.entities.Bullet;
@@ -22,9 +23,22 @@ public class LevelScene implements GameScene {
 
     private Ship myShip;
     private ArrayList<Fish> fishes;
+    
+    private long spawnTime;
+    private long maxSpeedTime;
+    private long maxSpeedEndTime;
+    private boolean isMaxSpeed;
 
-    public static final int MAX_NUM_FISHES = 3;
+    public static final int FISH_COUNT_AT_SPAWN = 7;
+    public static final int FISH_COUNT_PER_INTERVAL = 3;
 
+    private static final long FISH_SPAWN_INTERVAL =
+            TimeUnit.SECONDS.toNanos(5);
+    private static final long FISH_MAX_SPEED_INTERVAL =
+            TimeUnit.SECONDS.toNanos(15);
+    private static final long FISH_MAX_SPEED_END_INTERVAL =
+            TimeUnit.SECONDS.toNanos(3);
+    
     public LevelScene(Game manager) {
         this.root = new Group();
         this.scene = new Scene(root, Game.WINDOW_WIDTH,
@@ -36,8 +50,12 @@ public class LevelScene implements GameScene {
         this.myShip = new Ship("Going merry", 100, 100);
         this.myShip.handleKeyPressEvent(scene);
         this.fishes = new ArrayList<Fish>();
+        this.spawnTime = System.nanoTime();
+        this.maxSpeedTime = System.nanoTime();
+        this.maxSpeedEndTime = -1;
+        this.isMaxSpeed = false;
 
-        this.spawnFishes();
+        this.spawnFishes(FISH_COUNT_AT_SPAWN);
     }
 
     @Override
@@ -48,7 +66,7 @@ public class LevelScene implements GameScene {
     @Override
     public void update(long currentNanoTime) {
         this.myShip.update();
-        this.updateFishes();
+        this.updateFishes(currentNanoTime);
         this.updateBullets();
     }
 
@@ -95,12 +113,35 @@ public class LevelScene implements GameScene {
         this.myShip.getBullets().removeAll(removalList);
     }
 
-    // method that will move the fishes
-    private void updateFishes() {
+    private void updateFishes(long currentNanoTime) {
+        // Spawn fish every 3 seconds.
+        long deltaTime = (currentNanoTime - spawnTime);
+        if (deltaTime >= FISH_SPAWN_INTERVAL) {
+            this.spawnFishes(FISH_COUNT_PER_INTERVAL);
+            this.spawnTime = currentNanoTime;
+        }
+        // Speed up fish movement every 15 seconds.
+        deltaTime = (currentNanoTime - maxSpeedTime);
+        if (deltaTime >= FISH_MAX_SPEED_INTERVAL) {
+            this.isMaxSpeed = true;
+            this.maxSpeedTime = currentNanoTime + FISH_MAX_SPEED_END_INTERVAL;
+            this.maxSpeedEndTime = currentNanoTime;
+        }
+        // Reset back to normal speed after 3 seconds if we've
+        // sped up fish movement.
+        if (maxSpeedEndTime != -1) {
+            deltaTime = (currentNanoTime - maxSpeedEndTime);
+            if (deltaTime >= FISH_MAX_SPEED_END_INTERVAL) {
+                this.isMaxSpeed = false;
+                this.maxSpeedEndTime = -1;
+            }
+        }
+        
+        // Update fish movement.
         ArrayList<Fish> removalList = new ArrayList<Fish>();
         
         for (Fish fish : this.fishes) {
-            fish.update(myShip);
+            fish.update(myShip, isMaxSpeed);
             if (!fish.isAlive()) {
                 removalList.add(fish);
             }
@@ -112,11 +153,11 @@ public class LevelScene implements GameScene {
     }
 
     // method that will spawn/instantiate three fishes at a random x,y location
-    private void spawnFishes() {
+    private void spawnFishes(int fishCount) {
         Random r = new Random();
-        for (int i = 0; i < MAX_NUM_FISHES; i++) {
+        for (int i = 0; i < fishCount; i++) {
             int x = r.nextInt(Game.WINDOW_WIDTH / 2, Game.WINDOW_WIDTH - Fish.FISH_WIDTH);
-            int y = r.nextInt(Game.WINDOW_HEIGHT);
+            int y = r.nextInt(Game.WINDOW_HEIGHT - Fish.FISH_WIDTH);
 
             Fish fish = new Fish(x, y);
             this.fishes.add(fish);

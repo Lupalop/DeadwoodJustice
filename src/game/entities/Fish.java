@@ -20,6 +20,7 @@ public class Fish extends Sprite {
     private boolean moveRight;
     private int speed;
     private int damage;
+    private boolean isMaxSpeed;
 
     public Fish(int x, int y) {
         super(x, y);
@@ -30,11 +31,16 @@ public class Fish extends Sprite {
         this.speed = rand.nextInt(1, MAX_FISH_SPEED);
         this.moveRight = rand.nextBoolean();
         this.damage = rand.nextInt(MIN_DAMAGE, MAX_DAMAGE + 1);
+        this.isMaxSpeed = false;
     }
 
     // method that changes the x position of the fish
     public void update() {
-        this.dx = this.moveRight ? this.speed : -this.speed;
+        int speed = this.moveRight ? this.speed : -this.speed;
+        if (this.isMaxSpeed) {
+            speed = this.moveRight ? MAX_FISH_SPEED : -MAX_FISH_SPEED;
+        }
+        this.dx = speed;
         this.x += this.dx;
 
         if (x + dx > 0 && this.x + this.dx < Game.WINDOW_WIDTH - this.width) { 
@@ -44,7 +50,8 @@ public class Fish extends Sprite {
         }
     }
 
-    public void update(Ship ship) {
+    public void update(Ship ship, boolean isMaxSpeed) {
+        this.isMaxSpeed = isMaxSpeed;
         this.update();
 
         if (this.collidesWith(ship) && ship.isAlive()) {
