@@ -8,8 +8,9 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 public class GameStage {
-    public static final int WINDOW_HEIGHT = 500;
     public static final int WINDOW_WIDTH = 800;
+    public static final int WINDOW_HEIGHT = 600;
+
     private Scene scene;
     private Stage stage;
     private Group root;
@@ -32,6 +33,7 @@ public class GameStage {
     // method to add the stage elements
     public void setStage(Stage stage) {
         this.stage = stage;
+        stage.setResizable(false);
 
         // set stage elements here
         this.root.getChildren().add(canvas);
