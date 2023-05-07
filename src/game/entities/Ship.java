@@ -16,6 +16,8 @@ public class Ship extends Sprite {
     private String name;
     private int strength;
 
+    private boolean isShootBlocked;
+    
     private ArrayList<Bullet> bullets;
     public final static Image SHIP_IMAGE = new Image(
             Game.getAsset("ship.png"),
@@ -28,6 +30,7 @@ public class Ship extends Sprite {
         this.name = name;
         Random r = new Random();
         this.strength = r.nextInt(151) + 100;
+        this.isShootBlocked = false;
         this.bullets = new ArrayList<Bullet>();
         this.loadImage(Ship.SHIP_IMAGE);
     }
@@ -126,7 +129,11 @@ public class Ship extends Sprite {
             this.setDX(SHIP_SPEED);
             break;
         case SPACE:
+            if (this.isShootBlocked) {
+                break;
+            }
             this.shoot();
+            this.isShootBlocked = true;
         default:
             break;
         }
@@ -143,6 +150,8 @@ public class Ship extends Sprite {
         case RIGHT:
             this.setDX(0);
             break;
+        case SPACE:
+            this.isShootBlocked = false;
         default:
             break;
         }
