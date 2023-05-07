@@ -4,7 +4,7 @@ import javafx.geometry.Rectangle2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 
-public class Sprite {
+public abstract class Sprite {
 
     protected Image img;
     protected int x, y, dx, dy;
@@ -30,9 +30,10 @@ public class Sprite {
     // method to set the image to the image view node
     public void draw(GraphicsContext gc) {
         gc.drawImage(this.img, this.x, this.y);
-
     }
 
+    public abstract void update();
+    
     // method to set the object's width and height properties
     private void setSize() {
         this.width = this.img.getWidth();
