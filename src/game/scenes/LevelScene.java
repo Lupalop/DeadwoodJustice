@@ -38,6 +38,8 @@ public class LevelScene implements GameScene {
             TimeUnit.SECONDS.toNanos(15);
     private static final long FISH_MAX_SPEED_END_INTERVAL =
             TimeUnit.SECONDS.toNanos(3);
+
+    private static final int SHIP_INITIAL_X = 100;
     
     public LevelScene(Game manager) {
         this.root = new Group();
@@ -47,7 +49,13 @@ public class LevelScene implements GameScene {
                 Game.WINDOW_HEIGHT);
         this.gc = canvas.getGraphicsContext2D();
         this.root.getChildren().add(canvas);
-        this.myShip = new Ship("Going merry", 100, 100);
+        Random rand = new Random();
+        this.myShip = new Ship(
+                "Going merry",
+                SHIP_INITIAL_X,
+                rand.nextInt(
+                        (int) Ship.SHIP_IMAGE.getHeight(),
+                        Game.WINDOW_HEIGHT - (int) Ship.SHIP_IMAGE.getHeight()));
         this.myShip.handleKeyPressEvent(scene);
         this.fishes = new ArrayList<Fish>();
         this.spawnTime = System.nanoTime();
