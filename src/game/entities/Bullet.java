@@ -1,5 +1,6 @@
 package game.entities;
 
+import game.GameManager;
 import javafx.scene.image.Image;
 
 public class Bullet extends Sprite {
@@ -13,15 +14,17 @@ public class Bullet extends Sprite {
     public Bullet(int x, int y) {
         super(x, y);
         this.loadImage(Bullet.BULLET_IMAGE);
+        this.setDX(BULLET_SPEED);
     }
 
     // method that will move/change the x position of the bullet
-    public void move() {
-        /*
-         * TODO: Change the x position of the bullet depending on the bullet
-         * speed. If the x position has reached the right boundary of the
-         * screen, set the bullet's visibility to false.
-         */
+    public void update() {
+        this.x += this.dx;
+        this.y += this.dy;
+
+        if (this.x > GameManager.WINDOW_WIDTH) {
+            this.setVisible(false);
+        }
     }
 
 }
