@@ -11,7 +11,7 @@ import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 
-public class Ship extends Sprite {
+public class Outlaw extends Sprite {
 
     private String name;
     private int strength;
@@ -37,14 +37,14 @@ public class Ship extends Sprite {
     public final static int[] FRAMESET_OFFSET = 
             new int[] { 15, 17, 9, 3 };
 
-    private final static int SHIP_SPEED = 5;
+    private final static int OUTLAW_SPEED = 5;
 
     private final static byte FLAG_DIR_UP = 0x1;
     private final static byte FLAG_DIR_DOWN = 0x2;
     private final static byte FLAG_DIR_LEFT = 0x4;
     private final static byte FLAG_DIR_RIGHT = 0x8;    
     
-    public Ship(String name, int x, int y) {
+    public Outlaw(String name, int x, int y) {
         super(x, y);
         
         this.setFrameSet(FRAMESET_W, FRAMESET_ROWS, FRAMESET_COLUMNS);
@@ -76,7 +76,7 @@ public class Ship extends Sprite {
         return this.name;
     }
 
-    // method that will get the bullets 'shot' by the ship
+    // method that will get the bullets 'shot' by the outlaw
     public ArrayList<Bullet> getBullets() {
         return this.bullets;
     }
@@ -142,20 +142,20 @@ public class Ship extends Sprite {
         
         if (this.getBounds().getMinX() + dx >= 0 &&
                 isDirectionActive(FLAG_DIR_LEFT)) {
-            this.dx = -SHIP_SPEED;
+            this.dx = -OUTLAW_SPEED;
         } else if (this.getBounds().getMinX() + this.dx <= Game.WINDOW_WIDTH - this.getBounds().getWidth()
                 && isDirectionActive(FLAG_DIR_RIGHT)) {
-            this.dx = SHIP_SPEED;
+            this.dx = OUTLAW_SPEED;
         } else {
             this.dx = 0;
         }
 
         if (this.getBounds().getMinY() + dy >= 0 &&
                 isDirectionActive(FLAG_DIR_UP)) {
-            this.dy = -SHIP_SPEED;
+            this.dy = -OUTLAW_SPEED;
         } else if (this.getBounds().getMinY() + dy <= Game.WINDOW_HEIGHT - this.getBounds().getHeight()
                 && isDirectionActive(FLAG_DIR_DOWN)) {
-            this.dy = SHIP_SPEED;
+            this.dy = OUTLAW_SPEED;
         } else {
             this.dy = 0;
         }
@@ -187,7 +187,7 @@ public class Ship extends Sprite {
         });
     }
 
-    // method that will move the ship depending on the key pressed
+    // method that will move the outlaw depending on the key pressed
     private void startMoving(KeyCode keyCode) {
         if (!this.isAlive()) {
             return;
@@ -223,7 +223,7 @@ public class Ship extends Sprite {
         this.updateFrameSet();
     }
 
-    // method that will stop the ship's movement; set the ship's DX and DY to 0
+    // method that will stop the outlaw's movement; set the outlaw's DX and DY to 0
     private void stopMoving(KeyCode keyCode) {
         switch (keyCode) {
         case UP:

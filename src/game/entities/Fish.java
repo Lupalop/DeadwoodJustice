@@ -77,7 +77,7 @@ public class Fish extends Sprite {
         this.addX(this.moveRight ? this.dx : -this.dx);
     }
 
-    public void update(long currentNanoTime, Ship ship, ArrayList<Fish> otherFishes, boolean isMaxSpeed) {
+    public void update(long currentNanoTime, Outlaw outlaw, ArrayList<Fish> otherFishes, boolean isMaxSpeed) {
         this.isMaxSpeed = isMaxSpeed;
         this.update(currentNanoTime);
 
@@ -85,14 +85,14 @@ public class Fish extends Sprite {
             return;
         }
         
-        if (this.intersects(ship) && ship.isAlive()) {
-            ship.reduceStrength(this.damage);
+        if (this.intersects(outlaw) && outlaw.isAlive()) {
+            outlaw.reduceStrength(this.damage);
             this.prepareDeath();
             this.setMinMaxFrame(33, 36);
             return;
         }
 
-        for (Bullet bullet : ship.getBullets()) {
+        for (Bullet bullet : outlaw.getBullets()) {
             if (this.intersects(bullet)) {
                 this.prepareDeath();
                 bullet.setVisible(false);
