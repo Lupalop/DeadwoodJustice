@@ -5,25 +5,17 @@ import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 import game.Game;
-import javafx.scene.image.Image;
 
-public class Fish extends Sprite {
+public abstract class Mob extends Sprite {
 
-    public static final int MAX_FISH_SPEED = 5;
+    public static final int MAX_MOB_SPEED = 5;
 
-    public final static Image FRAMESET_W = new Image(
-            Game.getAsset("cactus_sheet_w.png"));
-    public final static int FRAMESET_ROWS = 4;
-    public final static int FRAMESET_COLUMNS = 11;
-    public final static int[] FRAMESET_OFFSET = 
-            new int[] { 10, 12, 10, 1 };
-    
     private final static long FRAME_DEATH_INTERVAL = 
             TimeUnit.MILLISECONDS.toNanos(300);
-    
+
     public final static int MAX_DAMAGE = 40;
     public final static int MIN_DAMAGE = 30;
-    
+
     private boolean isAlive;
     private boolean isDying;
 
@@ -32,25 +24,27 @@ public class Fish extends Sprite {
     private int damage;
     private boolean isMaxSpeed;
 
-    public Fish(int x, int y) {
+    private int[] frameRanges;
+
+    public Mob(int x, int y) {
         super(x, y);
-        
-        this.setFrameSet(FRAMESET_W, FRAMESET_ROWS, FRAMESET_COLUMNS);
-        this.setMinMaxFrame(11, 19);
+    }
+
+    protected void initialize() {
         this.setScale(2);
-        this.setBoundsOffset(FRAMESET_OFFSET);
+        this.setMinMaxFrame(frameRanges[0], frameRanges[1]);
 
         this.isAlive = true;
         this.isDying = false;
 
         Random rand = new Random();
-        this.speed = rand.nextInt(1, MAX_FISH_SPEED);
+        this.speed = rand.nextInt(1, MAX_MOB_SPEED);
         this.moveRight = rand.nextBoolean();
         this.flipHorizontal(!this.moveRight);
         this.damage = rand.nextInt(MIN_DAMAGE, MAX_DAMAGE + 1);
         this.isMaxSpeed = false;
     }
-
+    
     public void update(long currentNanoTime) {
         super.update(currentNanoTime);
 
@@ -64,7 +58,7 @@ public class Fish extends Sprite {
             return;
         }
 
-        this.dx = this.isMaxSpeed ? MAX_FISH_SPEED : this.speed;
+        this.dx = this.isMaxSpeed ? MAX_MOB_SPEED : this.speed;
 
         int nextX = (int) (getBounds().getMinX() + dx);
         boolean changeFromRight = this.moveRight
@@ -77,7 +71,7 @@ public class Fish extends Sprite {
         this.addX(this.moveRight ? this.dx : -this.dx);
     }
 
-    public void update(long currentNanoTime, Outlaw outlaw, ArrayList<Fish> otherFishes, boolean isMaxSpeed) {
+    public void update(long currentNanoTime, Outlaw outlaw, ArrayList<Mob> otherMobs, boolean isMaxSpeed) {
         this.isMaxSpeed = isMaxSpeed;
         this.update(currentNanoTime);
 
@@ -88,7 +82,6 @@ public class Fish extends Sprite {
         if (this.intersects(outlaw) && outlaw.isAlive()) {
             outlaw.reduceStrength(this.damage);
             this.prepareDeath();
-            this.setMinMaxFrame(33, 36);
             return;
         }
 
@@ -100,13 +93,13 @@ public class Fish extends Sprite {
             }
         }
     }
-    
+
     private void prepareDeath() {
         this.isAlive = false;
         this.isDying = true;
         this.setFrameAutoReset(false);
         this.setFrameInterval(FRAME_DEATH_INTERVAL);
-        this.setMinMaxFrame(33, 36);
+        this.setMinMaxFrame(frameRanges[2], frameRanges[3]);
     }
 
     public void changeDirection() {
@@ -121,5 +114,9 @@ public class Fish extends Sprite {
     public boolean isDying() {
         return this.isDying;
     }
-    
+
+    public void setFrameRanges(int[] frameRanges) {
+        this.frameRanges = frameRanges;
+    }
+
 }

@@ -6,7 +6,8 @@ import java.util.concurrent.TimeUnit;
 
 import game.Game;
 import game.entities.Bullet;
-import game.entities.Fish;
+import game.entities.CactusMob;
+import game.entities.Mob;
 import game.entities.Outlaw;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -22,21 +23,21 @@ public class LevelScene implements GameScene {
     private GraphicsContext gc;
 
     private Outlaw outlaw;
-    private ArrayList<Fish> fishes;
+    private ArrayList<Mob> mobs;
     
     private long spawnTime;
     private long maxSpeedTime;
     private long maxSpeedEndTime;
     private boolean isMaxSpeed;
 
-    public static final int FISH_COUNT_AT_SPAWN = 7;
-    public static final int FISH_COUNT_PER_INTERVAL = 3;
+    public static final int MOB_COUNT_AT_SPAWN = 7;
+    public static final int MOB_COUNT_PER_INTERVAL = 3;
 
-    private static final long FISH_SPAWN_INTERVAL =
+    private static final long MOB_SPAWN_INTERVAL =
             TimeUnit.SECONDS.toNanos(5);
-    private static final long FISH_MAX_SPEED_INTERVAL =
+    private static final long MOB_MAX_SPEED_INTERVAL =
             TimeUnit.SECONDS.toNanos(15);
-    private static final long FISH_MAX_SPEED_END_INTERVAL =
+    private static final long MOB_MAX_SPEED_END_INTERVAL =
             TimeUnit.SECONDS.toNanos(3);
 
     private static final int OUTLAW_INITIAL_X = 100;
@@ -58,13 +59,13 @@ public class LevelScene implements GameScene {
                 (int) outlaw.getBounds().getHeight(),
                 Game.WINDOW_HEIGHT - (int) outlaw.getBounds().getHeight()));
         this.outlaw.handleKeyPressEvent(scene);
-        this.fishes = new ArrayList<Fish>();
+        this.mobs = new ArrayList<Mob>();
         this.spawnTime = System.nanoTime();
         this.maxSpeedTime = System.nanoTime();
         this.maxSpeedEndTime = -1;
         this.isMaxSpeed = false;
 
-        this.spawnFishes(FISH_COUNT_AT_SPAWN);
+        this.spawnMobs(MOB_COUNT_AT_SPAWN);
     }
 
     @Override
@@ -75,7 +76,7 @@ public class LevelScene implements GameScene {
     @Override
     public void update(long currentNanoTime) {
         this.outlaw.update(currentNanoTime);
-        this.updateFishes(currentNanoTime);
+        this.updateMobs(currentNanoTime);
         this.updateBullets(currentNanoTime);
     }
 
@@ -85,23 +86,23 @@ public class LevelScene implements GameScene {
                 Game.WINDOW_HEIGHT);
 
         this.outlaw.draw(this.gc);
-        this.drawFishes();
+        this.drawMobs();
         this.drawBullets();
     }
 
-    // method that will render/draw the fishes to the canvas
-    private void drawFishes() {
+    // method that will render/draw the mobs to the canvas
+    private void drawMobs() {
         boolean spawnAreaDrawn = false;
-        for (Fish fish : this.fishes) {
-            fish.draw(this.gc);
+        for (Mob mob : this.mobs) {
+            mob.draw(this.gc);
             if (Game.DEBUG_MODE && !spawnAreaDrawn) {
-                int fishWidth = (int) fish.getBounds().getWidth();
-                int fishHeight = (int) fish.getBounds().getHeight();
+                int mobWidth = (int) mob.getBounds().getWidth();
+                int mobHeight = (int) mob.getBounds().getHeight();
                 gc.strokeRect(
-                        (Game.WINDOW_WIDTH / 2) + fishWidth,
-                        fishHeight,
-                        Game.WINDOW_WIDTH / 2 - fishWidth * 2,
-                        Game.WINDOW_HEIGHT - fishHeight * 2);
+                        (Game.WINDOW_WIDTH / 2) + mobWidth,
+                        mobHeight,
+                        Game.WINDOW_WIDTH / 2 - mobWidth * 2,
+                        Game.WINDOW_HEIGHT - mobHeight * 2);
                 spawnAreaDrawn = true;
             }
         }
@@ -134,71 +135,71 @@ public class LevelScene implements GameScene {
         this.outlaw.getBullets().removeAll(removalList);
     }
 
-    private void updateFishes(long currentNanoTime) {
-        // Spawn fish every 3 seconds.
+    private void updateMobs(long currentNanoTime) {
+        // Spawn mobs every 3 seconds.
         long deltaTime = (currentNanoTime - spawnTime);
-        if (deltaTime >= FISH_SPAWN_INTERVAL) {
-            this.spawnFishes(FISH_COUNT_PER_INTERVAL);
+        if (deltaTime >= MOB_SPAWN_INTERVAL) {
+            this.spawnMobs(MOB_COUNT_PER_INTERVAL);
             this.spawnTime = currentNanoTime;
         }
-        // Speed up fish movement every 15 seconds.
+        // Speed up mob movement every 15 seconds.
         deltaTime = (currentNanoTime - maxSpeedTime);
-        if (deltaTime >= FISH_MAX_SPEED_INTERVAL) {
+        if (deltaTime >= MOB_MAX_SPEED_INTERVAL) {
             this.isMaxSpeed = true;
-            this.maxSpeedTime = currentNanoTime + FISH_MAX_SPEED_END_INTERVAL;
+            this.maxSpeedTime = currentNanoTime + MOB_MAX_SPEED_END_INTERVAL;
             this.maxSpeedEndTime = currentNanoTime;
         }
         // Reset back to normal speed after 3 seconds if we've
-        // sped up fish movement.
+        // sped up mob movement.
         if (maxSpeedEndTime != -1) {
             deltaTime = (currentNanoTime - maxSpeedEndTime);
-            if (deltaTime >= FISH_MAX_SPEED_END_INTERVAL) {
+            if (deltaTime >= MOB_MAX_SPEED_END_INTERVAL) {
                 this.isMaxSpeed = false;
                 this.maxSpeedEndTime = -1;
             }
         }
         
-        // Update fish movement.
-        ArrayList<Fish> removalList = new ArrayList<Fish>();
+        // Update mob movement.
+        ArrayList<Mob> removalList = new ArrayList<Mob>();
         
-        for (Fish fish : this.fishes) {
-            fish.update(currentNanoTime, outlaw, fishes, isMaxSpeed);
-            if (!fish.isAlive() && !fish.isDying()) {
-                removalList.add(fish);
+        for (Mob mob : this.mobs) {
+            mob.update(currentNanoTime, outlaw, mobs, isMaxSpeed);
+            if (!mob.isAlive() && !mob.isDying()) {
+                removalList.add(mob);
             }
         }
         
         // It is unsafe to modify a collection while iterating over it,
         // so remove them once we're done with the loop.
-        this.fishes.removeAll(removalList);
+        this.mobs.removeAll(removalList);
     }
 
-    // method that will spawn/instantiate three fishes at a random x,y location
-    private void spawnFishes(int fishCount) {
+    // method that will spawn/instantiate three mobs at a random x,y location
+    private void spawnMobs(int mobCount) {
         Random r = new Random();
-        for (int i = 0; i < fishCount; i++) {
-            Fish fish = new Fish(0, 0);
+        for (int i = 0; i < mobCount; i++) {
+            Mob mob = new CactusMob(0, 0);
             
-            int fishWidth = (int) fish.getBounds().getWidth();
-            int fishHeight = (int) fish.getBounds().getHeight();
+            int mobWidth = (int) mob.getBounds().getWidth();
+            int mobHeight = (int) mob.getBounds().getHeight();
 
-            fish.setX(r.nextInt(
+            mob.setX(r.nextInt(
                     Game.WINDOW_WIDTH / 2,
-                    Game.WINDOW_WIDTH - fishWidth));
-            fish.setY(r.nextInt(
-                    fishHeight,
-                    Game.WINDOW_HEIGHT - fishHeight));
+                    Game.WINDOW_WIDTH - mobWidth));
+            mob.setY(r.nextInt(
+                    mobHeight,
+                    Game.WINDOW_HEIGHT - mobHeight));
 
             int index = 0;
-            for (Fish otherFish : this.fishes) {
-                if (fish.getY() > otherFish.getY()) {
+            for (Mob otherMob : this.mobs) {
+                if (mob.getY() > otherMob.getY()) {
                     index++;
                 } else {
                     break;
                 }
             }
 
-            this.fishes.add(index, fish);
+            this.mobs.add(index, mob);
         }
     }
 
