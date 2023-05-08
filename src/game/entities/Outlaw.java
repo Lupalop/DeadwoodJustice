@@ -234,6 +234,7 @@ public class Outlaw extends Sprite {
             break;
         case LEFT:
             this.activeDirections &= ~FLAG_DIR_LEFT;
+            this.isShootBlocked = false;
             break;
         case RIGHT:
             this.activeDirections &= ~FLAG_DIR_RIGHT;
