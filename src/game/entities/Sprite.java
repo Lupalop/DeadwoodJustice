@@ -2,7 +2,6 @@ package game.entities;
 
 import java.util.concurrent.TimeUnit;
 
-import javafx.geometry.Insets;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
@@ -36,7 +35,7 @@ public abstract class Sprite {
     private int overrideMaxFrame;
     private long overrideFrameInterval;
 
-    private Insets boundsOffset;
+    private int[] boundsOffset;
     
     private final static long DEFAULT_FRAME_INTERVAL =
             TimeUnit.MILLISECONDS.toNanos(100);
@@ -69,7 +68,7 @@ public abstract class Sprite {
         this.overrideMaxFrame = -1;
         this.overrideFrameInterval = -1;
         
-        this.boundsOffset = Insets.EMPTY;
+        this.boundsOffset = null;
     }
 
     public void draw(GraphicsContext gc) {
@@ -157,13 +156,30 @@ public abstract class Sprite {
 
     public Rectangle2D getBounds() {
         if (this.boundsDirty) {
+            double newX = this.x;
+            double newY = this.y;
+            double newWidth = this.width;
+            double newHeight = this.height;
+            
+            if (this.getBoundsOffset() != null) {
+                if (this.flipHorizontal) {
+                    newX += this.getBoundsOffset()[1] * scale;
+                } else {
+                    newX += this.getBoundsOffset()[0] * scale;
+                }
+                newWidth -= this.getBoundsOffset()[0] + this.getBoundsOffset()[1];
+                
+                if (this.flipVertical) {
+                    newY += this.getBoundsOffset()[3] * scale;
+                } else {
+                    newY += this.getBoundsOffset()[2] * scale;
+                }
+                newHeight -= this.getBoundsOffset()[2] + this.getBoundsOffset()[3];
+            }
+            
             this.bounds = new Rectangle2D(
-                    this.x + this.getBoundsOffset().getLeft(),
-                    this.y + this.getBoundsOffset().getTop(),
-                    (this.width + this.getBoundsOffset().getRight())
-                    * this.scale,
-                    (this.height + this.getBoundsOffset().getBottom())
-                    * this.scale);
+                    newX, newY,
+                    newWidth * scale, newHeight * scale);
         }
         return bounds;
     }
@@ -214,7 +230,7 @@ public abstract class Sprite {
         return this.isFrameSequenceDone;
     }
     
-    protected Insets getBoundsOffset() {
+    protected int[] getBoundsOffset() {
         return this.boundsOffset;
     }
     
@@ -362,8 +378,8 @@ public abstract class Sprite {
         this.isFrameAutoReset = frameAutoReset;
     }
 
-    protected void setBoundsOffset(Insets insets) {
-        this.boundsOffset = insets;
+    protected void setBoundsOffset(int boundsOffset[]) {
+        this.boundsOffset = boundsOffset;
         this.boundsDirty = true;
     }
 
