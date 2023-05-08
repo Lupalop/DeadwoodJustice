@@ -75,6 +75,13 @@ public abstract class Sprite {
                     this.width * this.scale,
                     this.height * this.scale);
         }
+        
+        if (game.Game.DEBUG_MODE) {
+            gc.setStroke(javafx.scene.paint.Color.RED);
+            gc.strokeRect(
+                    this.getBounds().getMinX(), this.getBounds().getMinY(),
+                    this.getBounds().getWidth(), this.getBounds().getHeight());
+        }
     }
 
     public void update(long currentNanoTime) {

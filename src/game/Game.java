@@ -10,6 +10,7 @@ public class Game {
     public static final String GAME_ASSETS_PATH = "/game/assets/";
     public static final int WINDOW_WIDTH = 800;
     public static final int WINDOW_HEIGHT = 600;
+    public static final boolean DEBUG_MODE = true;
 
     private Stage primaryStage;
     private GameScene gameScene;
