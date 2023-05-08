@@ -2,6 +2,7 @@ package game.entities;
 
 import java.util.concurrent.TimeUnit;
 
+import javafx.geometry.Insets;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
@@ -31,6 +32,8 @@ public abstract class Sprite {
     private int overrideMaxFrame;
     private long overrideFrameInterval;
 
+    private Insets boundsOffset;
+    
     private final static long DEFAULT_FRAME_INTERVAL =
             TimeUnit.MILLISECONDS.toNanos(100);
 
@@ -57,6 +60,8 @@ public abstract class Sprite {
         this.overrideMinFrame = -1;
         this.overrideMaxFrame = -1;
         this.overrideFrameInterval = -1;
+        
+        this.boundsOffset = Insets.EMPTY;
     }
 
     public void draw(GraphicsContext gc) {
@@ -127,8 +132,12 @@ public abstract class Sprite {
     public Rectangle2D getBounds() {
         if (this.boundsDirty) {
             this.bounds = new Rectangle2D(
-                    this.x, this.y,
-                    this.width * this.scale, this.height * this.scale); 
+                    this.x + this.getBoundsOffset().getLeft(),
+                    this.y + this.getBoundsOffset().getTop(),
+                    (this.width + this.getBoundsOffset().getRight())
+                    * this.scale,
+                    (this.height + this.getBoundsOffset().getBottom())
+                    * this.scale);
         }
         return bounds;
     }
@@ -169,6 +178,10 @@ public abstract class Sprite {
             return this.overrideFrameInterval;
         }
         return frameInterval;
+    }
+    
+    protected Insets getBoundsOffset() {
+        return this.boundsOffset;
     }
     
     public void setX(int x) {
@@ -293,6 +306,11 @@ public abstract class Sprite {
     
     protected void setFrameInterval(long interval) {
         this.frameInterval = interval;
+    }
+
+    protected void setBoundsOffset(Insets insets) {
+        this.boundsOffset = insets;
+        this.boundsDirty = true;
     }
 
 }
