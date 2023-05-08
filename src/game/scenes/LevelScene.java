@@ -48,6 +48,7 @@ public class LevelScene implements GameScene {
         this.canvas = new Canvas(Game.WINDOW_WIDTH,
                 Game.WINDOW_HEIGHT);
         this.gc = canvas.getGraphicsContext2D();
+        this.gc.setImageSmoothing(false);
         this.root.getChildren().add(canvas);
         Random rand = new Random();
         this.myShip = new Ship(
