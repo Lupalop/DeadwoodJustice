@@ -55,6 +55,10 @@ public class Ship extends Sprite {
 
     // method called if spacebar is pressed
     public void shoot() {
+        if (!this.isAlive()) {
+            return;
+        }
+
         // compute for the x and y initial position of the bullet
         int x = (int) (this.x + this.width + 20);
         int y = (int) (this.y + this.height / 2);
