@@ -8,6 +8,7 @@ import game.Game;
 
 public abstract class Mob extends Sprite {
 
+    public static final int TOTAL_MOBS = 3;
     public static final int MAX_MOB_SPEED = 5;
 
     private final static long FRAME_DEATH_INTERVAL = 

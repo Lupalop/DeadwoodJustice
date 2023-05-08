@@ -7,6 +7,8 @@ import java.util.concurrent.TimeUnit;
 import game.Game;
 import game.entities.Bullet;
 import game.entities.CactusMob;
+import game.entities.CoffinMob;
+import game.entities.CoyoteMob;
 import game.entities.Mob;
 import game.entities.Outlaw;
 import javafx.scene.Group;
@@ -114,7 +116,6 @@ public class LevelScene implements GameScene {
         {
             bullet.draw(this.gc);
         }
-
     }
 
     // method that will move the bullets shot by the outlaw
@@ -174,11 +175,26 @@ public class LevelScene implements GameScene {
         this.mobs.removeAll(removalList);
     }
 
+    private Mob randomizeMob() {
+        Random rand = new Random();
+        switch (rand.nextInt(0, Mob.TOTAL_MOBS)) {
+        case 0:
+            return new CactusMob(0, 0);
+        case 1:
+            return new CoyoteMob(0, 0);
+        case 2:
+            return new CoffinMob(0, 0);
+        default:
+            // This should not be reached.
+            return null;
+        }
+    }
+    
     // method that will spawn/instantiate three mobs at a random x,y location
     private void spawnMobs(int mobCount) {
         Random r = new Random();
         for (int i = 0; i < mobCount; i++) {
-            Mob mob = new CactusMob(0, 0);
+            Mob mob = randomizeMob();
             
             int mobWidth = (int) mob.getBounds().getWidth();
             int mobHeight = (int) mob.getBounds().getHeight();
@@ -188,7 +204,7 @@ public class LevelScene implements GameScene {
                     Game.WINDOW_WIDTH - mobWidth));
             mob.setY(r.nextInt(
                     mobHeight,
-                    Game.WINDOW_HEIGHT - mobHeight));
+                    Game.WINDOW_HEIGHT - mobHeight * 2));
 
             int index = 0;
             for (Mob otherMob : this.mobs) {
