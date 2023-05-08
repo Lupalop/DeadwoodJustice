@@ -99,10 +99,12 @@ public abstract class Sprite {
         }
         
         if (game.Game.DEBUG_MODE) {
+            gc.save();
             gc.setStroke(javafx.scene.paint.Color.RED);
             gc.strokeRect(
                     this.getBounds().getMinX(), this.getBounds().getMinY(),
                     this.getBounds().getWidth(), this.getBounds().getHeight());
+            gc.restore();
         }
     }
 
