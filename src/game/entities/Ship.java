@@ -32,12 +32,12 @@ public class Ship extends Sprite {
     
     public Ship(String name, int x, int y) {
         super(x, y);
+        this.setImage(Ship.SHIP_IMAGE);
         this.name = name;
         Random r = new Random();
         this.strength = r.nextInt(151) + 100;
         this.isShootBlocked = false;
         this.bullets = new ArrayList<Bullet>();
-        this.loadImage(Ship.SHIP_IMAGE);
     }
 
     public boolean isAlive() {
@@ -60,8 +60,8 @@ public class Ship extends Sprite {
         }
 
         // compute for the x and y initial position of the bullet
-        int x = (int) (this.x + this.width + 20);
-        int y = (int) (this.y + this.height / 2);
+        int x = (int) (this.getX() + this.getWidth() + 20);
+        int y = (int) (this.getY() + this.getHeight() / 2);
 
         Bullet bullet = new Bullet(x, y);
         this.bullets.add(bullet);
@@ -83,6 +83,10 @@ public class Ship extends Sprite {
         this.strength -= value;
     }
     
+    private boolean isDirectionActive(byte directionFlag) {
+        return ((this.activeDirections & directionFlag) == directionFlag);
+    }
+    
     public void draw(GraphicsContext gc) {
         if (!this.isAlive()) {
             return;
@@ -92,33 +96,35 @@ public class Ship extends Sprite {
     }
     
     // method called if up/down/left/right arrow key is pressed.
-    public void update() {
+    public void update(long currentNanoTime) {
         if (!this.isAlive()) {
             return;
         }
+
+        super.update(currentNanoTime);
         
-        if (x + dx >= 0 &&
-                (this.activeDirections & FLAG_DIR_LEFT) == FLAG_DIR_LEFT) {
+        if (this.getX() + dx >= 0 &&
+                isDirectionActive(FLAG_DIR_LEFT)) {
             this.dx = -SHIP_SPEED;
-        } else if (this.x + this.dx <= Game.WINDOW_WIDTH - this.width &&
-                (this.activeDirections & FLAG_DIR_RIGHT) == FLAG_DIR_RIGHT){
+        } else if (this.getX() + this.dx <= Game.WINDOW_WIDTH - this.getWidth() &&
+                isDirectionActive(FLAG_DIR_RIGHT)) {
             this.dx = SHIP_SPEED;
         } else {
             this.dx = 0;
         }
 
-        if (y + dy >= 0 &&
-                (this.activeDirections & FLAG_DIR_UP) == FLAG_DIR_UP) {
+        if (this.getY() + dy >= 0 &&
+                isDirectionActive(FLAG_DIR_UP)) {
             this.dy = -SHIP_SPEED;
-        } else if (y + dy <= Game.WINDOW_HEIGHT - this.height &&
-                (this.activeDirections & FLAG_DIR_DOWN) == FLAG_DIR_DOWN){
+        } else if (this.getY() + dy <= Game.WINDOW_HEIGHT - this.getHeight() &&
+                isDirectionActive(FLAG_DIR_DOWN)) {
             this.dy = SHIP_SPEED;
         } else {
             this.dy = 0;
         }
 
-        this.x += this.dx;
-        this.y += this.dy;
+        this.addX(this.dx);
+        this.addY(this.dy);
     }
 
     // method that will listen and handle the key press events

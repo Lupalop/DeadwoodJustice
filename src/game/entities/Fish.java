@@ -24,8 +24,8 @@ public class Fish extends Sprite {
 
     public Fish(int x, int y) {
         super(x, y);
+        this.setImage(Fish.FISH_IMAGE);
         this.alive = true;
-        this.loadImage(Fish.FISH_IMAGE);
 
         Random rand = new Random();
         this.speed = rand.nextInt(1, MAX_FISH_SPEED);
@@ -35,33 +35,34 @@ public class Fish extends Sprite {
     }
 
     // method that changes the x position of the fish
-    public void update() {
+    public void update(long currentNanoTime) {
+        super.update(currentNanoTime);
+
         int speed = this.moveRight ? this.speed : -this.speed;
         if (this.isMaxSpeed) {
             speed = this.moveRight ? MAX_FISH_SPEED : -MAX_FISH_SPEED;
         }
         this.dx = speed;
-        this.x += this.dx;
-
-        if (x + dx > 0 && this.x + this.dx < Game.WINDOW_WIDTH - this.width) { 
-            this.x += this.dx;
+        if (this.getX() + dx > 0 &&
+                this.getX() + this.dx < Game.WINDOW_WIDTH - this.getWidth()) { 
+            this.addX(this.dx);
         } else {
             this.moveRight = !this.moveRight;
         }
     }
 
-    public void update(Ship ship, boolean isMaxSpeed) {
+    public void update(long currentNanoTime, Ship ship, boolean isMaxSpeed) {
         this.isMaxSpeed = isMaxSpeed;
-        this.update();
+        this.update(currentNanoTime);
 
-        if (this.collidesWith(ship) && ship.isAlive()) {
+        if (this.intersects(ship) && ship.isAlive()) {
             ship.reduceStrength(this.damage);
             this.alive = false;
             return;
         }
 
         for (Bullet bullet : ship.getBullets()) {
-            if (this.collidesWith(bullet)) {
+            if (this.intersects(bullet)) {
                 this.alive = false;
                 bullet.setVisible(false);
             }

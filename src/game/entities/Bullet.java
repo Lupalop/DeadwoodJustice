@@ -13,16 +13,18 @@ public class Bullet extends Sprite {
 
     public Bullet(int x, int y) {
         super(x, y);
-        this.loadImage(Bullet.BULLET_IMAGE);
-        this.setDX(BULLET_SPEED);
+        this.setImage(Bullet.BULLET_IMAGE);
+        this.dx = BULLET_SPEED;
     }
 
     // method that will move/change the x position of the bullet
-    public void update() {
-        this.x += this.dx;
-        this.y += this.dy;
+    public void update(long currentNanoTime) {
+        super.update(currentNanoTime);
+        
+        this.addX(this.dx);
+        this.addY(this.dy);
 
-        if (this.x > Game.WINDOW_WIDTH) {
+        if (this.getX() > Game.WINDOW_WIDTH) {
             this.setVisible(false);
         }
     }

@@ -73,9 +73,9 @@ public class LevelScene implements GameScene {
     
     @Override
     public void update(long currentNanoTime) {
-        this.myShip.update();
+        this.myShip.update(currentNanoTime);
         this.updateFishes(currentNanoTime);
-        this.updateBullets();
+        this.updateBullets(currentNanoTime);
     }
 
     @Override
@@ -104,14 +104,14 @@ public class LevelScene implements GameScene {
     }
 
     // method that will move the bullets shot by a ship
-    private void updateBullets() {
+    private void updateBullets(long currentNanoTime) {
         ArrayList<Bullet> removalList = new ArrayList<Bullet>();
 
         // Loop through the bullet list and check whether a bullet is still
         // visible.
         for (Bullet bullet : this.myShip.getBullets()) {
-            bullet.update();
-            if (!bullet.isVisible()) {
+            bullet.update(currentNanoTime);
+            if (!bullet.getVisible()) {
                 removalList.add(bullet);
             }
         }
@@ -149,7 +149,7 @@ public class LevelScene implements GameScene {
         ArrayList<Fish> removalList = new ArrayList<Fish>();
         
         for (Fish fish : this.fishes) {
-            fish.update(myShip, isMaxSpeed);
+            fish.update(currentNanoTime, myShip, isMaxSpeed);
             if (!fish.isAlive()) {
                 removalList.add(fish);
             }
