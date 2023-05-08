@@ -128,18 +128,12 @@ public abstract class Sprite {
 
         if (this.hasFrameOverride) {
             if (this.currentFrame == this.overrideMaxFrame) {
-                this.overrideMinFrame = -1;
-                this.overrideMaxFrame = -1;
-                this.overrideFrameInterval = -1;
-                this.overrideImage = null;
-                this.hasFrameOverride = false;
-                this.isFrameSequenceDone = true;
-                this.currentFrame = minFrame;
+                this.clearFrameOverride();
             }
         }
-        else if (this.currentFrame == maxFrame) {
+        else if (this.currentFrame == this.maxFrame) {
             if (this.isFrameAutoReset) {
-                this.currentFrame = minFrame;
+                this.currentFrame = this.minFrame;
             } else {
                 this.isFrameSequenceDone = true;
             }
@@ -291,9 +285,7 @@ public abstract class Sprite {
         this.minFrame = min;
         this.maxFrame = max;
         if (shouldReset) {
-            if (this.hasFrameOverride) {
-                return;
-            }
+            this.clearFrameOverride();
             this.isFrameSequenceDone = false;
             this.currentFrame = min;
         }
@@ -319,6 +311,16 @@ public abstract class Sprite {
             this.isFrameSequenceDone = false;
             this.currentFrame = min;
         }
+    }
+    
+    private void clearFrameOverride() {
+        this.overrideMinFrame = -1;
+        this.overrideMaxFrame = -1;
+        this.overrideFrameInterval = -1;
+        this.overrideImage = null;
+        this.hasFrameOverride = false;
+        this.isFrameSequenceDone = true;
+        this.currentFrame = this.minFrame;
     }
     
     protected void setFrameSet(Image frameSet, int rows, int columns, boolean reframe) {
