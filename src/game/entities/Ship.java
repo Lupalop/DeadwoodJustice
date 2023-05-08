@@ -15,16 +15,21 @@ public class Ship extends Sprite {
 
     private String name;
     private int strength;
-
     private boolean isShootBlocked;
-    
     private ArrayList<Bullet> bullets;
+    private byte activeDirections;
+
     public final static Image SHIP_IMAGE = new Image(
             Game.getAsset("ship.png"),
             Ship.SHIP_WIDTH, Ship.SHIP_WIDTH, false, false);
     private final static int SHIP_WIDTH = 50;
     private final static int SHIP_SPEED = 10;
 
+    private final static byte FLAG_DIR_UP = 0x1;
+    private final static byte FLAG_DIR_DOWN = 0x2;
+    private final static byte FLAG_DIR_LEFT = 0x4;
+    private final static byte FLAG_DIR_RIGHT = 0x8;    
+    
     public Ship(String name, int x, int y) {
         super(x, y);
         this.name = name;
@@ -88,12 +93,28 @@ public class Ship extends Sprite {
             return;
         }
         
-        if (x + dx > 0 && this.x + this.dx < Game.WINDOW_WIDTH - this.width) { 
-            this.x += this.dx;
+        if (x + dx >= 0 &&
+                (this.activeDirections & FLAG_DIR_LEFT) == FLAG_DIR_LEFT) {
+            this.dx = -SHIP_SPEED;
+        } else if (this.x + this.dx <= Game.WINDOW_WIDTH - this.width &&
+                (this.activeDirections & FLAG_DIR_RIGHT) == FLAG_DIR_RIGHT){
+            this.dx = SHIP_SPEED;
+        } else {
+            this.dx = 0;
         }
-        if (y + dy > 0 && y + dy < Game.WINDOW_HEIGHT - this.height) {
-            this.y += this.dy;
+
+        if (y + dy >= 0 &&
+                (this.activeDirections & FLAG_DIR_UP) == FLAG_DIR_UP) {
+            this.dy = -SHIP_SPEED;
+        } else if (y + dy <= Game.WINDOW_HEIGHT - this.height &&
+                (this.activeDirections & FLAG_DIR_DOWN) == FLAG_DIR_DOWN){
+            this.dy = SHIP_SPEED;
+        } else {
+            this.dy = 0;
         }
+
+        this.x += this.dx;
+        this.y += this.dy;
     }
 
     // method that will listen and handle the key press events
@@ -117,16 +138,16 @@ public class Ship extends Sprite {
     private void startMoving(KeyCode keyCode) {
         switch (keyCode) {
         case UP:
-            this.setDY(-SHIP_SPEED);
+            this.activeDirections |= FLAG_DIR_UP;
             break;
         case DOWN:
-            this.setDY(SHIP_SPEED);
+            this.activeDirections |= FLAG_DIR_DOWN;
             break;
         case LEFT:
-            this.setDX(-SHIP_SPEED);
+            this.activeDirections |= FLAG_DIR_LEFT;
             break;
         case RIGHT:
-            this.setDX(SHIP_SPEED);
+            this.activeDirections |= FLAG_DIR_RIGHT;
             break;
         case SPACE:
             if (this.isShootBlocked) {
@@ -143,12 +164,16 @@ public class Ship extends Sprite {
     private void stopMoving(KeyCode keyCode) {
         switch (keyCode) {
         case UP:
+            this.activeDirections &= ~FLAG_DIR_UP;
+            break;
         case DOWN:
-            this.setDY(0);
+            this.activeDirections &= ~FLAG_DIR_DOWN;
             break;
         case LEFT:
+            this.activeDirections &= ~FLAG_DIR_LEFT;
+            break;
         case RIGHT:
-            this.setDX(0);
+            this.activeDirections &= ~FLAG_DIR_RIGHT;
             break;
         case SPACE:
             this.isShootBlocked = false;
