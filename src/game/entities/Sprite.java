@@ -13,6 +13,8 @@ public abstract class Sprite {
     private double width;
     private double height;
     private Rectangle2D bounds;
+    private int scale;
+    private boolean visible;
 
     private Rectangle2D sourceRectangles[];
     private int currentFrame;
@@ -33,16 +35,14 @@ public abstract class Sprite {
             TimeUnit.MILLISECONDS.toNanos(100);
 
     protected int dx, dy;
-    protected int scale;
-    protected boolean visible;
     protected boolean boundsDirty;
 
     public Sprite(int xPos, int yPos) {
         this.x = xPos;
         this.y = yPos;
+        this.scale = 1;
         this.visible = true;
         this.boundsDirty = true;
-        this.scale = 1;
 
         this.currentFrame = -1;
         this.totalFrames = 0;
@@ -127,7 +127,8 @@ public abstract class Sprite {
     public Rectangle2D getBounds() {
         if (this.boundsDirty) {
             this.bounds = new Rectangle2D(
-                    this.x, this.y, this.width, this.height); 
+                    this.x, this.y,
+                    this.width * this.scale, this.height * this.scale); 
         }
         return bounds;
     }
@@ -140,6 +141,10 @@ public abstract class Sprite {
         return this.y;
     }
 
+    protected int getScale() {
+        return this.scale;
+    }
+    
     public boolean getVisible() {
         return visible;
     }
@@ -184,6 +189,11 @@ public abstract class Sprite {
         this.setY(this.y + y);
     }
 
+    protected void setScale(int scale) {
+        this.scale = scale;
+        this.boundsDirty = true;
+    }
+    
     public void setVisible(boolean value) {
         this.visible = value;
     }
