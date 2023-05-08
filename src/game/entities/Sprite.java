@@ -16,6 +16,8 @@ public abstract class Sprite {
     private Rectangle2D bounds;
     private int scale;
     private boolean visible;
+    private boolean flipHorizontal;
+    private boolean flipVertical;
 
     private Rectangle2D sourceRectangles[];
     private int currentFrame;
@@ -47,6 +49,8 @@ public abstract class Sprite {
         this.y = yPos;
         this.scale = 1;
         this.visible = true;
+        this.flipHorizontal = false;
+        this.flipVertical = false;
         this.boundsDirty = true;
 
         this.currentFrame = -1;
@@ -69,20 +73,30 @@ public abstract class Sprite {
     }
 
     public void draw(GraphicsContext gc) {
+        double flipOffsetX = (flipHorizontal ? (this.width * this.scale) : 0);
+        double flipOffsetY = (flipVertical ? (this.height * this.scale) : 0);
+        double flipMultiplierWidth = (flipHorizontal ? -1 : 1);
+        double flipMultiplierHeight = (flipVertical ? -1 : 1);
+        
         if (currentFrame != -1 && totalFrames != 0) {
             Rectangle2D source = this.sourceRectangles[currentFrame];
             gc.drawImage(
                     this.getImage(),
-                    source.getMinX(), source.getMinY(),
-                    source.getWidth(), source.getHeight(),
-                    this.x, this.y,
-                    this.width * this.scale, this.height * this.scale);
+                    source.getMinX(),
+                    source.getMinY(),
+                    source.getWidth(),
+                    source.getHeight(),
+                    this.x + flipOffsetX,
+                    this.y + flipOffsetY,
+                    this.width * this.scale * flipMultiplierWidth,
+                    this.height * this.scale * flipMultiplierHeight);
         } else {
             gc.drawImage(
                     this.getImage(),
-                    this.x, this.y,
-                    this.width * this.scale,
-                    this.height * this.scale);
+                    this.x + flipOffsetX,
+                    this.y + flipOffsetY,
+                    this.width * this.scale * flipMultiplierWidth,
+                    this.height * this.scale * flipMultiplierHeight);
         }
         
         if (game.Game.DEBUG_MODE) {
@@ -231,6 +245,20 @@ public abstract class Sprite {
         this.visible = value;
     }
 
+    protected void flipHorizontal(boolean value) {
+        if (this.flipHorizontal != value) {
+            this.flipHorizontal = value;
+            this.boundsDirty = true;
+        }
+    }
+    
+    protected void flipVertical(boolean value) {
+        if (this.flipVertical != value) {
+            this.flipVertical = value;
+            this.boundsDirty = true;
+        }
+    }
+    
     protected void setImage(Image image) {
         this.image = image;
         this.boundsDirty = (this.width != image.getWidth()
