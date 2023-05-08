@@ -18,13 +18,18 @@ public abstract class Sprite {
     private int currentFrame;
     private int totalFrames;
     private long lastFrameTime;
+    private long frameInterval;
+
     private int minFrame;
     private int maxFrame;
-    private boolean hasMinMaxOverride;
+
+    private boolean hasFrameOverride;
+    private Image overrideImage;
     private int overrideMinFrame;
     private int overrideMaxFrame;
+    private long overrideFrameInterval;
 
-    private final static long FRAME_CHANGE_INTERVAL =
+    private final static long DEFAULT_FRAME_INTERVAL =
             TimeUnit.MILLISECONDS.toNanos(100);
 
     protected int dx, dy;
@@ -42,23 +47,30 @@ public abstract class Sprite {
         this.currentFrame = -1;
         this.totalFrames = 0;
         this.lastFrameTime = -1;
+        this.frameInterval = DEFAULT_FRAME_INTERVAL;
+        
         this.minFrame = -1;
         this.maxFrame = -1;
-        this.hasMinMaxOverride = false;
+
+        this.hasFrameOverride = false;
+        this.overrideImage = null;
         this.overrideMinFrame = -1;
         this.overrideMaxFrame = -1;
+        this.overrideFrameInterval = -1;
     }
 
     public void draw(GraphicsContext gc) {
         if (currentFrame != -1 && totalFrames != 0) {
             Rectangle2D source = this.sourceRectangles[currentFrame];
-            gc.drawImage(this.image,
+            gc.drawImage(
+                    this.getImage(),
                     source.getMinX(), source.getMinY(),
                     source.getWidth(), source.getHeight(),
                     this.x, this.y,
                     this.width * this.scale, this.height * this.scale);
         } else {
-            gc.drawImage(this.image,
+            gc.drawImage(
+                    this.getImage(),
                     this.x, this.y,
                     this.width * this.scale,
                     this.height * this.scale);
@@ -77,16 +89,18 @@ public abstract class Sprite {
             return;
         }
 
-        if (deltaTime < FRAME_CHANGE_INTERVAL) {
+        if (deltaTime < getFrameInterval()) {
             return;
         }
         
         this.currentFrame++;
-        if (this.hasMinMaxOverride) {
+        if (this.hasFrameOverride) {
             if (this.currentFrame == this.overrideMaxFrame) {
                 this.overrideMinFrame = -1;
                 this.overrideMaxFrame = -1;
-                this.hasMinMaxOverride = false;
+                this.overrideFrameInterval = -1;
+                this.overrideImage = null;
+                this.hasFrameOverride = false;
                 this.currentFrame = minFrame;
             }
         }
@@ -124,6 +138,9 @@ public abstract class Sprite {
     }
 
     protected Image getImage() {
+        if (this.overrideImage != null) {
+            return this.overrideImage;
+        }
         return this.image;
     }
 
@@ -133,6 +150,13 @@ public abstract class Sprite {
     
     public double getHeight() {
         return this.height;
+    }
+    
+    protected double getFrameInterval() {
+        if (this.overrideFrameInterval > 0) {
+            return this.overrideFrameInterval;
+        }
+        return frameInterval;
     }
     
     public void setX(int x) {
@@ -173,23 +197,29 @@ public abstract class Sprite {
         this.minFrame = min;
         this.maxFrame = max;
         if (shouldReset) {
-            if (this.hasMinMaxOverride) {
+            if (this.hasFrameOverride) {
                 return;
             }
             this.currentFrame = min;
         }
     }
     
-    protected void playFrames(int min, int max) {
+    protected void playFrames(int min, int max, Image frameSetOverride, long frameIntervalOverride) {
         // An existing frame range is already being played temporarily.
-        if (this.hasMinMaxOverride) {
+        if (this.hasFrameOverride) {
             return;
         }
         boolean shouldReset =
                 this.overrideMinFrame != min || this.overrideMaxFrame != max;
         this.overrideMinFrame = min;
         this.overrideMaxFrame = max;
-        this.hasMinMaxOverride = true;
+        if (frameSetOverride != null) {
+            this.overrideImage = frameSetOverride;
+        }
+        if (frameIntervalOverride > 0) {
+            this.overrideFrameInterval = frameIntervalOverride;
+        }
+        this.hasFrameOverride = true;
         if (shouldReset) {
             this.currentFrame = min;
         }
@@ -242,6 +272,10 @@ public abstract class Sprite {
     public void setHeight(double val) {
         this.height = val;
         this.boundsDirty = true;
+    }
+    
+    protected void setFrameInterval(long interval) {
+        this.frameInterval = interval;
     }
 
 }
