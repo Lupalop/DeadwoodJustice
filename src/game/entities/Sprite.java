@@ -26,6 +26,8 @@ public abstract class Sprite {
     private int minFrame;
     private int maxFrame;
 
+    private boolean isFrameAutoReset;
+    private boolean isFrameSequenceDone;
     private boolean hasFrameOverride;
     private Image overrideImage;
     private int overrideMinFrame;
@@ -55,6 +57,8 @@ public abstract class Sprite {
         this.minFrame = -1;
         this.maxFrame = -1;
 
+        this.isFrameSequenceDone = false;
+        this.isFrameAutoReset = true;
         this.hasFrameOverride = false;
         this.overrideImage = null;
         this.overrideMinFrame = -1;
@@ -105,7 +109,10 @@ public abstract class Sprite {
             return;
         }
         
-        this.currentFrame++;
+        if (this.isFrameAutoReset || !this.isFrameSequenceDone) { 
+            this.currentFrame++;
+        }
+
         if (this.hasFrameOverride) {
             if (this.currentFrame == this.overrideMaxFrame) {
                 this.overrideMinFrame = -1;
@@ -113,11 +120,16 @@ public abstract class Sprite {
                 this.overrideFrameInterval = -1;
                 this.overrideImage = null;
                 this.hasFrameOverride = false;
+                this.isFrameSequenceDone = true;
                 this.currentFrame = minFrame;
             }
         }
         else if (this.currentFrame == maxFrame) {
-            this.currentFrame = minFrame;
+            if (this.isFrameAutoReset) {
+                this.currentFrame = minFrame;
+            } else {
+                this.isFrameSequenceDone = true;
+            }
         }
         this.lastFrameTime = currentNanoTime;
     }
@@ -180,6 +192,14 @@ public abstract class Sprite {
         return frameInterval;
     }
     
+    public boolean isFrameAutoReset() {
+        return isFrameAutoReset;
+    }
+
+    protected boolean isFrameSequenceDone() {
+        return this.isFrameSequenceDone;
+    }
+    
     protected Insets getBoundsOffset() {
         return this.boundsOffset;
     }
@@ -230,6 +250,7 @@ public abstract class Sprite {
             if (this.hasFrameOverride) {
                 return;
             }
+            this.isFrameSequenceDone = false;
             this.currentFrame = min;
         }
     }
@@ -251,6 +272,7 @@ public abstract class Sprite {
         }
         this.hasFrameOverride = true;
         if (shouldReset) {
+            this.isFrameSequenceDone = false;
             this.currentFrame = min;
         }
     }
@@ -306,6 +328,10 @@ public abstract class Sprite {
     
     protected void setFrameInterval(long interval) {
         this.frameInterval = interval;
+    }
+
+    public void setFrameAutoReset(boolean frameAutoReset) {
+        this.isFrameAutoReset = frameAutoReset;
     }
 
     protected void setBoundsOffset(Insets insets) {
