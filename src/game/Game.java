@@ -6,7 +6,7 @@ import javafx.stage.Stage;
 
 public class Game {
 
-    public static final String GAME_NAME = "Mini Ship Shooting Game";
+    public static final String GAME_NAME = "Deadwood Justice";
     public static final String GAME_ASSETS_PATH = "/game/assets/";
     public static final int WINDOW_WIDTH = 800;
     public static final int WINDOW_HEIGHT = 600;
