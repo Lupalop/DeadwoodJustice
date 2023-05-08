@@ -44,7 +44,7 @@ public class LevelScene implements GameScene {
     public LevelScene(Game manager) {
         this.root = new Group();
         this.scene = new Scene(root, Game.WINDOW_WIDTH,
-                Game.WINDOW_HEIGHT, Color.CADETBLUE);
+                Game.WINDOW_HEIGHT, Color.valueOf("eeca84"));
         this.canvas = new Canvas(Game.WINDOW_WIDTH,
                 Game.WINDOW_HEIGHT);
         this.gc = canvas.getGraphicsContext2D();
@@ -53,10 +53,10 @@ public class LevelScene implements GameScene {
         Random rand = new Random();
         this.myShip = new Ship(
                 "Going merry",
-                SHIP_INITIAL_X,
-                rand.nextInt(
-                        (int) Ship.SHIP_IMAGE.getHeight(),
-                        Game.WINDOW_HEIGHT - (int) Ship.SHIP_IMAGE.getHeight()));
+                SHIP_INITIAL_X, 0);
+        this.myShip.setY(rand.nextInt(
+                (int) myShip.getBounds().getHeight(),
+                Game.WINDOW_HEIGHT - (int) myShip.getBounds().getHeight()));
         this.myShip.handleKeyPressEvent(scene);
         this.fishes = new ArrayList<Fish>();
         this.spawnTime = System.nanoTime();
@@ -91,8 +91,19 @@ public class LevelScene implements GameScene {
 
     // method that will render/draw the fishes to the canvas
     private void drawFishes() {
+        boolean spawnAreaDrawn = false;
         for (Fish fish : this.fishes) {
             fish.draw(this.gc);
+            if (Game.DEBUG_MODE && !spawnAreaDrawn) {
+                int fishWidth = (int) fish.getBounds().getWidth();
+                int fishHeight = (int) fish.getBounds().getHeight();
+                gc.strokeRect(
+                        (Game.WINDOW_WIDTH / 2) + fishWidth,
+                        fishHeight,
+                        Game.WINDOW_WIDTH / 2 - fishWidth * 2,
+                        Game.WINDOW_HEIGHT - fishHeight * 2);
+                spawnAreaDrawn = true;
+            }
         }
     }
 
@@ -102,6 +113,7 @@ public class LevelScene implements GameScene {
         {
             bullet.draw(this.gc);
         }
+
     }
 
     // method that will move the bullets shot by a ship
@@ -150,8 +162,8 @@ public class LevelScene implements GameScene {
         ArrayList<Fish> removalList = new ArrayList<Fish>();
         
         for (Fish fish : this.fishes) {
-            fish.update(currentNanoTime, myShip, isMaxSpeed);
-            if (!fish.isAlive()) {
+            fish.update(currentNanoTime, myShip, fishes, isMaxSpeed);
+            if (!fish.isAlive() && !fish.isDying()) {
                 removalList.add(fish);
             }
         }
@@ -165,11 +177,28 @@ public class LevelScene implements GameScene {
     private void spawnFishes(int fishCount) {
         Random r = new Random();
         for (int i = 0; i < fishCount; i++) {
-            int x = r.nextInt(Game.WINDOW_WIDTH / 2, Game.WINDOW_WIDTH - Fish.FISH_WIDTH);
-            int y = r.nextInt(Game.WINDOW_HEIGHT - Fish.FISH_WIDTH);
+            Fish fish = new Fish(0, 0);
+            
+            int fishWidth = (int) fish.getBounds().getWidth();
+            int fishHeight = (int) fish.getBounds().getHeight();
 
-            Fish fish = new Fish(x, y);
-            this.fishes.add(fish);
+            fish.setX(r.nextInt(
+                    Game.WINDOW_WIDTH / 2,
+                    Game.WINDOW_WIDTH - fishWidth));
+            fish.setY(r.nextInt(
+                    fishHeight,
+                    Game.WINDOW_HEIGHT - fishHeight));
+
+            int index = 0;
+            for (Fish otherFish : this.fishes) {
+                if (fish.getY() > otherFish.getY()) {
+                    index++;
+                } else {
+                    break;
+                }
+            }
+
+            this.fishes.add(index, fish);
         }
     }
 
