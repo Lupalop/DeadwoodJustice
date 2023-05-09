@@ -87,7 +87,7 @@ public abstract class Mob extends Sprite {
         }
 
         for (Bullet bullet : outlaw.getBullets()) {
-            if (this.intersects(bullet)) {
+            if (bullet.getVisible() && this.intersects(bullet)) {
                 this.prepareDeath();
                 bullet.setVisible(false);
                 break;
