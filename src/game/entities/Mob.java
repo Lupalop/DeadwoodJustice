@@ -28,18 +28,14 @@ public abstract class Mob extends Sprite {
     private int damage;
     private int speed;
     private boolean isMaxSpeed;
+    private boolean isDeadOnPlayerImpact;
 
     private int[] frameRanges;
 
     public Mob(int x, int y, int health) {
         super(x, y);
         this.health = health;
-    }
-
-    protected void initialize() {
-        this.setScale(2);
-        this.setMinMaxFrame(frameRanges[0], frameRanges[1]);
-
+        this.isDeadOnPlayerImpact = true;
         this.isAlive = true;
         this.isDying = false;
 
@@ -49,6 +45,11 @@ public abstract class Mob extends Sprite {
         this.flipHorizontal(!this.moveRight);
         this.damage = rand.nextInt(MIN_DAMAGE, MAX_DAMAGE + 1);
         this.isMaxSpeed = false;
+    }
+
+    protected void initialize() {
+        this.setScale(2);
+        this.setMinMaxFrame(frameRanges[0], frameRanges[1]);
     }
     
     public void update(long currentNanoTime) {
@@ -91,7 +92,9 @@ public abstract class Mob extends Sprite {
         
         if (this.intersects(outlaw) && outlaw.isAlive()) {
             outlaw.reduceStrength(this.damage);
-            this.prepareDeath();
+            if (this.isDeadOnPlayerImpact) {
+                this.prepareDeath();
+            }
             return;
         }
 
