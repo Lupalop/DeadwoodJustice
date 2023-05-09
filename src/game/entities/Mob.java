@@ -51,7 +51,7 @@ public abstract class Mob extends Sprite {
         }
         this.isMaxSpeed = false;
         
-        if (Game.DEBUG_MODE) {
+        if (Game.FLAG_SMARTER_MOBS) {
             this.setIsChasingPlayer(rand.nextBoolean());
         }
     }
@@ -178,7 +178,7 @@ public abstract class Mob extends Sprite {
             return;
         }
         
-        if (!Game.DEBUG_MODE) {
+        if (!Game.FLAG_SMARTER_MOBS) {
             return;
         }
         

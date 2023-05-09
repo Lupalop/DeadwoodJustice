@@ -39,7 +39,7 @@ public class CowboyMob extends Mob {
             this.changeDirection();
         }
         
-        if (Game.DEBUG_MODE) {
+        if (Game.FLAG_SMARTER_MOBS) {
             this.setIsChasingPlayer(true);
         }
     }
