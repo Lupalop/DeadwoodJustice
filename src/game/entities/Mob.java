@@ -30,6 +30,7 @@ public abstract class Mob extends Sprite {
     private boolean isMaxSpeed;
     private boolean isDeadOnPlayerImpact;
     private boolean isChasingPlayer;
+    protected boolean isExcludedFromMaxSpeed;
 
     private int[] frameRanges;
 
@@ -50,6 +51,7 @@ public abstract class Mob extends Sprite {
             this.damage = damage;
         }
         this.isMaxSpeed = false;
+        this.isExcludedFromMaxSpeed = false;
         
         if (Game.FLAG_SMARTER_MOBS) {
             this.setIsChasingPlayer(rand.nextBoolean());
@@ -78,7 +80,9 @@ public abstract class Mob extends Sprite {
             return;
         }
 
-        this.dx = this.isMaxSpeed ? MAX_MOB_SPEED : this.speed;
+        this.dx = (this.isMaxSpeed && !this.isExcludedFromMaxSpeed)
+                ? MAX_MOB_SPEED
+                : this.speed;
 
         int nextX = (int) (getBounds().getMinX() + dx);
         boolean changeFromRight = this.moveRight

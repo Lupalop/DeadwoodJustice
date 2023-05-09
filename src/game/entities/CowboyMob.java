@@ -39,6 +39,7 @@ public class CowboyMob extends Mob {
             this.changeDirection();
         }
         
+        this.isExcludedFromMaxSpeed = true;
         if (Game.FLAG_SMARTER_MOBS) {
             this.setIsChasingPlayer(true);
         }
