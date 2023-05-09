@@ -172,14 +172,14 @@ public class Outlaw extends Sprite {
 
     // method that will listen and handle the key press events
     public void handleKeyPressEvent(Scene scene) {
-        scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
+        scene.addEventHandler(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>() {
             public void handle(KeyEvent e) {
                 KeyCode code = e.getCode();
                 startMoving(code);
             }
         });
 
-        scene.setOnKeyReleased(new EventHandler<KeyEvent>() {
+        scene.addEventHandler(KeyEvent.KEY_RELEASED, new EventHandler<KeyEvent>() {
             public void handle(KeyEvent e) {
                 KeyCode code = e.getCode();
                 stopMoving(code);
