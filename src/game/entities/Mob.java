@@ -84,6 +84,7 @@ public abstract class Mob extends Sprite {
             this.changeDirection();
         }
         this.addX(this.moveRight ? this.dx : -this.dx);
+        this.addY(this.dy);
     }
 
     public void update(long currentNanoTime, Outlaw outlaw, ArrayList<Mob> otherMobs, boolean isMaxSpeed) {
