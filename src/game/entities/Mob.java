@@ -186,11 +186,10 @@ public abstract class Mob extends Sprite {
             return;
         }
         
-        int outlawHalfSpeed = Outlaw.OUTLAW_SPEED / 2; 
         if (outlaw.getY() > this.getY()) {
-            this.dy = outlawHalfSpeed;
+            this.dy = this.speed;
         } else {
-            this.dy = -outlawHalfSpeed;
+            this.dy = -this.speed;
         }
         
         if (outlaw.getBounds().getMinX() > this.getBounds().getMinX()) {
