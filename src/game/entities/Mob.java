@@ -31,6 +31,7 @@ public abstract class Mob extends Sprite {
     private boolean isDeadOnPlayerImpact;
     private boolean isChasingPlayer;
     protected boolean isExcludedFromMaxSpeed;
+    private boolean isPlayerInMobBounds;
 
     private int[] frameRanges;
 
@@ -52,6 +53,7 @@ public abstract class Mob extends Sprite {
         }
         this.isMaxSpeed = false;
         this.isExcludedFromMaxSpeed = false;
+        this.isPlayerInMobBounds = false;
         
         if (Game.FLAG_SMARTER_MOBS) {
             this.setIsChasingPlayer(rand.nextBoolean());
@@ -108,14 +110,23 @@ public abstract class Mob extends Sprite {
             this.chasePlayer(outlaw);
         }
         
-        if (this.intersects(outlaw) && outlaw.isAlive()) {
-            outlaw.reduceStrength(this.damage);
-            if (this.isDeadOnPlayerImpact) {
-                this.prepareDeath();
+        if (outlaw.isAlive()) {
+            if (this.intersects(outlaw)) {
+                if (this.isPlayerInMobBounds) {
+                    return;
+                }
+                outlaw.reduceStrength(this.damage);
+                System.out.println("damage");
+                if (this.isDeadOnPlayerImpact) {
+                    this.prepareDeath();
+                } else {
+                    this.playFrames(frameRanges[2], frameRanges[3], null, 0);
+                }
+                this.isPlayerInMobBounds = true;
+                return;
             } else {
-                this.playFrames(frameRanges[2], frameRanges[3], null, 0);
+                this.isPlayerInMobBounds = false;
             }
-            return;
         }
 
         for (Bullet bullet : outlaw.getBullets()) {
