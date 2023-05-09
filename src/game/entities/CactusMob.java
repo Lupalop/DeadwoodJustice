@@ -16,6 +16,10 @@ public class CactusMob extends Mob {
             new int[] {
                     // Walking
                     11, 19,
+                    // On impact
+                    -1, -1,
+                    // On being damaged
+                    -1, -1,
                     // Death
                     33, 36
             };

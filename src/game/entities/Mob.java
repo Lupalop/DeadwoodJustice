@@ -21,7 +21,7 @@ public abstract class Mob extends Sprite {
     private boolean isAlive;
     private boolean isDying;
 
-    private boolean moveRight;
+    protected boolean moveRight;
     private Sprite deathEffect;
 
     private int health;
@@ -94,6 +94,8 @@ public abstract class Mob extends Sprite {
             outlaw.reduceStrength(this.damage);
             if (this.isDeadOnPlayerImpact) {
                 this.prepareDeath();
+            } else {
+                this.playFrames(frameRanges[2], frameRanges[3], null, 0);
             }
             return;
         }
@@ -103,8 +105,10 @@ public abstract class Mob extends Sprite {
                 this.health -= outlaw.getStrength();
                 if (this.health <= 0) {
                     this.prepareDeath();
-                    bullet.setVisible(false);
+                } else {
+                    this.playFrames(frameRanges[4], frameRanges[5], null, 0);
                 }
+                bullet.setVisible(false);
                 break;
             }
         }
@@ -122,7 +126,7 @@ public abstract class Mob extends Sprite {
         this.isDying = true;
         this.setFrameAutoReset(false);
         this.setFrameInterval(FRAME_DEATH_INTERVAL);
-        this.setMinMaxFrame(frameRanges[2], frameRanges[3]);
+        this.setMinMaxFrame(frameRanges[6], frameRanges[7]);
         this.deathEffect = new ExplosionEffect(0, this.getY());
         this.deathEffect.setX(
                 (int) (this.getBounds().getMinX()
@@ -135,6 +139,10 @@ public abstract class Mob extends Sprite {
         this.moveRight = !this.moveRight;
     }
 
+    protected void setIsDeadOnPlayerImpact(boolean value) {
+        this.isDeadOnPlayerImpact = value;
+    }
+    
     public boolean isAlive() {
         return this.isAlive;
     }

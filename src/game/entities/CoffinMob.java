@@ -16,6 +16,10 @@ public class CoffinMob extends Mob {
             new int[] {
                     // Walking
                     19, 32,
+                    // On impact
+                    -1, -1,
+                    // On being damaged
+                    -1, -1,
                     // Death
                     54, 57
             };

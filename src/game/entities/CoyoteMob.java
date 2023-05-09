@@ -16,6 +16,10 @@ public class CoyoteMob extends Mob {
             new int[] {
                     // Walking
                     24, 37,
+                    // On impact
+                    -1, -1,
+                    // On being damaged
+                    -1, -1,
                     // Death
                     71, 74
             };
