@@ -294,8 +294,9 @@ public abstract class Sprite {
     }
     
     protected void playFrames(int min, int max, Image frameSetOverride, long frameIntervalOverride) {
-        // An existing frame range is already being played temporarily.
-        if (this.hasFrameOverride) {
+        // An existing frame range is already being played temporarily
+        // or an invalid value was passed to min/max parameters.
+        if (this.hasFrameOverride || min == -1 || max == -1) {
             return;
         }
         boolean shouldReset =
