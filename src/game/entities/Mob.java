@@ -5,6 +5,7 @@ import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 import game.Game;
+import javafx.scene.canvas.GraphicsContext;
 
 public abstract class Mob extends Sprite {
 
@@ -24,6 +25,7 @@ public abstract class Mob extends Sprite {
     private int speed;
     private int damage;
     private boolean isMaxSpeed;
+    private Sprite deathEffect;
 
     private int[] frameRanges;
 
@@ -48,6 +50,10 @@ public abstract class Mob extends Sprite {
     
     public void update(long currentNanoTime) {
         super.update(currentNanoTime);
+
+        if (this.deathEffect != null) {
+            this.deathEffect.update(currentNanoTime);
+        }
 
         if (this.isDying) {
             if (this.isFrameSequenceDone()) {
@@ -95,12 +101,24 @@ public abstract class Mob extends Sprite {
         }
     }
 
+    public void draw(GraphicsContext gc) {
+        super.draw(gc);
+        if (this.deathEffect != null) {
+            this.deathEffect.draw(gc);
+        }
+    }
+    
     private void prepareDeath() {
         this.isAlive = false;
         this.isDying = true;
         this.setFrameAutoReset(false);
         this.setFrameInterval(FRAME_DEATH_INTERVAL);
         this.setMinMaxFrame(frameRanges[2], frameRanges[3]);
+        this.deathEffect = new ExplosionEffect(0, this.getY());
+        this.deathEffect.setX(
+                (int) (this.getBounds().getMinX()
+                        + (this.getBounds().getWidth() / 2)
+                        - this.deathEffect.getWidth()));
     }
 
     public void changeDirection() {
