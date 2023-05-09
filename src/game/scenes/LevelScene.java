@@ -8,6 +8,7 @@ import game.Game;
 import game.entities.Bullet;
 import game.entities.CactusMob;
 import game.entities.CoffinMob;
+import game.entities.CowboyMob;
 import game.entities.CoyoteMob;
 import game.entities.Mob;
 import game.entities.Outlaw;
@@ -46,12 +47,15 @@ public class LevelScene implements GameScene {
     private boolean generateTiles;
 
     private Outlaw outlaw;
+    private Mob bossMob;
     private ArrayList<Mob> mobs;
     
     private long spawnTime;
     private long maxSpeedTime;
     private long maxSpeedEndTime;
+    private long levelStartTime;
     private boolean isMaxSpeed;
+    private boolean isLevelDone;
 
     public static final int MOB_COUNT_AT_SPAWN = 7;
     public static final int MOB_COUNT_PER_INTERVAL = 3;
@@ -62,6 +66,11 @@ public class LevelScene implements GameScene {
             TimeUnit.SECONDS.toNanos(15);
     private static final long MOB_MAX_SPEED_END_INTERVAL =
             TimeUnit.SECONDS.toNanos(3);
+
+    private static final long LEVEL_BOSS_TIME =
+            TimeUnit.SECONDS.toNanos(30);
+    private static final long LEVEL_END_TIME =
+            TimeUnit.SECONDS.toNanos(60);
 
     private static final int OUTLAW_INITIAL_X = 100;
 
@@ -86,11 +95,13 @@ public class LevelScene implements GameScene {
                 Game.WINDOW_HEIGHT - (int) outlaw.getBounds().getHeight()));
         this.outlaw.handleKeyPressEvent(scene);
         this.mobs = new ArrayList<Mob>();
+        this.levelStartTime = System.nanoTime();
         this.spawnTime = System.nanoTime();
         this.maxSpeedTime = System.nanoTime();
         this.maxSpeedEndTime = -1;
         this.isMaxSpeed = false;
         this.generateTiles = true;
+        this.isLevelDone = false;
 
         if (Game.DEBUG_MODE) {
             scene.addEventHandler(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>() {
@@ -113,9 +124,32 @@ public class LevelScene implements GameScene {
     
     @Override
     public void update(long currentNanoTime) {
+        if (this.isLevelDone) {
+            return;
+        }
         this.outlaw.update(currentNanoTime);
         this.updateMobs(currentNanoTime);
         this.updateBullets(currentNanoTime);
+        this.updateLevelTime(currentNanoTime);
+    }
+
+    private void updateLevelTime(long currentNanoTime) {
+        long deltaTime = (currentNanoTime - levelStartTime);
+        // Detect if the game should've ended by now.
+        if (deltaTime >= LEVEL_END_TIME
+                && this.bossMob != null
+                && !this.bossMob.isAlive()
+                && !this.bossMob.isDying()) {
+            this.isLevelDone = true;
+            System.out.println("Game Done.");
+        // Spawn the boss mob if the time is right.
+        } else if (deltaTime >= LEVEL_BOSS_TIME && this.bossMob == null) {
+            this.bossMob = new CowboyMob(Game.WINDOW_WIDTH, (Game.WINDOW_HEIGHT / 2));
+            this.bossMob.addY((int) -this.bossMob.getBounds().getHeight() / 2);
+            this.bossMob.addX((int) -this.bossMob.getBounds().getWidth());
+            this.mobs.add(bossMob);
+            System.out.println("boss spawned");
+        }
     }
 
     @Override
@@ -202,7 +236,7 @@ public class LevelScene implements GameScene {
             bullet.draw(this.gc);
         }
     }
-
+    
     // method that will move the bullets shot by the outlaw
     private void updateBullets(long currentNanoTime) {
         ArrayList<Bullet> removalList = new ArrayList<Bullet>();
