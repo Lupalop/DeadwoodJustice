@@ -374,6 +374,10 @@ public abstract class Sprite {
         this.boundsDirty = true;
     }
     
+    protected void setFrame(int frameId) {
+        this.currentFrame = frameId;
+    }
+    
     protected void setFrameInterval(long interval) {
         this.frameInterval = interval;
     }
