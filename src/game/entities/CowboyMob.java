@@ -64,6 +64,14 @@ public class CowboyMob extends Mob {
         } else {
             this.dy = -outlawHalfSpeed;
         }
+        
+        if (outlaw.getBounds().getMinX() > this.getBounds().getMinX()) {
+            if (!this.moveRight) {
+                this.changeDirection();
+            }
+        } else if (this.moveRight) {
+            this.changeDirection();
+        }
     }
     
 }
