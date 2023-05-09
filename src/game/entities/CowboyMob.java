@@ -33,6 +33,7 @@ public class CowboyMob extends Mob {
         this.setFrameRanges(FRAME_RANGES);
         
         super.initialize();
+        this.setScale(3);
         
         if (this.moveRight) {
             this.changeDirection();
