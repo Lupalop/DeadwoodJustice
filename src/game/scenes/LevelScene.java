@@ -11,10 +11,12 @@ import game.entities.CoffinMob;
 import game.entities.CoyoteMob;
 import game.entities.Mob;
 import game.entities.Outlaw;
+import game.entities.Tileset;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 
 public class LevelScene implements GameScene {
@@ -26,6 +28,7 @@ public class LevelScene implements GameScene {
 
     private Outlaw outlaw;
     private ArrayList<Mob> mobs;
+    private int[] tiles;
     
     private long spawnTime;
     private long maxSpeedTime;
@@ -87,11 +90,35 @@ public class LevelScene implements GameScene {
         this.gc.clearRect(0, 0, Game.WINDOW_WIDTH,
                 Game.WINDOW_HEIGHT);
 
+        if (Game.DEBUG_MODE) {
+            this.drawTiles();
+        }
+        
         this.outlaw.draw(this.gc);
         this.drawMobs();
         this.drawBullets();
     }
 
+    private void drawTiles() {
+        boolean regenerateTiles = false;
+        if (tiles == null) {
+            tiles = new int[(608/32)*(800/32)];
+            regenerateTiles = true;
+        }
+        Tileset tileset = new Tileset("tilemap_desert.png");
+        Random rand = new Random();
+        int tileId = 0;
+        for (int i = 0; i < 608 / 32; i++) {
+            for (int j = 0; j < 800 / 32; j++) {
+                if (regenerateTiles) {
+                    tiles[tileId] = rand.nextInt(0, 4);
+                }
+                tileset.draw(gc, 32 * j, 32 * i, tiles[tileId]);
+                tileId++;
+            }
+        }
+    }
+    
     // method that will render/draw the mobs to the canvas
     private void drawMobs() {
         boolean spawnAreaDrawn = false;
