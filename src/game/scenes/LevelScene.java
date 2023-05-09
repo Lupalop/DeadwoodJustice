@@ -12,22 +12,41 @@ import game.entities.CoyoteMob;
 import game.entities.Mob;
 import game.entities.Outlaw;
 import game.entities.Tileset;
+import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
 
 public class LevelScene implements GameScene {
 
+    private static final int TILEGEN_MATCH = 1;
+    private static final int TILEGEN_FREQ_GRASS_OR_ROCK = 6;
+    private static final int TILEGEN_FREQ_CACTUS = 50;
+    private static final int TILEGEN_FREQ_PROPS = 150;
+    
+    private static final int TILE_SIZE = 32;
+    private static final int TILES_VERTICAL =
+            (Game.WINDOW_HEIGHT + 8) / TILE_SIZE;
+    private static final int TILES_HORIZONTAL =
+            (Game.WINDOW_WIDTH) / TILE_SIZE;
+    private static final int TILES_TOTAL =
+            TILES_VERTICAL * TILES_HORIZONTAL;
+    
     private Scene scene;
     private Group root;
     private Canvas canvas;
     private GraphicsContext gc;
 
+    private int[] tileLayer1;
+    private int[] tileLayer2;
+    private boolean generateTiles;
+
     private Outlaw outlaw;
     private ArrayList<Mob> mobs;
-    private int[] tiles;
     
     private long spawnTime;
     private long maxSpeedTime;
@@ -45,6 +64,9 @@ public class LevelScene implements GameScene {
             TimeUnit.SECONDS.toNanos(3);
 
     private static final int OUTLAW_INITIAL_X = 100;
+
+    private static final Tileset TILESET_DESERT =
+            new Tileset("tilemap_desert.png");
     
     public LevelScene(Game manager) {
         this.root = new Group();
@@ -68,7 +90,19 @@ public class LevelScene implements GameScene {
         this.maxSpeedTime = System.nanoTime();
         this.maxSpeedEndTime = -1;
         this.isMaxSpeed = false;
+        this.generateTiles = true;
 
+        if (Game.DEBUG_MODE) {
+            scene.addEventHandler(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>() {
+                public void handle(KeyEvent e) {
+                    KeyCode code = e.getCode();
+                    if (code == KeyCode.A) {
+                        generateTiles = true;
+                    }
+                }
+            });
+        }
+        
         this.spawnMobs(MOB_COUNT_AT_SPAWN);
     }
 
@@ -89,9 +123,7 @@ public class LevelScene implements GameScene {
         this.gc.clearRect(0, 0, Game.WINDOW_WIDTH,
                 Game.WINDOW_HEIGHT);
 
-        if (Game.DEBUG_MODE) {
-            this.drawTiles();
-        }
+        this.drawTiles();
         
         this.outlaw.draw(this.gc);
         this.drawMobs();
@@ -99,22 +131,49 @@ public class LevelScene implements GameScene {
     }
 
     private void drawTiles() {
-        boolean regenerateTiles = false;
-        if (tiles == null) {
-            tiles = new int[(608/32)*(800/32)];
-            regenerateTiles = true;
+        // Initialize tile layers.
+        if (this.generateTiles) {
+            tileLayer1 = new int[TILES_TOTAL];
+            tileLayer2 = new int[TILES_TOTAL];
         }
-        Tileset tileset = new Tileset("tilemap_desert.png");
-        Random rand = new Random();
+        // Holds the current tile ID.
         int tileId = 0;
-        for (int i = 0; i < 608 / 32; i++) {
-            for (int j = 0; j < 800 / 32; j++) {
-                if (regenerateTiles) {
-                    tiles[tileId] = rand.nextInt(0, 4);
+        // Iterate through each tile.
+        for (int i = 0; i < TILES_VERTICAL; i++) {
+            for (int j = 0; j < TILES_HORIZONTAL; j++) {
+                // The tile generator.
+                if (this.generateTiles) {
+                    Random rand = new Random();
+                    // Generate: land tile.
+                    tileLayer1[tileId] = rand.nextInt(0, 4);
+                    // Generate: grass.
+                    if (rand.nextInt(TILEGEN_FREQ_GRASS_OR_ROCK) == TILEGEN_MATCH) {
+                        tileLayer2[tileId] = rand.nextInt(6, 8);
+                    // Generate: rocks.
+                    } else if (rand.nextInt(TILEGEN_FREQ_GRASS_OR_ROCK) == TILEGEN_MATCH) {
+                        tileLayer2[tileId] = rand.nextInt(8, 10);
+                    // Generate: cactus.
+                    } else if (rand.nextInt(TILEGEN_FREQ_CACTUS) == TILEGEN_MATCH) {
+                        tileLayer2[tileId] = rand.nextInt(4, 6);
+                    // Generate: sign.
+                    } else if (rand.nextInt(TILEGEN_FREQ_PROPS) == TILEGEN_MATCH) {
+                        tileLayer2[tileId] = 10;
+                    // Generate: fossil.
+                    } else if (rand.nextInt(TILEGEN_FREQ_PROPS) == TILEGEN_MATCH) {
+                        tileLayer2[tileId] = 11;
+                    }
                 }
-                tileset.draw(gc, 32 * j, 32 * i, tiles[tileId]);
+                // Draw from the desert tileset.
+                TILESET_DESERT.draw(
+                        gc, TILE_SIZE * j, TILE_SIZE * i, tileLayer1[tileId]);
+                TILESET_DESERT.draw(
+                        gc, TILE_SIZE * j, TILE_SIZE * i, tileLayer2[tileId]);
                 tileId++;
             }
+        }
+        // Mark as done with tile generation.
+        if (this.generateTiles) {
+            this.generateTiles = false;
         }
     }
     
