@@ -21,7 +21,7 @@ public class CoffinMob extends Mob {
             };
     
     public CoffinMob(int x, int y) {
-        super(x, y);
+        super(x, y, 1);
 
         this.setFrameSet(FRAMESET_W, FRAMESET_ROWS, FRAMESET_COLUMNS);
         this.setBoundsOffset(FRAMESET_OFFSET);

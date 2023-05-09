@@ -71,6 +71,10 @@ public class Outlaw extends Sprite {
     public boolean isDying() {
         return this.isDying;
     }
+
+    public int getStrength() {
+        return this.strength;
+    }
     
     public String getName() {
         return this.name;

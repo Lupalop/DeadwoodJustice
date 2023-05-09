@@ -22,15 +22,18 @@ public abstract class Mob extends Sprite {
     private boolean isDying;
 
     private boolean moveRight;
-    private int speed;
-    private int damage;
-    private boolean isMaxSpeed;
     private Sprite deathEffect;
+
+    private int health;
+    private int damage;
+    private int speed;
+    private boolean isMaxSpeed;
 
     private int[] frameRanges;
 
-    public Mob(int x, int y) {
+    public Mob(int x, int y, int health) {
         super(x, y);
+        this.health = health;
     }
 
     protected void initialize() {
@@ -94,8 +97,11 @@ public abstract class Mob extends Sprite {
 
         for (Bullet bullet : outlaw.getBullets()) {
             if (bullet.getVisible() && this.intersects(bullet)) {
-                this.prepareDeath();
-                bullet.setVisible(false);
+                this.health -= outlaw.getStrength();
+                if (this.health <= 0) {
+                    this.prepareDeath();
+                    bullet.setVisible(false);
+                }
                 break;
             }
         }
