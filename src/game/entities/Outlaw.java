@@ -259,7 +259,7 @@ public class Outlaw extends Sprite {
         if (isDirectionActive(FLAG_DIR_UP)) {
             if (isDirectionActive(FLAG_DIR_RIGHT)) {
                 this.setFrameSet(FRAMESET_NW);
-            } if (isDirectionActive(FLAG_DIR_LEFT)) {
+            } else if (isDirectionActive(FLAG_DIR_LEFT)) {
                 this.setFrameSet(FRAMESET_NW);
                 this.flipHorizontal(true);
             } else {
