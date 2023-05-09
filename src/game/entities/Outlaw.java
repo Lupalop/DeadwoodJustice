@@ -37,7 +37,7 @@ public class Outlaw extends Sprite {
     public final static int[] FRAMESET_OFFSET = 
             new int[] { 15, 17, 9, 3 };
 
-    private final static int OUTLAW_SPEED = 5;
+    public final static int OUTLAW_SPEED = 5;
 
     private final static byte FLAG_DIR_UP = 0x1;
     private final static byte FLAG_DIR_DOWN = 0x2;
