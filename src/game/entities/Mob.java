@@ -29,6 +29,7 @@ public abstract class Mob extends Sprite {
     private int speed;
     private boolean isMaxSpeed;
     private boolean isDeadOnPlayerImpact;
+    private boolean isChasingPlayer;
 
     private int[] frameRanges;
 
@@ -49,6 +50,10 @@ public abstract class Mob extends Sprite {
             this.damage = damage;
         }
         this.isMaxSpeed = false;
+        
+        if (Game.DEBUG_MODE) {
+            this.setIsChasingPlayer(rand.nextBoolean());
+        }
     }
 
     protected void initialize() {
@@ -93,6 +98,10 @@ public abstract class Mob extends Sprite {
 
         if (!this.isAlive()) {
             return;
+        }
+        
+        if (this.isChasingPlayer) {
+            this.chasePlayer(outlaw);
         }
         
         if (this.intersects(outlaw) && outlaw.isAlive()) {
@@ -156,8 +165,37 @@ public abstract class Mob extends Sprite {
         return this.isDying;
     }
 
+    public void setIsChasingPlayer(boolean value) {
+        this.isChasingPlayer = value;
+    }
+    
     public void setFrameRanges(int[] frameRanges) {
         this.frameRanges = frameRanges;
     }
 
+    private void chasePlayer(Outlaw outlaw) {
+        if (!outlaw.isAlive()) {
+            return;
+        }
+        
+        if (!Game.DEBUG_MODE) {
+            return;
+        }
+        
+        int outlawHalfSpeed = Outlaw.OUTLAW_SPEED / 2; 
+        if (outlaw.getY() > this.getY()) {
+            this.dy = outlawHalfSpeed;
+        } else {
+            this.dy = -outlawHalfSpeed;
+        }
+        
+        if (outlaw.getBounds().getMinX() > this.getBounds().getMinX()) {
+            if (!this.moveRight) {
+                this.changeDirection();
+            }
+        } else if (this.moveRight) {
+            this.changeDirection();
+        }        
+    }
+    
 }

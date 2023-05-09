@@ -1,7 +1,5 @@
 package game.entities;
 
-import java.util.ArrayList;
-
 import game.Game;
 import javafx.scene.image.Image;
 
@@ -40,37 +38,9 @@ public class CowboyMob extends Mob {
         if (this.moveRight) {
             this.changeDirection();
         }
-    }
-
-    @Override
-    public void update(long currentNanoTime, Outlaw outlaw, ArrayList<Mob> otherMobs, boolean isMaxSpeed) {
-        super.update(currentNanoTime, outlaw, otherMobs, isMaxSpeed);
-
-        if (!this.isAlive()) {
-            return;
-        }
-
-        if (!outlaw.isAlive()) {
-            return;
-        }
         
-        if (!Game.DEBUG_MODE) {
-            return;
-        }
-        
-        int outlawHalfSpeed = Outlaw.OUTLAW_SPEED / 2; 
-        if (outlaw.getY() > this.getY()) {
-            this.dy = outlawHalfSpeed;
-        } else {
-            this.dy = -outlawHalfSpeed;
-        }
-        
-        if (outlaw.getBounds().getMinX() > this.getBounds().getMinX()) {
-            if (!this.moveRight) {
-                this.changeDirection();
-            }
-        } else if (this.moveRight) {
-            this.changeDirection();
+        if (Game.DEBUG_MODE) {
+            this.setIsChasingPlayer(true);
         }
     }
     
