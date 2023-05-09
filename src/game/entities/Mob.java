@@ -32,7 +32,7 @@ public abstract class Mob extends Sprite {
 
     private int[] frameRanges;
 
-    public Mob(int x, int y, int health) {
+    public Mob(int x, int y, int health, int damage) {
         super(x, y);
         this.health = health;
         this.isDeadOnPlayerImpact = true;
@@ -43,7 +43,11 @@ public abstract class Mob extends Sprite {
         this.speed = rand.nextInt(1, MAX_MOB_SPEED);
         this.moveRight = rand.nextBoolean();
         this.flipHorizontal(!this.moveRight);
-        this.damage = rand.nextInt(MIN_DAMAGE, MAX_DAMAGE + 1);
+        if (damage <= -1) {
+            this.damage = rand.nextInt(MIN_DAMAGE, MAX_DAMAGE + 1);
+        } else {
+            this.damage = damage;
+        }
         this.isMaxSpeed = false;
     }
 

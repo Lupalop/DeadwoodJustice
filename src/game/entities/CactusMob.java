@@ -25,7 +25,7 @@ public class CactusMob extends Mob {
             };
     
     public CactusMob(int x, int y) {
-        super(x, y, 1);
+        super(x, y, 1, -1);
 
         this.setFrameSet(FRAMESET_W, FRAMESET_ROWS, FRAMESET_COLUMNS);
         this.setBoundsOffset(FRAMESET_OFFSET);
