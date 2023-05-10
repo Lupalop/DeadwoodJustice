@@ -18,6 +18,7 @@ import game.entities.Outlaw;
 import game.entities.Powerup;
 import game.entities.Prop;
 import game.entities.Sprite;
+import game.entities.StatusHUD;
 import game.entities.Tileset;
 import game.entities.WheelPowerup;
 import javafx.event.EventHandler;
@@ -55,6 +56,7 @@ public class LevelScene implements GameScene {
 
     private Outlaw outlaw;
     private Mob bossMob;
+    private StatusHUD statusHud;
     private ArrayList<Sprite> sprites;
     
     private long mobSpawnTime;
@@ -89,7 +91,7 @@ public class LevelScene implements GameScene {
     private static final int OUTLAW_INITIAL_X = 100;
 
     private static final Tileset TILESET_DESERT =
-            new Tileset("tilemap_desert.png");
+            new Tileset("tilemap_desert.png", 3, 4);
     
     public LevelScene(Game manager) {
         this.root = new Group();
@@ -110,6 +112,8 @@ public class LevelScene implements GameScene {
                 Game.WINDOW_HEIGHT - (int) getOutlaw().getBounds().getHeight()));
         this.sprites.add(getOutlaw());
         this.getOutlaw().handleKeyPressEvent(scene);
+        this.statusHud = new StatusHUD();
+        this.sprites.add(statusHud);
         this.levelStartTime = System.nanoTime();
         this.mobSpawnTime = System.nanoTime();
         this.powerupSpawnTime = System.nanoTime();

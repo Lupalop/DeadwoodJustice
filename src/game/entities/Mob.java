@@ -161,7 +161,9 @@ public abstract class Mob extends Sprite {
                 continue;
             }
 
-            if ((Game.FLAG_IGNORE_PROP_COLLISION && sprite instanceof Prop) || sprite instanceof Powerup) {
+            if ((Game.FLAG_IGNORE_PROP_COLLISION && sprite instanceof Prop)
+                    || sprite instanceof Powerup
+                    || sprite instanceof StatusHUD) {
                 continue;
             }
             

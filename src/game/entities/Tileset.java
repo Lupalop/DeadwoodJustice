@@ -6,11 +6,11 @@ import javafx.scene.image.Image;
 
 public class Tileset extends Sprite {
 
-    public Tileset(String assetPath) {
+    public Tileset(String assetPath, int rows, int columns) {
         super(0, 0);
         
         Image tilesetImage = new Image(Game.getAsset(assetPath));
-        this.setFrameSet(tilesetImage, 3, 4);
+        this.setFrameSet(tilesetImage, rows, columns);
         this.setFrameAutoReset(false);
         this.setScale(1);
     }
