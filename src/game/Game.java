@@ -1,5 +1,7 @@
 package game;
 
+import java.util.HashMap;
+
 import game.scenes.GameScene;
 import game.scenes.LevelScene;
 import javafx.stage.Stage;
@@ -57,8 +59,16 @@ public class Game {
         this.primaryStage.setScene(this.gameScene.getInnerScene());
     }
     
+    private static HashMap<String, String> cachedAssetUrls =
+            new HashMap<String, String>();
     public static String getAsset(String path) {
-        return Game.class.getResource(GAME_ASSETS_PATH + path).toExternalForm();
+        String finalPath = cachedAssetUrls.get(path);
+        if (finalPath == null) {
+            finalPath = Game.class.getResource(
+                    GAME_ASSETS_PATH + path).toExternalForm();
+            cachedAssetUrls.put(path, finalPath);
+        }
+        return finalPath;
     }
     
     public static boolean isDirectionActive(byte activeDirections, byte directionFlag) {
