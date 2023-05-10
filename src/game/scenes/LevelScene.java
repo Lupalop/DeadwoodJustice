@@ -7,7 +7,6 @@ import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 import game.Game;
-import game.entities.Bullet;
 import game.entities.CactusMob;
 import game.entities.CoffinMob;
 import game.entities.CowboyMob;
@@ -239,45 +238,25 @@ public class LevelScene implements GameScene {
         for (Sprite sprite : this.sprites) {
             sprite.draw(this.gc);
         }
-
-        for (Bullet bullet : this.outlaw.getBullets())
-        {
-            bullet.draw(this.gc);
-        }
     }
     
-    // method that will move the bullets shot by the outlaw
     private void updateSprites(long currentNanoTime) {
         // Keep a list containing mobs to be removed. 
-        ArrayList<Mob> mobRemovalList = new ArrayList<Mob>();
+        ArrayList<Mob> removalList = new ArrayList<Mob>();
         
         for (Sprite sprite : this.sprites) {
             if (sprite instanceof Mob) {
                 Mob mob = (Mob)sprite;
                 mob.update(currentNanoTime, outlaw, sprites, isMaxSpeed);
                 if (!mob.isAlive() && !mob.isDying()) {
-                    mobRemovalList.add(mob);
+                    removalList.add(mob);
                 }
-            } else {
-                sprite.update(currentNanoTime);
             }
+            sprite.update(currentNanoTime);
         }
         
-        this.sprites.removeAll(mobRemovalList);
+        this.sprites.removeAll(removalList);
 
-        // Keep a list containing bullets to be removed.
-        ArrayList<Bullet> bulletRemovalList = new ArrayList<Bullet>();
-
-        // Loop through the bullet list and remove used bullets.
-        for (Bullet bullet : this.outlaw.getBullets()) {
-            bullet.update(currentNanoTime);
-            if (!bullet.getVisible()) {
-                bulletRemovalList.add(bullet);
-            }
-        }
-        
-        this.outlaw.getBullets().removeAll(bulletRemovalList);
-        
         if (Game.FLAG_FIX_DRAW_ORDER) {
             Collections.sort(this.sprites, new Comparator<Sprite>() {
                 @Override

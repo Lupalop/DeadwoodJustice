@@ -7,6 +7,7 @@ import java.util.concurrent.TimeUnit;
 import game.Game;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -128,9 +129,30 @@ public class Outlaw extends Sprite {
         return ((this.activeDirections & directionFlag) == directionFlag);
     }
     
+    @Override
+    public void draw(GraphicsContext gc) {
+        super.draw(gc);
+        for (Bullet bullet : this.getBullets()) {
+            bullet.draw(gc);
+        }
+    }
+    
     // method called if up/down/left/right arrow key is pressed.
     public void update(long currentNanoTime) {
         super.update(currentNanoTime);
+
+        // Keep a list containing bullets to be removed.
+        ArrayList<Bullet> removalList = new ArrayList<Bullet>();
+
+        // Loop through the bullet list and remove used bullets.
+        for (Bullet bullet : this.getBullets()) {
+            bullet.update(currentNanoTime);
+            if (!bullet.getVisible()) {
+                removalList.add(bullet);
+            }
+        }
+        
+        this.getBullets().removeAll(removalList);
         
         if (this.isDying) {
             if (this.isFrameSequenceDone()) {
