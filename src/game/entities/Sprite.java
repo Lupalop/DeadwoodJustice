@@ -13,6 +13,7 @@ public abstract class Sprite {
     private double width;
     private double height;
     private Rectangle2D bounds;
+    private Rectangle2D baseBounds;
     private int scale;
     private boolean visible;
     private boolean flipHorizontal;
@@ -39,6 +40,7 @@ public abstract class Sprite {
     
     private final static long DEFAULT_FRAME_INTERVAL =
             TimeUnit.MILLISECONDS.toNanos(100);
+    private final static int BASE_DIVIDER = 4;
 
     protected int dx, dy;
     protected boolean boundsDirty;
@@ -104,6 +106,10 @@ public abstract class Sprite {
             gc.strokeRect(
                     this.getBounds().getMinX(), this.getBounds().getMinY(),
                     this.getBounds().getWidth(), this.getBounds().getHeight());
+            gc.setStroke(javafx.scene.paint.Color.GREEN);
+            gc.strokeRect(
+                    this.getBaseBounds().getMinX(), this.getBaseBounds().getMinY(),
+                    this.getBaseBounds().getWidth(), this.getBaseBounds().getHeight());
             gc.restore();
         }
     }
@@ -150,7 +156,7 @@ public abstract class Sprite {
         return rectangle1.intersects(rectangle2);
     }
 
-    public static int intersectsSide(Rectangle2D r1, Rectangle2D r2) {
+    public static int getIntersectionSide(Rectangle2D r1, Rectangle2D r2) {
         // Check if the rectangles intersect.
         if (!r1.intersects(r2)) {
             return -1;
@@ -172,7 +178,11 @@ public abstract class Sprite {
     }
     
     public int intersectsSide(Rectangle2D r2) {
-        return intersectsSide(this.getBounds());
+        return getIntersectionSide(this.getBounds(), r2);
+    }
+    
+    public int baseIntersectsSide(Rectangle2D r2) {
+        return getIntersectionSide(this.getBaseBounds(), r2);
     }
     
     public Rectangle2D getBounds() {
@@ -197,14 +207,26 @@ public abstract class Sprite {
                 }
                 newHeight -= this.getBoundsOffset()[2] + this.getBoundsOffset()[3];
             }
+            newWidth *= scale;
+            newHeight *= scale;
             
             this.bounds = new Rectangle2D(
-                    newX, newY,
-                    newWidth * scale, newHeight * scale);
+                    newX, newY, newWidth, newHeight);
+            double baseHeight = newHeight / BASE_DIVIDER;
+            this.baseBounds = new Rectangle2D(
+                    newX, newY + newHeight - baseHeight,
+                    newWidth, baseHeight);
         }
         return bounds;
     }
 
+    public Rectangle2D getBaseBounds() {
+        if (this.boundsDirty) {
+            this.getBounds();
+        }
+        return this.baseBounds;
+    }
+    
     public int getX() {
         return this.x;
     }
