@@ -4,13 +4,24 @@ import java.util.HashMap;
 
 import game.scenes.GameScene;
 import game.scenes.LevelScene;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 public class Game {
 
+    private static HashMap<String, String> cachedAssetUrls =
+            new HashMap<String, String>();
+
     public static final String GAME_NAME = "Deadwood Justice";
     public static final String GAME_ASSETS_PATH = "/game/assets/";
 
+    private static final String FONT_PATH =
+            Game.getAsset("THALEAHFAT.ttf");
+
+    public static final int FONT_SIZE_32 = 32;
+    public static final Font FONT_32 =
+            Font.loadFont(FONT_PATH, FONT_SIZE_32);
+    
     public static final int WINDOW_WIDTH = 800;
     public static final int WINDOW_HEIGHT = 600;
 
@@ -59,8 +70,6 @@ public class Game {
         this.primaryStage.setScene(this.gameScene.getInnerScene());
     }
     
-    private static HashMap<String, String> cachedAssetUrls =
-            new HashMap<String, String>();
     public static String getAsset(String path) {
         String finalPath = cachedAssetUrls.get(path);
         if (finalPath == null) {
