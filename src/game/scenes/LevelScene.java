@@ -2,7 +2,6 @@ package game.scenes;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
@@ -324,12 +323,7 @@ public class LevelScene implements GameScene {
         this.sprites.removeAll(removalList);
 
         if (Game.FLAG_FIX_DRAW_ORDER) {
-            Collections.sort(this.sprites, new Comparator<Sprite>() {
-                @Override
-                public int compare(Sprite o1, Sprite o2) {
-                    return (int) (o1.getBounds().getMaxY() - o2.getBounds().getMaxY());
-                }
-            });
+            Collections.sort(this.sprites);
         }
     }
 

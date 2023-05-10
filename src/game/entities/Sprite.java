@@ -6,7 +6,7 @@ import javafx.geometry.Rectangle2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 
-public abstract class Sprite {
+public abstract class Sprite implements Comparable<Sprite> {
 
     private Image image;
     private int x, y;
@@ -450,4 +450,8 @@ public abstract class Sprite {
         this.boundsDirty = true;
     }
 
+    @Override
+    public int compareTo(Sprite o) {
+        return (int) (this.getBounds().getMaxY() - o.getBounds().getMaxY());
+    }
 }
