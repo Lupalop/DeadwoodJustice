@@ -151,6 +151,29 @@ public class LevelScene implements GameScene {
             this.mobs.add(bossMob);
             System.out.println("boss spawned");
         }
+
+        // Spawn mobs every 3 seconds.
+        deltaTime = (currentNanoTime - spawnTime);
+        if (deltaTime >= MOB_SPAWN_INTERVAL) {
+            this.spawnMobs(MOB_COUNT_PER_INTERVAL);
+            this.spawnTime = currentNanoTime;
+        }
+        // Speed up mob movement every 15 seconds.
+        deltaTime = (currentNanoTime - maxSpeedTime);
+        if (deltaTime >= MOB_MAX_SPEED_INTERVAL) {
+            this.isMaxSpeed = true;
+            this.maxSpeedTime = currentNanoTime + MOB_MAX_SPEED_END_INTERVAL;
+            this.maxSpeedEndTime = currentNanoTime;
+        }
+        // Reset back to normal speed after 3 seconds if we've
+        // sped up mob movement.
+        if (maxSpeedEndTime != -1) {
+            deltaTime = (currentNanoTime - maxSpeedEndTime);
+            if (deltaTime >= MOB_MAX_SPEED_END_INTERVAL) {
+                this.isMaxSpeed = false;
+                this.maxSpeedEndTime = -1;
+            }
+        }
     }
 
     @Override
@@ -257,29 +280,6 @@ public class LevelScene implements GameScene {
     }
 
     private void updateMobs(long currentNanoTime) {
-        // Spawn mobs every 3 seconds.
-        long deltaTime = (currentNanoTime - spawnTime);
-        if (deltaTime >= MOB_SPAWN_INTERVAL) {
-            this.spawnMobs(MOB_COUNT_PER_INTERVAL);
-            this.spawnTime = currentNanoTime;
-        }
-        // Speed up mob movement every 15 seconds.
-        deltaTime = (currentNanoTime - maxSpeedTime);
-        if (deltaTime >= MOB_MAX_SPEED_INTERVAL) {
-            this.isMaxSpeed = true;
-            this.maxSpeedTime = currentNanoTime + MOB_MAX_SPEED_END_INTERVAL;
-            this.maxSpeedEndTime = currentNanoTime;
-        }
-        // Reset back to normal speed after 3 seconds if we've
-        // sped up mob movement.
-        if (maxSpeedEndTime != -1) {
-            deltaTime = (currentNanoTime - maxSpeedEndTime);
-            if (deltaTime >= MOB_MAX_SPEED_END_INTERVAL) {
-                this.isMaxSpeed = false;
-                this.maxSpeedEndTime = -1;
-            }
-        }
-        
         // Update mob movement.
         ArrayList<Mob> removalList = new ArrayList<Mob>();
         
