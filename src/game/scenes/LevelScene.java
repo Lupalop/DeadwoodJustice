@@ -11,11 +11,15 @@ import game.entities.CactusMob;
 import game.entities.CoffinMob;
 import game.entities.CowboyMob;
 import game.entities.CoyoteMob;
+import game.entities.HayPowerup;
+import game.entities.LampPowerup;
 import game.entities.Mob;
 import game.entities.Outlaw;
+import game.entities.Powerup;
 import game.entities.Prop;
 import game.entities.Sprite;
 import game.entities.Tileset;
+import game.entities.WheelPowerup;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -53,11 +57,15 @@ public class LevelScene implements GameScene {
     private Mob bossMob;
     private ArrayList<Sprite> sprites;
     
-    private long spawnTime;
+    private long mobSpawnTime;
+    private long powerupSpawnTime;
     private long maxSpeedTime;
     private long maxSpeedEndTime;
     private long levelStartTime;
+    private long slowSpeedTime;
+    private long slowSpeedEndTime;
     private boolean isMaxSpeed;
+    private boolean isSlowSpeed;
     private boolean isLevelDone;
 
     public static final int MOB_COUNT_AT_SPAWN = 7;
@@ -70,6 +78,9 @@ public class LevelScene implements GameScene {
     private static final long MOB_MAX_SPEED_END_INTERVAL =
             TimeUnit.SECONDS.toNanos(3);
 
+    private static final long POWERUP_SPAWN_INTERVAL =
+            TimeUnit.SECONDS.toNanos(10);
+    
     private static final long LEVEL_BOSS_TIME =
             TimeUnit.SECONDS.toNanos(30);
     private static final long LEVEL_END_TIME =
@@ -94,16 +105,20 @@ public class LevelScene implements GameScene {
         this.outlaw = new Outlaw(
                 "Going merry",
                 OUTLAW_INITIAL_X, 0);
-        this.outlaw.setY(rand.nextInt(
-                (int) outlaw.getBounds().getHeight(),
-                Game.WINDOW_HEIGHT - (int) outlaw.getBounds().getHeight()));
-        this.sprites.add(outlaw);
-        this.outlaw.handleKeyPressEvent(scene);
+        this.getOutlaw().setY(rand.nextInt(
+                (int) getOutlaw().getBounds().getHeight(),
+                Game.WINDOW_HEIGHT - (int) getOutlaw().getBounds().getHeight()));
+        this.sprites.add(getOutlaw());
+        this.getOutlaw().handleKeyPressEvent(scene);
         this.levelStartTime = System.nanoTime();
-        this.spawnTime = System.nanoTime();
+        this.mobSpawnTime = System.nanoTime();
+        this.powerupSpawnTime = System.nanoTime();
         this.maxSpeedTime = System.nanoTime();
         this.maxSpeedEndTime = -1;
+        this.slowSpeedTime = -1;
+        this.slowSpeedEndTime = -1;
         this.isMaxSpeed = false;
+        this.isSlowSpeed = false;
         this.generateTiles = true;
         this.isLevelDone = false;
 
@@ -155,10 +170,10 @@ public class LevelScene implements GameScene {
         }
 
         // Spawn mobs every 3 seconds.
-        deltaTime = (currentNanoTime - spawnTime);
+        deltaTime = (currentNanoTime - mobSpawnTime);
         if (deltaTime >= MOB_SPAWN_INTERVAL) {
             this.spawnMobs(MOB_COUNT_PER_INTERVAL);
-            this.spawnTime = currentNanoTime;
+            this.mobSpawnTime = currentNanoTime;
         }
         // Speed up mob movement every 15 seconds.
         deltaTime = (currentNanoTime - maxSpeedTime);
@@ -175,6 +190,21 @@ public class LevelScene implements GameScene {
                 this.isMaxSpeed = false;
                 this.maxSpeedEndTime = -1;
             }
+        }
+
+        // Slow down after provided timeout.
+        deltaTime = (currentNanoTime - slowSpeedTime);
+        if (deltaTime >= slowSpeedEndTime) {
+            this.isSlowSpeed = false;
+            this.slowSpeedTime = -1;
+            this.slowSpeedEndTime = -1;
+        }
+
+        // Spawn power-ups every 10 seconds.
+        deltaTime = (currentNanoTime - powerupSpawnTime);
+        if (deltaTime >= POWERUP_SPAWN_INTERVAL) {
+            this.spawnPowerups();
+            this.powerupSpawnTime = currentNanoTime;
         }
     }
 
@@ -270,18 +300,21 @@ public class LevelScene implements GameScene {
     
     private void updateSprites(long currentNanoTime) {
         // Keep a list containing mobs to be removed. 
-        ArrayList<Mob> removalList = new ArrayList<Mob>();
+        ArrayList<Sprite> removalList = new ArrayList<Sprite>();
         
         for (Sprite sprite : this.sprites) {
             if (sprite instanceof Mob) {
                 Mob mob = (Mob)sprite;
-                mob.update(currentNanoTime, sprites, isMaxSpeed);
+                mob.update(currentNanoTime, sprites, isMaxSpeed, isSlowSpeed);
                 if (!mob.isAlive() && !mob.isDying()) {
                     removalList.add(mob);
                 }
-                continue;
+            } else if (sprite instanceof Powerup) {
+                Powerup powerup = (Powerup)sprite;
+                powerup.update(currentNanoTime, this);
+            } else {
+                sprite.update(currentNanoTime);
             }
-            sprite.update(currentNanoTime);
         }
         
         this.sprites.removeAll(removalList);
@@ -331,4 +364,45 @@ public class LevelScene implements GameScene {
         }
     }
 
+    private void spawnPowerups() {
+        Random r = new Random();
+        Powerup powerup = null;
+        switch (r.nextInt(0, Powerup.TOTAL_POWERUPS)) {
+        case 0:
+            powerup = new LampPowerup(0, 0);
+            break;
+        case 1:
+            powerup = new HayPowerup(0, 0);
+            break;
+        case 2:
+            powerup = new WheelPowerup(0, 0);
+            break;
+        default:
+            // This should not be reached.
+            powerup = null;
+            break;
+        }
+        int powerupWidth = (int) powerup.getBounds().getWidth();
+        int powerupHeight = (int) powerup.getBounds().getHeight();
+
+        powerup.setX(r.nextInt(
+                powerupWidth,
+                Game.WINDOW_WIDTH / 2));
+        powerup.setY(r.nextInt(
+                powerupHeight,
+                Game.WINDOW_HEIGHT - powerupHeight * 2));
+        
+        this.sprites.add(powerup);
+    }
+
+    public Outlaw getOutlaw() {
+        return outlaw;
+    }
+
+    public void triggerSlowMobSpeed(long powerupTimeout) {
+        this.isSlowSpeed = true;
+        this.slowSpeedTime = System.nanoTime();
+        this.slowSpeedEndTime = powerupTimeout;
+    }
+    
 }

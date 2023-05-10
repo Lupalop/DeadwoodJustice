@@ -10,6 +10,7 @@ import javafx.scene.canvas.GraphicsContext;
 public abstract class Mob extends Sprite {
 
     public static final int TOTAL_MOBS = 3;
+    public static final int MIN_MOB_SPEED = 1;
     public static final int MAX_MOB_SPEED = 5;
 
     private final static long FRAME_DEATH_INTERVAL = 
@@ -28,6 +29,7 @@ public abstract class Mob extends Sprite {
     private int damage;
     private int speed;
     private boolean isMaxSpeed;
+    private boolean isSlowSpeed;
     private boolean isDeadOnPlayerImpact;
     private boolean isChasingPlayer;
     protected boolean isExcludedFromMaxSpeed;
@@ -44,7 +46,7 @@ public abstract class Mob extends Sprite {
         this.isDying = false;
 
         Random rand = new Random();
-        this.speed = rand.nextInt(1, MAX_MOB_SPEED);
+        this.speed = rand.nextInt(MIN_MOB_SPEED, MAX_MOB_SPEED);
         this.moveRight = rand.nextBoolean();
         this.flipHorizontal(!this.moveRight);
         if (damage <= -1) {
@@ -53,6 +55,7 @@ public abstract class Mob extends Sprite {
             this.damage = damage;
         }
         this.isMaxSpeed = false;
+        this.isSlowSpeed = false;
         this.isExcludedFromMaxSpeed = false;
         this.isPlayerInMobBounds = false;
         this.isStuck = false;
@@ -87,6 +90,9 @@ public abstract class Mob extends Sprite {
         this.dx = (this.isMaxSpeed && !this.isExcludedFromMaxSpeed)
                 ? MAX_MOB_SPEED
                 : this.speed;
+        if (this.isSlowSpeed) {
+            this.dx = MIN_MOB_SPEED;
+        }
 
         int nextX = (int) (getBounds().getMinX() + dx);
         boolean changeFromRight = this.moveRight
@@ -132,8 +138,9 @@ public abstract class Mob extends Sprite {
     boolean passableX[] = new boolean[2];
     boolean passableY[] = new boolean[2];
 
-    public void update(long currentNanoTime, ArrayList<Sprite> sprites, boolean isMaxSpeed) {
+    public void update(long currentNanoTime, ArrayList<Sprite> sprites, boolean isMaxSpeed, boolean isSlowSpeed) {
         this.isMaxSpeed = isMaxSpeed;
+        this.isSlowSpeed = isSlowSpeed;
         this.update(currentNanoTime);
 
         if (!this.isAlive()) {
@@ -154,7 +161,7 @@ public abstract class Mob extends Sprite {
                 continue;
             }
 
-            if (Game.FLAG_IGNORE_PROP_COLLISION && sprite instanceof Prop) {
+            if ((Game.FLAG_IGNORE_PROP_COLLISION && sprite instanceof Prop) || sprite instanceof Powerup) {
                 continue;
             }
             

@@ -19,8 +19,12 @@ public class Outlaw extends Sprite {
     private boolean isShootBlocked;
     private boolean isAlive;
     private boolean isDying;
+    private boolean isImmortal;
     private ArrayList<Bullet> bullets;
     private byte activeDirections;
+    
+    private long immortalityStartTime;
+    private long immortalityEndTime;
 
     public final static Image FRAMESET_W = new Image(
             Game.getAsset("player_sheet_w.png"));
@@ -62,6 +66,7 @@ public class Outlaw extends Sprite {
         this.isShootBlocked = false;
         this.isAlive = true;
         this.isDying = false;
+        this.isImmortal = false;
         this.bullets = new ArrayList<Bullet>();
     }
 
@@ -111,7 +116,7 @@ public class Outlaw extends Sprite {
 
     public void reduceStrength(int value) {
         // This must be a positive integer.
-        if (value < 0) {
+        if (value < 0 || this.isImmortal) {
             return;
         }
         this.strength -= value;
@@ -194,6 +199,13 @@ public class Outlaw extends Sprite {
         
         this.addX(this.dx);
         this.addY(this.dy);
+        
+        long deltaTime = (currentNanoTime - this.immortalityStartTime);
+        if (deltaTime >= this.immortalityEndTime) {
+            this.immortalityStartTime = -1;
+            this.immortalityEndTime = -1;
+            this.isImmortal = false;
+        }
     }
 
     // method that will listen and handle the key press events
@@ -302,6 +314,12 @@ public class Outlaw extends Sprite {
             }
             this.setFrameSet(FRAMESET_W);
         }
+    }
+
+    public void triggerImmortality(long endTime) {
+        this.isImmortal = true;
+        this.immortalityStartTime = System.nanoTime();
+        this.immortalityEndTime = endTime;
     }
     
 }
