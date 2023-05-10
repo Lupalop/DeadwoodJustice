@@ -98,7 +98,7 @@ public abstract class Mob extends Sprite {
         this.addY(this.dy);
     }
 
-    public void update(long currentNanoTime, Outlaw outlaw, ArrayList<Sprite> sprites, boolean isMaxSpeed) {
+    public void update(long currentNanoTime, Outlaw outlaw, boolean isMaxSpeed) {
         this.isMaxSpeed = isMaxSpeed;
         this.update(currentNanoTime);
 
@@ -106,6 +106,17 @@ public abstract class Mob extends Sprite {
             return;
         }
         
+        checkOutlaw(outlaw);
+    }
+    
+    public void draw(GraphicsContext gc) {
+        super.draw(gc);
+        if (this.deathEffect != null) {
+            this.deathEffect.draw(gc);
+        }
+    }
+
+    private void checkOutlaw(Outlaw outlaw) {
         if (this.isChasingPlayer) {
             this.chasePlayer(outlaw);
         }
@@ -139,14 +150,7 @@ public abstract class Mob extends Sprite {
                 bullet.setVisible(false);
                 break;
             }
-        }
-    }
-
-    public void draw(GraphicsContext gc) {
-        super.draw(gc);
-        if (this.deathEffect != null) {
-            this.deathEffect.draw(gc);
-        }
+        }        
     }
     
     private void prepareDeath() {
