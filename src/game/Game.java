@@ -8,9 +8,15 @@ public class Game {
 
     public static final String GAME_NAME = "Deadwood Justice";
     public static final String GAME_ASSETS_PATH = "/game/assets/";
+
     public static final int WINDOW_WIDTH = 800;
     public static final int WINDOW_HEIGHT = 600;
 
+    public final static byte KEY_DIR_RIGHT = 0x8;
+    public final static byte KEY_DIR_LEFT = 0x4;
+    public final static byte KEY_DIR_DOWN = 0x2;
+    public final static byte KEY_DIR_UP = 0x1;
+    
     public static final boolean DEBUG_MODE = false;
     public static final boolean FLAG_DIRECTIONAL_SHOOTING = false;
     public static final boolean FLAG_SMARTER_MOBS = true;
