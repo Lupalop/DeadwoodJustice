@@ -40,10 +40,10 @@ public class Outlaw extends Sprite {
 
     public final static int OUTLAW_SPEED = 10;
 
-    private final static byte FLAG_DIR_UP = 0x1;
-    private final static byte FLAG_DIR_DOWN = 0x2;
-    private final static byte FLAG_DIR_LEFT = 0x4;
-    private final static byte FLAG_DIR_RIGHT = 0x8;    
+    private final static byte DIR_UP = 0x1;
+    private final static byte DIR_DOWN = 0x2;
+    private final static byte DIR_LEFT = 0x4;
+    private final static byte DIR_RIGHT = 0x8;    
     
     public Outlaw(String name, int x, int y) {
         super(x, y);
@@ -167,20 +167,20 @@ public class Outlaw extends Sprite {
         }
         
         if (this.getBounds().getMinX() + dx >= 0 &&
-                isDirectionActive(FLAG_DIR_LEFT)) {
+                isDirectionActive(DIR_LEFT)) {
             this.dx = -OUTLAW_SPEED;
         } else if (this.getBounds().getMinX() + this.dx <= Game.WINDOW_WIDTH - this.getBounds().getWidth()
-                && isDirectionActive(FLAG_DIR_RIGHT)) {
+                && isDirectionActive(DIR_RIGHT)) {
             this.dx = OUTLAW_SPEED;
         } else {
             this.dx = 0;
         }
 
         if (this.getBounds().getMinY() + dy >= 0 &&
-                isDirectionActive(FLAG_DIR_UP)) {
+                isDirectionActive(DIR_UP)) {
             this.dy = -OUTLAW_SPEED;
         } else if (this.getBounds().getMinY() + dy <= Game.WINDOW_HEIGHT - this.getBounds().getHeight()
-                && isDirectionActive(FLAG_DIR_DOWN)) {
+                && isDirectionActive(DIR_DOWN)) {
             this.dy = OUTLAW_SPEED;
         } else {
             this.dy = 0;
@@ -221,17 +221,17 @@ public class Outlaw extends Sprite {
         
         switch (keyCode) {
         case UP:
-            this.activeDirections |= FLAG_DIR_UP;
+            this.activeDirections |= DIR_UP;
             break;
         case DOWN:
-            this.activeDirections |= FLAG_DIR_DOWN;
+            this.activeDirections |= DIR_DOWN;
             break;
         case LEFT:
-            this.activeDirections |= FLAG_DIR_LEFT;
+            this.activeDirections |= DIR_LEFT;
             this.isShootBlocked = true;
             break;
         case RIGHT:
-            this.activeDirections |= FLAG_DIR_RIGHT;
+            this.activeDirections |= DIR_RIGHT;
             break;
         case SPACE:
             if (this.isShootBlocked) {
@@ -253,20 +253,20 @@ public class Outlaw extends Sprite {
     private void stopMoving(KeyCode keyCode) {
         switch (keyCode) {
         case UP:
-            this.activeDirections &= ~FLAG_DIR_UP;
+            this.activeDirections &= ~DIR_UP;
             break;
         case DOWN:
-            this.activeDirections &= ~FLAG_DIR_DOWN;
+            this.activeDirections &= ~DIR_DOWN;
             break;
         case LEFT:
-            this.activeDirections &= ~FLAG_DIR_LEFT;
+            this.activeDirections &= ~DIR_LEFT;
             this.isShootBlocked = false;
             break;
         case RIGHT:
-            this.activeDirections &= ~FLAG_DIR_RIGHT;
+            this.activeDirections &= ~DIR_RIGHT;
             break;
         case SPACE:
-            if (isDirectionActive(FLAG_DIR_LEFT)) {
+            if (isDirectionActive(DIR_LEFT)) {
                 break;
             }
             this.isShootBlocked = false;
@@ -278,26 +278,26 @@ public class Outlaw extends Sprite {
 
     private void updateFrameSet() {
         this.flipHorizontal(false);
-        if (isDirectionActive(FLAG_DIR_UP)) {
-            if (isDirectionActive(FLAG_DIR_RIGHT)) {
+        if (isDirectionActive(DIR_UP)) {
+            if (isDirectionActive(DIR_RIGHT)) {
                 this.setFrameSet(FRAMESET_NW);
-            } else if (isDirectionActive(FLAG_DIR_LEFT)) {
+            } else if (isDirectionActive(DIR_LEFT)) {
                 this.setFrameSet(FRAMESET_NW);
                 this.flipHorizontal(true);
             } else {
                 this.setFrameSet(FRAMESET_N);
             }
-        } else if (isDirectionActive(FLAG_DIR_DOWN)) {
-            if (isDirectionActive(FLAG_DIR_RIGHT)) {
+        } else if (isDirectionActive(DIR_DOWN)) {
+            if (isDirectionActive(DIR_RIGHT)) {
                 this.setFrameSet(FRAMESET_SW);
-            } else if (isDirectionActive(FLAG_DIR_LEFT)) {
+            } else if (isDirectionActive(DIR_LEFT)) {
                 this.setFrameSet(FRAMESET_SW);
                 this.flipHorizontal(true);
             } else {
                 this.setFrameSet(FRAMESET_S);
             }
         } else {
-            if (isDirectionActive(FLAG_DIR_LEFT)) {
+            if (isDirectionActive(DIR_LEFT)) {
                 this.flipHorizontal(true);
             }
             this.setFrameSet(FRAMESET_W);
