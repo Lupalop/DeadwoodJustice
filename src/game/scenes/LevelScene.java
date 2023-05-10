@@ -440,4 +440,8 @@ public class LevelScene implements GameScene {
         return this.powerupsCount[id];
     }
     
+    public boolean isSlowSpeed() {
+        return this.isSlowSpeed;
+    }
+    
 }

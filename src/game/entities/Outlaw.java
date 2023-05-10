@@ -325,4 +325,8 @@ public class Outlaw extends Sprite {
         this.immortalityEndTime = endTime;
     }
     
+    public boolean isImmortal() {
+        return this.isImmortal;
+    }
+    
 }
