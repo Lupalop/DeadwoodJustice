@@ -28,6 +28,12 @@ public class StatusHUD extends Sprite {
         String strength = Integer.toString(level.getOutlaw().getStrength());
         String mobKillCount = Integer.toString(level.getMobKillCount());
         String timeLeft = String.format("%s s", level.getTimeLeft());
+        String powerupLampCount =
+                Integer.toString(level.getPowerupCount(LampPowerup.ID));
+        String powerupHayCount =
+                Integer.toString(level.getPowerupCount(HayPowerup.ID));
+        String powerupWheelCount =
+                Integer.toString(level.getPowerupCount(WheelPowerup.ID));
 
         TILESET.draw(gc, TILE_SIZE, 0, 3);
         for (int i = 0; i < 9; i++) {
@@ -35,30 +41,51 @@ public class StatusHUD extends Sprite {
         }
         TILESET.draw(gc, TILE_SIZE * 11, 0, 4);
         
-        TILESET.draw(gc, TILE_SIZE * 2, 0, 13);
+        TILESET.draw(gc, TILE_SIZE * 8, 0, 8);
         gc.fillText(strength, TILE_SIZE * 3, (32 / 2) + 3);
 
         TILESET.draw(gc, TILE_SIZE * 5, 0, 12);
         gc.fillText(mobKillCount, TILE_SIZE * 6, (32 / 2) + 3);
 
-        TILESET.draw(gc, TILE_SIZE * 8, 0, 8);
+        TILESET.draw(gc, TILE_SIZE * 2, 0, 13);
         gc.fillText(timeLeft, TILE_SIZE * 9, (32 / 2) + 3);
         
         //
         
+        gc.save();
+        if (powerupLampCount.equals("0")) {
+            gc.setGlobalAlpha(0.5);
+        }
         TILESET.draw(gc, TILE_SIZE * 12, 0, 5);
         TILESET.draw(gc, TILE_SIZE * 12, 0, 9);
         TILESET.draw(gc, TILE_SIZE * 13, 0, 7);
+        gc.fillText(powerupLampCount, TILE_SIZE * 13, (32 / 2) + 3);
+        gc.restore();
 
+        gc.save();
+        if (powerupHayCount.equals("0")) {
+            gc.setGlobalAlpha(0.5);
+        }
         TILESET.draw(gc, TILE_SIZE * 15, 0, 5);
         TILESET.draw(gc, TILE_SIZE * 15, 0, 10);
         TILESET.draw(gc, TILE_SIZE * 16, 0, 7);
+        gc.fillText(powerupHayCount, TILE_SIZE * 16, (32 / 2) + 3);
+        gc.restore();
 
+        gc.save();
+        if (powerupWheelCount.equals("0")) {
+            gc.setGlobalAlpha(0.5);
+        }
         TILESET.draw(gc, TILE_SIZE * 18, 0, 5);
         TILESET.draw(gc, TILE_SIZE * 18, 0, 11);
         TILESET.draw(gc, TILE_SIZE * 19, 0, 7);
+        gc.fillText(powerupWheelCount, TILE_SIZE * 19, (32 / 2) + 3);
+        gc.restore();
 
+        gc.save();
+        gc.setGlobalAlpha(0.5);
         TILESET.draw(gc, TILE_SIZE * 21, 0, 5);
         TILESET.draw(gc, TILE_SIZE * 22, 0, 7);
+        gc.restore();
     }
 }

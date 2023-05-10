@@ -57,7 +57,9 @@ public class LevelScene implements GameScene {
     private Mob bossMob;
     private StatusHUD statusHud;
     private ArrayList<Sprite> sprites;
+
     private int mobKillCount;
+    private int powerupsCount[];
     
     private long levelTimeLeft;
     private long mobSpawnTime;
@@ -126,6 +128,7 @@ public class LevelScene implements GameScene {
         this.generateTiles = true;
         this.isLevelDone = false;
         this.mobKillCount = 0;
+        this.powerupsCount = new int[Powerup.TOTAL_POWERUPS];
 
         if (Game.DEBUG_MODE) {
             scene.addEventHandler(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>() {
@@ -373,13 +376,13 @@ public class LevelScene implements GameScene {
         Random r = new Random();
         Powerup powerup = null;
         switch (r.nextInt(0, Powerup.TOTAL_POWERUPS)) {
-        case 0:
+        case LampPowerup.ID:
             powerup = new LampPowerup(0, 0);
             break;
-        case 1:
+        case HayPowerup.ID:
             powerup = new HayPowerup(0, 0);
             break;
-        case 2:
+        case WheelPowerup.ID:
             powerup = new WheelPowerup(0, 0);
             break;
         default:
@@ -420,4 +423,21 @@ public class LevelScene implements GameScene {
         }
         return this.levelTimeLeft;
     }
+
+    public void notifyPowerupConsumed(int id) {
+        if (id < 0 || id >= Powerup.TOTAL_POWERUPS) {
+            return;
+        }
+        
+        this.powerupsCount[id]++;
+    }
+    
+    public int getPowerupCount(int id) {
+        if (id < 0 || id >= Powerup.TOTAL_POWERUPS) {
+            return -1;
+        }
+        
+        return this.powerupsCount[id];
+    }
+    
 }
