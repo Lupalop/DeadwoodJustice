@@ -57,6 +57,7 @@ public class LevelScene implements GameScene {
     private Mob bossMob;
     private StatusHUD statusHud;
     private ArrayList<Sprite> sprites;
+    private int mobKillCount;
     
     private long mobSpawnTime;
     private long powerupSpawnTime;
@@ -123,6 +124,7 @@ public class LevelScene implements GameScene {
         this.isSlowSpeed = false;
         this.generateTiles = true;
         this.isLevelDone = false;
+        this.mobKillCount = 0;
 
         if (Game.DEBUG_MODE) {
             scene.addEventHandler(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>() {
@@ -312,6 +314,7 @@ public class LevelScene implements GameScene {
                 mob.update(currentNanoTime, sprites, isMaxSpeed, isSlowSpeed);
                 if (!mob.isAlive() && !mob.isDying()) {
                     removalList.add(mob);
+                    this.mobKillCount++;
                 }
             } else if (sprite instanceof Powerup) {
                 Powerup powerup = (Powerup)sprite;
@@ -402,6 +405,10 @@ public class LevelScene implements GameScene {
         this.isSlowSpeed = true;
         this.slowSpeedTime = System.nanoTime();
         this.slowSpeedEndTime = powerupTimeout;
+    }
+    
+    public int getMobKillCount() {
+        return this.mobKillCount;
     }
     
 }
