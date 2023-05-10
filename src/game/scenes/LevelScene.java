@@ -59,6 +59,7 @@ public class LevelScene implements GameScene {
     private ArrayList<Sprite> sprites;
     private int mobKillCount;
     
+    private long levelTimeLeft;
     private long mobSpawnTime;
     private long powerupSpawnTime;
     private long maxSpeedTime;
@@ -174,6 +175,8 @@ public class LevelScene implements GameScene {
             System.out.println("boss spawned");
         }
 
+        this.levelTimeLeft = TimeUnit.NANOSECONDS.toSeconds(LEVEL_END_TIME - deltaTime);
+        
         // Spawn mobs every 3 seconds.
         deltaTime = (currentNanoTime - mobSpawnTime);
         if (deltaTime >= MOB_SPAWN_INTERVAL) {
@@ -411,4 +414,10 @@ public class LevelScene implements GameScene {
         return this.mobKillCount;
     }
     
+    public long getTimeLeft() {
+        if (this.levelTimeLeft < 0) {
+            return 0;
+        }
+        return this.levelTimeLeft;
+    }
 }
