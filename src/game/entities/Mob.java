@@ -168,6 +168,9 @@ public abstract class Mob extends Sprite {
 
     private void checkOutlaw(Outlaw outlaw) {
         if (this.isChasingPlayer) {
+            if (!outlaw.isAlive()) {
+                this.setIsChasingPlayer(false);
+            }
             this.chasePlayer(outlaw);
         }
         
