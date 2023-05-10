@@ -61,4 +61,8 @@ public class Game {
         return Game.class.getResource(GAME_ASSETS_PATH + path).toExternalForm();
     }
     
+    public static boolean isDirectionActive(byte activeDirections, byte directionFlag) {
+        return ((activeDirections & directionFlag) == directionFlag);
+    }
+    
 }

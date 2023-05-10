@@ -96,49 +96,9 @@ public class Outlaw extends Sprite {
         int y = (int) (this.getBounds().getMinY()
             + (this.getBounds().getHeight() / 2)
             - (Bullet.BULLET_IMAGE.getHeight() / 2));
-        int dxBullet = 0;
-        int dyBullet = 0;
-        
-        if (Game.FLAG_DIRECTIONAL_SHOOTING) {
-            boolean noHorizontalDirections = !isDirectionActive(Game.KEY_DIR_RIGHT)
-                    && !isDirectionActive(Game.KEY_DIR_LEFT);
-            if (isDirectionActive(Game.KEY_DIR_UP)) {
-                dyBullet = -Bullet.BULLET_SPEED;
-                if (noHorizontalDirections) {
-                    x-= 10;
-                }
-            } else if (isDirectionActive(Game.KEY_DIR_DOWN)) {
-                dyBullet = Bullet.BULLET_SPEED;
-                if (noHorizontalDirections) {
-                    x -= this.getBounds().getWidth() + 5;
-                }
-            } else {
-                dxBullet = Bullet.BULLET_SPEED;
-            }
-            
-            if (isDirectionActive(Game.KEY_DIR_RIGHT)) {
-                dxBullet = Bullet.BULLET_SPEED;
-                if (isDirectionActive(Game.KEY_DIR_UP)) {
-                    x -= 10;
-                } else if (isDirectionActive(Game.KEY_DIR_DOWN)) {
-                    x -= 30;
-                }
-            } else if (isDirectionActive(Game.KEY_DIR_LEFT)) {
-                dxBullet = -Bullet.BULLET_SPEED;
-                if (isDirectionActive(Game.KEY_DIR_UP)) {
-                    x -= 35;
-                } else if (isDirectionActive(Game.KEY_DIR_DOWN)) {
-                    x -= 20;
-                } else {
-                    x -= 35;
-                }
-            }
-        } else {
-            dxBullet = Bullet.BULLET_SPEED;
-        }
 
         // compute for the x and y initial position of the bullet
-        Bullet bullet = new Bullet(x, y, dxBullet, dyBullet);
+        Bullet bullet = new Bullet(x, y, activeDirections);
         this.bullets.add(bullet);
     }
 
@@ -164,10 +124,6 @@ public class Outlaw extends Sprite {
         } else {
             this.playFrames(56, 58, null, TimeUnit.MILLISECONDS.toNanos(200));
         }
-    }
-    
-    private boolean isDirectionActive(byte directionFlag) {
-        return ((this.activeDirections & directionFlag) == directionFlag);
     }
     
     @Override
@@ -208,20 +164,20 @@ public class Outlaw extends Sprite {
         }
         
         if (this.getBounds().getMinX() + dx >= 0 &&
-                isDirectionActive(Game.KEY_DIR_LEFT)) {
+                Game.isDirectionActive(this.activeDirections, Game.KEY_DIR_LEFT)) {
             this.dx = -OUTLAW_SPEED;
         } else if (this.getBounds().getMinX() + this.dx <= Game.WINDOW_WIDTH - this.getBounds().getWidth()
-                && isDirectionActive(Game.KEY_DIR_RIGHT)) {
+                && Game.isDirectionActive(this.activeDirections, Game.KEY_DIR_RIGHT)) {
             this.dx = OUTLAW_SPEED;
         } else {
             this.dx = 0;
         }
 
         if (this.getBounds().getMinY() + dy >= 0 &&
-                isDirectionActive(Game.KEY_DIR_UP)) {
+                Game.isDirectionActive(this.activeDirections, Game.KEY_DIR_UP)) {
             this.dy = -OUTLAW_SPEED;
         } else if (this.getBounds().getMinY() + dy <= Game.WINDOW_HEIGHT - this.getBounds().getHeight()
-                && isDirectionActive(Game.KEY_DIR_DOWN)) {
+                && Game.isDirectionActive(this.activeDirections, Game.KEY_DIR_DOWN)) {
             this.dy = OUTLAW_SPEED;
         } else {
             this.dy = 0;
@@ -320,7 +276,7 @@ public class Outlaw extends Sprite {
             this.activeDirections &= ~Game.KEY_DIR_RIGHT;
             break;
         case SPACE:
-            if (isDirectionActive(Game.KEY_DIR_LEFT) && !Game.FLAG_DIRECTIONAL_SHOOTING) {
+            if (Game.isDirectionActive(this.activeDirections, Game.KEY_DIR_LEFT) && !Game.FLAG_DIRECTIONAL_SHOOTING) {
                 break;
             }
             this.isShootBlocked = false;
@@ -332,26 +288,26 @@ public class Outlaw extends Sprite {
 
     private void updateFrameSet() {
         this.flipHorizontal(false);
-        if (isDirectionActive(Game.KEY_DIR_UP)) {
-            if (isDirectionActive(Game.KEY_DIR_RIGHT)) {
+        if (Game.isDirectionActive(this.activeDirections, Game.KEY_DIR_UP)) {
+            if (Game.isDirectionActive(this.activeDirections, Game.KEY_DIR_RIGHT)) {
                 this.setFrameSet(FRAMESET_NW);
-            } else if (isDirectionActive(Game.KEY_DIR_LEFT)) {
+            } else if (Game.isDirectionActive(this.activeDirections, Game.KEY_DIR_LEFT)) {
                 this.setFrameSet(FRAMESET_NW);
                 this.flipHorizontal(true);
             } else {
                 this.setFrameSet(FRAMESET_N);
             }
-        } else if (isDirectionActive(Game.KEY_DIR_DOWN)) {
-            if (isDirectionActive(Game.KEY_DIR_RIGHT)) {
+        } else if (Game.isDirectionActive(this.activeDirections, Game.KEY_DIR_DOWN)) {
+            if (Game.isDirectionActive(this.activeDirections, Game.KEY_DIR_RIGHT)) {
                 this.setFrameSet(FRAMESET_SW);
-            } else if (isDirectionActive(Game.KEY_DIR_LEFT)) {
+            } else if (Game.isDirectionActive(this.activeDirections, Game.KEY_DIR_LEFT)) {
                 this.setFrameSet(FRAMESET_SW);
                 this.flipHorizontal(true);
             } else {
                 this.setFrameSet(FRAMESET_S);
             }
         } else {
-            if (isDirectionActive(Game.KEY_DIR_LEFT)) {
+            if (Game.isDirectionActive(this.activeDirections, Game.KEY_DIR_LEFT)) {
                 this.flipHorizontal(true);
             }
             this.setFrameSet(FRAMESET_W);
