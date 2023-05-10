@@ -13,6 +13,7 @@ public class Game {
 
     public static final boolean DEBUG_MODE = false;
     public static final boolean FLAG_SMARTER_MOBS = false;
+    public static final boolean FLAG_DELAY_IF_BOSS_IS_ALIVE = false;
 
     private Stage primaryStage;
     private GameScene gameScene;

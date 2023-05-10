@@ -137,9 +137,10 @@ public class LevelScene implements GameScene {
         long deltaTime = (currentNanoTime - levelStartTime);
         // Detect if the game should've ended by now.
         if (deltaTime >= LEVEL_END_TIME
-                && this.bossMob != null
-                && !this.bossMob.isAlive()
-                && !this.bossMob.isDying()) {
+                && (!Game.FLAG_DELAY_IF_BOSS_IS_ALIVE
+                        || (this.bossMob != null
+                        && !this.bossMob.isAlive()
+                        && !this.bossMob.isDying()))) {
             this.isLevelDone = true;
             System.out.println("Game Done.");
         // Spawn the boss mob if the time is right.
