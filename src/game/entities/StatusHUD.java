@@ -23,6 +23,8 @@ public class StatusHUD extends Sprite {
         gc.setFont(Game.FONT_32);
         gc.setFill(Paint.valueOf("EECA84"));
 
+        String strength = Integer.toString(level.getOutlaw().getStrength());
+
         TILESET.draw(gc, TILE_SIZE, 0, 3);
         for (int i = 0; i < 9; i++) {
             TILESET.draw(gc, TILE_SIZE * (i + 2), 0, 1);
@@ -30,7 +32,7 @@ public class StatusHUD extends Sprite {
         TILESET.draw(gc, TILE_SIZE * 11, 0, 4);
         
         TILESET.draw(gc, TILE_SIZE * 2, 0, 13);
-        gc.fillText("2000", TILE_SIZE * 3, (32 / 2) + 3);
+        gc.fillText(strength, TILE_SIZE * 3, (32 / 2) + 3);
 
         TILESET.draw(gc, TILE_SIZE * 5, 0, 12);
         gc.fillText("2000", TILE_SIZE * 6, (32 / 2) + 3);
