@@ -219,6 +219,8 @@ public abstract class Mob extends Sprite {
     public void changeDirection() {
         this.flipHorizontal(this.moveRight);
         this.moveRight = !this.moveRight;
+        int multiplier = this.moveRight ? 1 : -1;
+        this.addX((int) this.getBounds().getWidth() / 2 * multiplier);
     }
 
     protected void setIsDeadOnPlayerImpact(boolean value) {
