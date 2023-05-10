@@ -98,7 +98,7 @@ public abstract class Mob extends Sprite {
         this.addY(this.dy);
     }
 
-    public void update(long currentNanoTime, Outlaw outlaw, ArrayList<Mob> otherMobs, boolean isMaxSpeed) {
+    public void update(long currentNanoTime, Outlaw outlaw, ArrayList<Sprite> sprites, boolean isMaxSpeed) {
         this.isMaxSpeed = isMaxSpeed;
         this.update(currentNanoTime);
 

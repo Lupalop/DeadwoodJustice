@@ -1,6 +1,8 @@
 package game.scenes;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
@@ -12,6 +14,7 @@ import game.entities.CowboyMob;
 import game.entities.CoyoteMob;
 import game.entities.Mob;
 import game.entities.Outlaw;
+import game.entities.Sprite;
 import game.entities.Tileset;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
@@ -48,7 +51,7 @@ public class LevelScene implements GameScene {
 
     private Outlaw outlaw;
     private Mob bossMob;
-    private ArrayList<Mob> mobs;
+    private ArrayList<Sprite> sprites;
     
     private long spawnTime;
     private long maxSpeedTime;
@@ -86,6 +89,7 @@ public class LevelScene implements GameScene {
         this.gc = canvas.getGraphicsContext2D();
         this.gc.setImageSmoothing(false);
         this.root.getChildren().add(canvas);
+        this.sprites = new ArrayList<Sprite>();
         Random rand = new Random();
         this.outlaw = new Outlaw(
                 "Going merry",
@@ -93,8 +97,8 @@ public class LevelScene implements GameScene {
         this.outlaw.setY(rand.nextInt(
                 (int) outlaw.getBounds().getHeight(),
                 Game.WINDOW_HEIGHT - (int) outlaw.getBounds().getHeight()));
+        this.sprites.add(outlaw);
         this.outlaw.handleKeyPressEvent(scene);
-        this.mobs = new ArrayList<Mob>();
         this.levelStartTime = System.nanoTime();
         this.spawnTime = System.nanoTime();
         this.maxSpeedTime = System.nanoTime();
@@ -127,9 +131,7 @@ public class LevelScene implements GameScene {
         if (this.isLevelDone) {
             return;
         }
-        this.outlaw.update(currentNanoTime);
-        this.updateMobs(currentNanoTime);
-        this.updateBullets(currentNanoTime);
+        this.updateSprites(currentNanoTime);
         this.updateLevelTime(currentNanoTime);
     }
 
@@ -148,7 +150,7 @@ public class LevelScene implements GameScene {
             this.bossMob = new CowboyMob(Game.WINDOW_WIDTH, (Game.WINDOW_HEIGHT / 2));
             this.bossMob.addY((int) -this.bossMob.getBounds().getHeight() / 2);
             this.bossMob.addX((int) -this.bossMob.getBounds().getWidth());
-            this.mobs.add(bossMob);
+            this.sprites.add(bossMob);
             System.out.println("boss spawned");
         }
 
@@ -182,10 +184,7 @@ public class LevelScene implements GameScene {
                 Game.WINDOW_HEIGHT);
 
         this.drawTiles();
-        
-        this.outlaw.draw(this.gc);
-        this.drawMobs();
-        this.drawBullets();
+        this.drawSprites();
     }
 
     private void drawTiles() {
@@ -236,14 +235,11 @@ public class LevelScene implements GameScene {
     }
     
     // method that will render/draw the mobs to the canvas
-    private void drawMobs() {
-        for (Mob mob : this.mobs) {
-            mob.draw(this.gc);
+    private void drawSprites() {
+        for (Sprite sprite : this.sprites) {
+            sprite.draw(this.gc);
         }
-    }
 
-    // method that will render/draw the bullets to the canvas
-    private void drawBullets() {
         for (Bullet bullet : this.outlaw.getBullets())
         {
             bullet.draw(this.gc);
@@ -251,37 +247,45 @@ public class LevelScene implements GameScene {
     }
     
     // method that will move the bullets shot by the outlaw
-    private void updateBullets(long currentNanoTime) {
-        ArrayList<Bullet> removalList = new ArrayList<Bullet>();
+    private void updateSprites(long currentNanoTime) {
+        // Keep a list containing mobs to be removed. 
+        ArrayList<Mob> mobRemovalList = new ArrayList<Mob>();
+        
+        for (Sprite sprite : this.sprites) {
+            if (sprite instanceof Mob) {
+                Mob mob = (Mob)sprite;
+                mob.update(currentNanoTime, outlaw, sprites, isMaxSpeed);
+                if (!mob.isAlive() && !mob.isDying()) {
+                    mobRemovalList.add(mob);
+                }
+            } else {
+                sprite.update(currentNanoTime);
+            }
+        }
+        
+        this.sprites.removeAll(mobRemovalList);
 
-        // Loop through the bullet list and check whether a bullet is still
-        // visible.
+        // Keep a list containing bullets to be removed.
+        ArrayList<Bullet> bulletRemovalList = new ArrayList<Bullet>();
+
+        // Loop through the bullet list and remove used bullets.
         for (Bullet bullet : this.outlaw.getBullets()) {
             bullet.update(currentNanoTime);
             if (!bullet.getVisible()) {
-                removalList.add(bullet);
+                bulletRemovalList.add(bullet);
             }
         }
         
-        // It is unsafe to modify a collection while iterating over it,
-        // so remove them once we're done with the loop.
-        this.outlaw.getBullets().removeAll(removalList);
-    }
-
-    private void updateMobs(long currentNanoTime) {
-        // Update mob movement.
-        ArrayList<Mob> removalList = new ArrayList<Mob>();
+        this.outlaw.getBullets().removeAll(bulletRemovalList);
         
-        for (Mob mob : this.mobs) {
-            mob.update(currentNanoTime, outlaw, mobs, isMaxSpeed);
-            if (!mob.isAlive() && !mob.isDying()) {
-                removalList.add(mob);
-            }
+        if (Game.FLAG_FIX_DRAW_ORDER) {
+            Collections.sort(this.sprites, new Comparator<Sprite>() {
+                @Override
+                public int compare(Sprite o1, Sprite o2) {
+                    return (int) (o1.getBounds().getMinY() - o2.getBounds().getMinY());
+                }
+            });
         }
-        
-        // It is unsafe to modify a collection while iterating over it,
-        // so remove them once we're done with the loop.
-        this.mobs.removeAll(removalList);
     }
 
     private Mob randomizeMob() {
@@ -314,17 +318,8 @@ public class LevelScene implements GameScene {
             mob.setY(r.nextInt(
                     mobHeight,
                     Game.WINDOW_HEIGHT - mobHeight * 2));
-
-            int index = 0;
-            for (Mob otherMob : this.mobs) {
-                if (mob.getY() > otherMob.getY()) {
-                    index++;
-                } else {
-                    break;
-                }
-            }
-
-            this.mobs.add(index, mob);
+            
+            this.sprites.add(mob);
         }
     }
 
