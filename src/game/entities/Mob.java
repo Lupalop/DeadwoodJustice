@@ -196,7 +196,11 @@ public abstract class Mob extends Sprite {
             return;
         }
 
-        if (outlaw.getBounds().getMinY() > this.getBounds().getMinY()) {
+        if (this.getBounds().contains(
+                this.getBounds().getMinX(),
+                outlaw.getBounds().getMinY())) {
+            this.dy = 0;
+        } else if (outlaw.getBounds().getMinY() > this.getBounds().getMinY()) {
             this.dy = this.speed;
         } else {
             this.dy = -this.speed;
