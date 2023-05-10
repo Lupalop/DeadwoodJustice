@@ -237,19 +237,8 @@ public class LevelScene implements GameScene {
     
     // method that will render/draw the mobs to the canvas
     private void drawMobs() {
-        boolean spawnAreaDrawn = false;
         for (Mob mob : this.mobs) {
             mob.draw(this.gc);
-            if (Game.DEBUG_MODE && !spawnAreaDrawn) {
-                int mobWidth = (int) mob.getBounds().getWidth();
-                int mobHeight = (int) mob.getBounds().getHeight();
-                gc.strokeRect(
-                        (Game.WINDOW_WIDTH / 2) + mobWidth,
-                        mobHeight,
-                        Game.WINDOW_WIDTH / 2 - mobWidth * 2,
-                        Game.WINDOW_HEIGHT - mobHeight * 2);
-                spawnAreaDrawn = true;
-            }
         }
     }
 
