@@ -21,7 +21,6 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.effect.BlendMode;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
@@ -193,6 +192,28 @@ public class LevelScene implements GameScene {
         if (this.generateTiles) {
             tileLayer1 = new int[TILES_TOTAL];
             tileLayer2 = new int[TILES_TOTAL];
+
+            Random rand = new Random();
+            for (int i = 0; i < 3; i++) {
+                Prop tree = new Prop(
+                        rand.nextInt(1, 8) * rand.nextInt(1, 3) * 60,
+                        rand.nextInt(2, 6) * rand.nextInt(1, 3) * 60,
+                        "a_tree.png");
+                System.out.println(tree.getX() + ":" +  tree.getY());
+                sprites.add(tree);
+            }
+
+            Prop wagon = new Prop(
+                    rand.nextInt(50, Game.WINDOW_WIDTH / 2),
+                    rand.nextInt(3, 6) * 100,   
+                    "a_coveredwagon.png");
+            sprites.add(wagon);
+
+            Prop house = new Prop(
+                    rand.nextInt(Game.WINDOW_WIDTH / 2, Game.WINDOW_WIDTH),
+                    -100,
+                    "a_house.png");
+            sprites.add(house);
         }
         // Holds the current tile ID.
         int tileId = 0;

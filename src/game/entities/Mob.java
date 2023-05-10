@@ -154,6 +154,10 @@ public abstract class Mob extends Sprite {
                 continue;
             }
 
+            if (Game.FLAG_IGNORE_PROP_COLLISION && sprite instanceof Prop) {
+                continue;
+            }
+            
             if (!Game.FLAG_MOBS_CHECK_PASSABILITY) {
                 continue;
             }
