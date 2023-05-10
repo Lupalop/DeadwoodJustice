@@ -104,24 +104,29 @@ public abstract class Mob extends Sprite {
             if (!passableY[0] && this.dy >= 0 || !passableY[1] && this.dy <= 0) {
                 this.dy = 0;
             }
-            this.addY(dy);
         } else {
-            if (!passableX[0] && !passableX[1] && !this.isStuck) {
-                this.dx = 0;
-                this.isStuck = true;
-            } else if (!passableX[this.moveRight ? 1 : 0] && !this.isStuck) {
-                this.dx = 0;
-                this.changeDirection();
-                this.isStuck = true;
-            } else {
+            // Regular mobs are only allowed to move from left to right.
+            if (this.dy != 0) {
                 this.dy = 0;
+            }
+            // Check for passability if we're not stuck.
+            if (!this.isStuck) {
+                if (!passableX[0] && !passableX[1]) {
+                    this.dx = 0;
+                    this.isStuck = true;
+                } else if (!passableX[this.moveRight ? 1 : 0]) {
+                    this.dx = 0;
+                    this.changeDirection();
+                    this.isStuck = true;
+                }
+            // Stop marking as stuck if one side is now passable.
+            } else if (passableX[0] || passableX[1]) {
                 this.isStuck = false;
             }
-
-            this.addY(passableY[1] ? this.dy : -this.dy);
         }
 
         this.addX(this.moveRight ? this.dx : -this.dx);
+        this.addY(dy);
     }
 
     boolean passableX[] = new boolean[2];
