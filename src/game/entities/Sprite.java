@@ -150,6 +150,28 @@ public abstract class Sprite {
         return rectangle1.intersects(rectangle2);
     }
 
+    public int intersectsSide(Rectangle2D r2) {
+        // Check if the rectangles intersect.
+        Rectangle2D r1 = this.getBounds();
+        if (!r1.intersects(r2)) {
+            return -1;
+        }
+
+        // Check which sides of the rectangles intersect.
+        if (r1.getMinX() < r2.getMaxX() && r1.getMinX() > r2.getMinX()) {
+            return 0; // Left side of r1 intersects right side of r2.
+        } else if (r2.getMinX() < r1.getMaxX() && r2.getMinX() > r1.getMinX()) {
+            return 1; // Right side of r1 intersects left side of r2.
+        } else if (r1.getMinY() < r2.getMaxY() && r1.getMinY() > r2.getMinY()) {
+            return 2; // Top side of r1 intersects bottom side of r2.
+        } else if (r2.getMinY() < r1.getMaxY() && r2.getMinY() > r1.getMinY()) {
+            return 3; // Bottom side of r1 intersects top side of r2.
+        }
+
+        // Should never reach this point.
+        return -1;
+    }
+    
     public Rectangle2D getBounds() {
         if (this.boundsDirty) {
             double newX = this.x;
