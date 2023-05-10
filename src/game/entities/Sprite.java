@@ -149,11 +149,22 @@ public abstract class Sprite {
         this.lastFrameTime = currentNanoTime;
     }
 
-    public boolean intersects(Sprite rect2) {
+    public boolean intersects(Sprite rect2, boolean xIgnore, boolean yIgnore) {
         Rectangle2D rectangle1 = this.getBounds();
         Rectangle2D rectangle2 = rect2.getBounds();
+        if (xIgnore || yIgnore) {
+            rectangle2 = new Rectangle2D(
+                    xIgnore ? rectangle1.getMinX() : rectangle2.getMinX(),
+                    yIgnore ? rectangle1.getMinY() : rectangle2.getMinY(),
+                    rectangle2.getWidth(),
+                    rectangle2.getHeight());
+        }
 
         return rectangle1.intersects(rectangle2);
+    }
+    
+    public boolean intersects(Sprite rect2) {
+        return intersects(rect2, false, false);
     }
 
     public static int getIntersectionSide(Rectangle2D r1, Rectangle2D r2) {
