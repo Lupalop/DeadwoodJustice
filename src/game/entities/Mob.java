@@ -195,8 +195,8 @@ public abstract class Mob extends Sprite {
         if (!Game.FLAG_SMARTER_MOBS) {
             return;
         }
-        
-        if (outlaw.getY() > this.getY()) {
+
+        if (outlaw.getBounds().getMinY() > this.getBounds().getMinY()) {
             this.dy = this.speed;
         } else {
             this.dy = -this.speed;
