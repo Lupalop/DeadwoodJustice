@@ -12,6 +12,7 @@ public class Game {
     public static final int WINDOW_HEIGHT = 600;
 
     public static final boolean DEBUG_MODE = false;
+    public static final boolean FLAG_DIRECTIONAL_SHOOTING = false;
     public static final boolean FLAG_SMARTER_MOBS = false;
     public static final boolean FLAG_DELAY_IF_BOSS_IS_ALIVE = false;
     public static final boolean FLAG_FIX_DRAW_ORDER = false;

@@ -97,12 +97,53 @@ public class Outlaw extends Sprite {
             return;
         }
 
-        // compute for the x and y initial position of the bullet
         int x = (int) (this.getBounds().getMaxX());
         int y = (int) (this.getBounds().getMinY()
-                + (this.getBounds().getHeight() / 2)
-                - (Bullet.BULLET_IMAGE.getHeight() / 2));
-        Bullet bullet = new Bullet(x, y);
+            + (this.getBounds().getHeight() / 2)
+            - (Bullet.BULLET_IMAGE.getHeight() / 2));
+        int dxBullet = 0;
+        int dyBullet = 0;
+        
+        if (Game.FLAG_DIRECTIONAL_SHOOTING) {
+            boolean noHorizontalDirections = !isDirectionActive(DIR_RIGHT)
+                    && !isDirectionActive(DIR_LEFT);
+            if (isDirectionActive(DIR_UP)) {
+                dyBullet = -Bullet.BULLET_SPEED;
+                if (noHorizontalDirections) {
+                    x-= 10;
+                }
+            } else if (isDirectionActive(DIR_DOWN)) {
+                dyBullet = Bullet.BULLET_SPEED;
+                if (noHorizontalDirections) {
+                    x -= this.getBounds().getWidth() + 5;
+                }
+            } else {
+                dxBullet = Bullet.BULLET_SPEED;
+            }
+            
+            if (isDirectionActive(DIR_RIGHT)) {
+                dxBullet = Bullet.BULLET_SPEED;
+                if (isDirectionActive(DIR_UP)) {
+                    x -= 10;
+                } else if (isDirectionActive(DIR_DOWN)) {
+                    x -= 30;
+                }
+            } else if (isDirectionActive(DIR_LEFT)) {
+                dxBullet = -Bullet.BULLET_SPEED;
+                if (isDirectionActive(DIR_UP)) {
+                    x -= 35;
+                } else if (isDirectionActive(DIR_DOWN)) {
+                    x -= 20;
+                } else {
+                    x -= 35;
+                }
+            }
+        } else {
+            dxBullet = Bullet.BULLET_SPEED;
+        }
+
+        // compute for the x and y initial position of the bullet
+        Bullet bullet = new Bullet(x, y, dxBullet, dyBullet);
         this.bullets.add(bullet);
     }
 
@@ -240,7 +281,9 @@ public class Outlaw extends Sprite {
             break;
         case LEFT:
             this.activeDirections |= DIR_LEFT;
-            this.isShootBlocked = true;
+            if (!Game.FLAG_DIRECTIONAL_SHOOTING) {
+                this.isShootBlocked = true;
+            }
             break;
         case RIGHT:
             this.activeDirections |= DIR_RIGHT;
@@ -252,7 +295,11 @@ public class Outlaw extends Sprite {
             // We can't shoot in other directions, following a limitation
             // imposed by the problem domain.
             this.isShootBlocked = true;
-            this.playFrames(28, 33, FRAMESET_W, TimeUnit.MILLISECONDS.toNanos(50));
+            if (Game.FLAG_DIRECTIONAL_SHOOTING) {
+                this.playFrames(28, 33, null, TimeUnit.MILLISECONDS.toNanos(50));
+            } else {
+                this.playFrames(28, 33, FRAMESET_W, TimeUnit.MILLISECONDS.toNanos(50));
+            }
             this.shoot();
             break;
         default:
@@ -278,7 +325,7 @@ public class Outlaw extends Sprite {
             this.activeDirections &= ~DIR_RIGHT;
             break;
         case SPACE:
-            if (isDirectionActive(DIR_LEFT)) {
+            if (isDirectionActive(DIR_LEFT) && !Game.FLAG_DIRECTIONAL_SHOOTING) {
                 break;
             }
             this.isShootBlocked = false;
