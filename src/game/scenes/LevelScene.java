@@ -134,7 +134,7 @@ public class LevelScene implements GameScene {
             scene.addEventHandler(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>() {
                 public void handle(KeyEvent e) {
                     KeyCode code = e.getCode();
-                    if (code == KeyCode.A) {
+                    if (code == KeyCode.F1) {
                         generateTiles = true;
                     }
                 }

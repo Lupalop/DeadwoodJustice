@@ -230,21 +230,26 @@ public class Outlaw extends Sprite {
         
         switch (keyCode) {
         case UP:
+        case W:
             this.activeDirections |= Game.KEY_DIR_UP;
             break;
         case DOWN:
+        case S:
             this.activeDirections |= Game.KEY_DIR_DOWN;
             break;
         case LEFT:
+        case A:
             this.activeDirections |= Game.KEY_DIR_LEFT;
             if (!Game.FLAG_DIRECTIONAL_SHOOTING) {
                 this.isShootBlocked = true;
             }
             break;
         case RIGHT:
+        case D:
             this.activeDirections |= Game.KEY_DIR_RIGHT;
             break;
         case SPACE:
+        case ENTER:
             if (this.isShootBlocked) {
                 break;
             }
@@ -268,19 +273,24 @@ public class Outlaw extends Sprite {
     private void stopMoving(KeyCode keyCode) {
         switch (keyCode) {
         case UP:
+        case W:
             this.activeDirections &= ~Game.KEY_DIR_UP;
             break;
         case DOWN:
+        case S:
             this.activeDirections &= ~Game.KEY_DIR_DOWN;
             break;
         case LEFT:
+        case A:
             this.activeDirections &= ~Game.KEY_DIR_LEFT;
             this.isShootBlocked = false;
             break;
         case RIGHT:
+        case D:
             this.activeDirections &= ~Game.KEY_DIR_RIGHT;
             break;
         case SPACE:
+        case ENTER:
             if (Game.isDirectionActive(this.activeDirections, Game.KEY_DIR_LEFT) && !Game.FLAG_DIRECTIONAL_SHOOTING) {
                 break;
             }
