@@ -1,7 +1,6 @@
 package game.entities;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
@@ -33,6 +32,7 @@ public abstract class Mob extends Sprite {
     private boolean isChasingPlayer;
     protected boolean isExcludedFromMaxSpeed;
     private boolean isPlayerInMobBounds;
+    private boolean isStuck;
 
     private int[] frameRanges;
 
@@ -55,6 +55,7 @@ public abstract class Mob extends Sprite {
         this.isMaxSpeed = false;
         this.isExcludedFromMaxSpeed = false;
         this.isPlayerInMobBounds = false;
+        this.isStuck = false;
         
         if (Game.FLAG_SMARTER_MOBS) {
             this.setIsChasingPlayer(rand.nextBoolean());
@@ -103,21 +104,24 @@ public abstract class Mob extends Sprite {
             if (!passableY[0] && this.dy >= 0 || !passableY[1] && this.dy <= 0) {
                 this.dy = 0;
             }
+            this.addY(dy);
         } else {
-            if (!passableX[0] && !passableX[1]) {
-                this.dy = this.dx;
+            if (!passableX[0] && !passableX[1] && !this.isStuck) {
                 this.dx = 0;
-            } else if (!passableX[this.moveRight ? 1 : 0]) {
-                this.dy = this.dx;
+                this.isStuck = true;
+            } else if (!passableX[this.moveRight ? 1 : 0] && !this.isStuck) {
                 this.dx = 0;
                 this.changeDirection();
+                this.isStuck = true;
             } else {
                 this.dy = 0;
+                this.isStuck = false;
             }
+
+            this.addY(passableY[1] ? this.dy : -this.dy);
         }
-        
+
         this.addX(this.moveRight ? this.dx : -this.dx);
-        this.addY(this.dy);
     }
 
     boolean passableX[] = new boolean[2];
@@ -131,8 +135,11 @@ public abstract class Mob extends Sprite {
             return;
         }
 
-        Arrays.fill(passableX, true);
-        Arrays.fill(passableY, true);
+        passableX[0] = this.getBounds().getMinX() >= 0;
+        passableX[1] = this.getBounds().getMaxX() <= Game.WINDOW_WIDTH;
+        
+        passableY[0] = this.getBounds().getMinY() >= 0;
+        passableY[1] = this.getBounds().getMaxY() <= Game.WINDOW_HEIGHT;
 
         for (Sprite sprite : sprites) {
             if (sprite == this) {
