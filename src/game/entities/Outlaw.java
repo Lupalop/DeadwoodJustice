@@ -115,8 +115,13 @@ public class Outlaw extends Sprite {
         if (value < 0 || this.isImmortal) {
             return;
         }
-        this.strength -= value;
-        if (this.strength < 0) {
+        // Clamp the strength value to 0.
+        if (this.strength - value < 0) {
+            this.strength = 0;
+        } else {
+            this.strength -= value;
+        }
+        if (this.strength == 0) {
             this.isAlive = false;
             this.isDying = true;
             this.setFrameAutoReset(false);
