@@ -262,7 +262,7 @@ public class LevelScene implements GameScene {
             Collections.sort(this.sprites, new Comparator<Sprite>() {
                 @Override
                 public int compare(Sprite o1, Sprite o2) {
-                    return (int) (o1.getBounds().getMinY() - o2.getBounds().getMinY());
+                    return (int) (o1.getBounds().getMaxY() - o2.getBounds().getMaxY());
                 }
             });
         }
