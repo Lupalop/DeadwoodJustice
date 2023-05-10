@@ -247,7 +247,7 @@ public class LevelScene implements GameScene {
         for (Sprite sprite : this.sprites) {
             if (sprite instanceof Mob) {
                 Mob mob = (Mob)sprite;
-                mob.update(currentNanoTime, outlaw, isMaxSpeed);
+                mob.update(currentNanoTime, sprites, isMaxSpeed);
                 if (!mob.isAlive() && !mob.isDying()) {
                     removalList.add(mob);
                 }

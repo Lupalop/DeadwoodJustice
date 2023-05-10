@@ -1,6 +1,7 @@
 package game.entities;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
@@ -94,19 +95,68 @@ public abstract class Mob extends Sprite {
         if (changeFromRight || changeFromLeft) {
             this.changeDirection();
         }
+
+        if (this.isChasingPlayer) {
+            if (!passableX[this.moveRight ? 1 : 0]) {
+                this.dx = 0;
+            }
+            if (!passableY[0] && this.dy >= 0 || !passableY[1] && this.dy <= 0) {
+                this.dy = 0;
+            }
+        } else {
+            if (!passableX[0] && !passableX[1]) {
+                this.dy = this.dx;
+                this.dx = 0;
+            } else if (!passableX[this.moveRight ? 1 : 0]) {
+                this.dy = this.dx;
+                this.dx = 0;
+                this.changeDirection();
+            } else {
+                this.dy = 0;
+            }
+        }
+        
         this.addX(this.moveRight ? this.dx : -this.dx);
         this.addY(this.dy);
     }
 
-    public void update(long currentNanoTime, Outlaw outlaw, boolean isMaxSpeed) {
+    boolean passableX[] = new boolean[2];
+    boolean passableY[] = new boolean[2];
+
+    public void update(long currentNanoTime, ArrayList<Sprite> sprites, boolean isMaxSpeed) {
         this.isMaxSpeed = isMaxSpeed;
         this.update(currentNanoTime);
 
         if (!this.isAlive()) {
             return;
         }
-        
-        checkOutlaw(outlaw);
+
+        Arrays.fill(passableX, true);
+        Arrays.fill(passableY, true);
+
+        for (Sprite sprite : sprites) {
+            if (sprite == this) {
+                continue;
+            } else if (sprite instanceof Outlaw) {
+                checkOutlaw((Outlaw)sprite);
+                continue;
+            }
+
+            if (!Game.FLAG_MOBS_CHECK_PASSABILITY) {
+                continue;
+            }
+            
+            int side = this.baseIntersectsSide(sprite.getBaseBounds());
+            if (passableX[0] && side == 0) {
+                passableX[0] = false;
+            } else if (passableX[1] && side == 1) {
+                passableX[1] = false;
+            } else if (passableY[0] && side == 2) {
+                passableY[0] = false;
+            } else if (passableY[1] && side == 3) {
+                passableY[1] = false;
+            }
+        }
     }
     
     public void draw(GraphicsContext gc) {

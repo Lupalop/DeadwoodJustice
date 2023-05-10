@@ -15,6 +15,7 @@ public class Game {
     public static final boolean FLAG_SMARTER_MOBS = false;
     public static final boolean FLAG_DELAY_IF_BOSS_IS_ALIVE = false;
     public static final boolean FLAG_FIX_DRAW_ORDER = false;
+    public static final boolean FLAG_MOBS_CHECK_PASSABILITY = false;
 
     private Stage primaryStage;
     private GameScene gameScene;
