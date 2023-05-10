@@ -1,5 +1,7 @@
 package game.entities;
 
+import java.util.concurrent.TimeUnit;
+
 import game.Game;
 import game.scenes.LevelScene;
 import javafx.scene.canvas.GraphicsContext;
@@ -25,6 +27,7 @@ public class StatusHUD extends Sprite {
 
         String strength = Integer.toString(level.getOutlaw().getStrength());
         String mobKillCount = Integer.toString(level.getMobKillCount());
+        String timeLeft = String.format("%s s", level.getTimeLeft());
 
         TILESET.draw(gc, TILE_SIZE, 0, 3);
         for (int i = 0; i < 9; i++) {
@@ -39,7 +42,7 @@ public class StatusHUD extends Sprite {
         gc.fillText(mobKillCount, TILE_SIZE * 6, (32 / 2) + 3);
 
         TILESET.draw(gc, TILE_SIZE * 8, 0, 8);
-        gc.fillText("60 s", TILE_SIZE * 9, (32 / 2) + 3);
+        gc.fillText(timeLeft, TILE_SIZE * 9, (32 / 2) + 3);
         
         //
         
