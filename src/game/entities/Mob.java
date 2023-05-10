@@ -255,9 +255,7 @@ public abstract class Mob extends Sprite {
             return;
         }
 
-        if (this.getBounds().contains(
-                this.getBounds().getMinX(),
-                outlaw.getBounds().getMinY())) {
+        if (outlaw.intersects(this, true, false)) {
             this.dy = 0;
         } else if (outlaw.getBounds().getMinY() > this.getBounds().getMinY()) {
             this.dy = this.speed;
@@ -265,13 +263,15 @@ public abstract class Mob extends Sprite {
             this.dy = -this.speed;
         }
         
-        if (outlaw.getBounds().getMinX() > this.getBounds().getMinX()) {
-            if (!this.moveRight) {
+        if (!outlaw.intersects(this, false, true)) {
+            if (outlaw.getBounds().getMinX() > this.getBounds().getMinX()) {
+                if (!this.moveRight) {
+                    this.changeDirection();
+                }
+            } else if (this.moveRight) {
                 this.changeDirection();
             }
-        } else if (this.moveRight) {
-            this.changeDirection();
-        }        
+        }
     }
     
 }
