@@ -24,6 +24,7 @@ public class StatusHUD extends Sprite {
         gc.setFill(Paint.valueOf("EECA84"));
 
         String strength = Integer.toString(level.getOutlaw().getStrength());
+        String mobKillCount = Integer.toString(level.getMobKillCount());
 
         TILESET.draw(gc, TILE_SIZE, 0, 3);
         for (int i = 0; i < 9; i++) {
@@ -35,7 +36,7 @@ public class StatusHUD extends Sprite {
         gc.fillText(strength, TILE_SIZE * 3, (32 / 2) + 3);
 
         TILESET.draw(gc, TILE_SIZE * 5, 0, 12);
-        gc.fillText("2000", TILE_SIZE * 6, (32 / 2) + 3);
+        gc.fillText(mobKillCount, TILE_SIZE * 6, (32 / 2) + 3);
 
         TILESET.draw(gc, TILE_SIZE * 8, 0, 8);
         gc.fillText("60 s", TILE_SIZE * 9, (32 / 2) + 3);
