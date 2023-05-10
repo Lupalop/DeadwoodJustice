@@ -13,6 +13,7 @@ import game.entities.CowboyMob;
 import game.entities.CoyoteMob;
 import game.entities.Mob;
 import game.entities.Outlaw;
+import game.entities.Prop;
 import game.entities.Sprite;
 import game.entities.Tileset;
 import javafx.event.EventHandler;
@@ -20,6 +21,7 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.effect.BlendMode;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
@@ -220,10 +222,15 @@ public class LevelScene implements GameScene {
                     }
                 }
                 // Draw from the desert tileset.
+                gc.save();
+                gc.setGlobalAlpha(0.5);
                 TILESET_DESERT.draw(
                         gc, TILE_SIZE * j, TILE_SIZE * i, tileLayer1[tileId]);
-                TILESET_DESERT.draw(
-                        gc, TILE_SIZE * j, TILE_SIZE * i, tileLayer2[tileId]);
+                gc.restore();
+                if (tileLayer2[tileId] != 0) {
+                    TILESET_DESERT.draw(
+                            gc, TILE_SIZE * j, TILE_SIZE * i, tileLayer2[tileId]);
+                }
                 tileId++;
             }
         }
