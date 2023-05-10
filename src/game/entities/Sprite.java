@@ -150,9 +150,8 @@ public abstract class Sprite {
         return rectangle1.intersects(rectangle2);
     }
 
-    public int intersectsSide(Rectangle2D r2) {
+    public static int intersectsSide(Rectangle2D r1, Rectangle2D r2) {
         // Check if the rectangles intersect.
-        Rectangle2D r1 = this.getBounds();
         if (!r1.intersects(r2)) {
             return -1;
         }
@@ -169,7 +168,11 @@ public abstract class Sprite {
         }
 
         // Should never reach this point.
-        return -1;
+        return -1;        
+    }
+    
+    public int intersectsSide(Rectangle2D r2) {
+        return intersectsSide(this.getBounds());
     }
     
     public Rectangle2D getBounds() {
