@@ -116,7 +116,6 @@ public abstract class Mob extends Sprite {
                     return;
                 }
                 outlaw.reduceStrength(this.damage);
-                System.out.println("damage");
                 if (this.isDeadOnPlayerImpact) {
                     this.prepareDeath();
                 } else {
