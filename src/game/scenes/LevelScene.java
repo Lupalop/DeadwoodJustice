@@ -112,7 +112,6 @@ public class LevelScene implements GameScene {
         this.sprites.add(getOutlaw());
         this.getOutlaw().handleKeyPressEvent(scene);
         this.statusHud = new StatusHUD();
-        this.sprites.add(statusHud);
         this.levelStartTime = System.nanoTime();
         this.mobSpawnTime = System.nanoTime();
         this.powerupSpawnTime = System.nanoTime();
@@ -151,6 +150,7 @@ public class LevelScene implements GameScene {
         }
         this.updateSprites(currentNanoTime);
         this.updateLevelTime(currentNanoTime);
+        this.statusHud.update(currentNanoTime);
     }
 
     private void updateLevelTime(long currentNanoTime) {
@@ -218,6 +218,7 @@ public class LevelScene implements GameScene {
 
         this.drawTiles();
         this.drawSprites();
+        this.statusHud.draw(gc);
     }
 
     private void drawTiles() {
