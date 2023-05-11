@@ -8,7 +8,7 @@ import javafx.scene.paint.Paint;
 public class StatusHUD extends Sprite {
 
     private static Tileset TILESET =
-            new Tileset("tilemap_ui.png", 2, 8);
+            new Tileset("tilemap_ui.png", 4, 8);
     private static int TILE_SIZE = 32;
     private LevelScene level;
     
