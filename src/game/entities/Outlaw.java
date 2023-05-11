@@ -300,6 +300,7 @@ public class Outlaw extends Sprite implements LevelUpdatable {
                 break;
             }
             this.isShootBlocked = false;
+            break;
         default:
             break;
         }
