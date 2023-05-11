@@ -12,6 +12,7 @@ import game.entities.CowboyMob;
 import game.entities.CoyoteMob;
 import game.entities.HayPowerup;
 import game.entities.LampPowerup;
+import game.entities.LevelUpdatable;
 import game.entities.Mob;
 import game.entities.Outlaw;
 import game.entities.Powerup;
@@ -316,14 +317,15 @@ public class LevelScene implements GameScene {
         for (Sprite sprite : this.sprites) {
             if (sprite instanceof Mob) {
                 Mob mob = (Mob)sprite;
-                mob.update(currentNanoTime, sprites, isMaxSpeed, isSlowSpeed);
                 if (!mob.isAlive() && !mob.isDying()) {
                     removalList.add(mob);
                     this.mobKillCount++;
                 }
-            } else if (sprite instanceof Powerup) {
-                Powerup powerup = (Powerup)sprite;
-                powerup.update(currentNanoTime, this);
+            }
+            
+            if (sprite instanceof LevelUpdatable) {
+                LevelUpdatable levelSprite = (LevelUpdatable)sprite;
+                levelSprite.update(currentNanoTime, this);
             } else {
                 sprite.update(currentNanoTime);
             }
@@ -456,8 +458,17 @@ public class LevelScene implements GameScene {
         return this.isSlowSpeed;
     }
 
+    public boolean isMaxSpeed() {
+        return this.isMaxSpeed;
+    }
+    
     private void markLevelDone() {
         this.isLevelDone = true;
+    }
+
+    // FIXME: This will go away soon.
+    public ArrayList<Sprite> getSprites() {
+        return this.sprites;
     }
 
 }

@@ -5,6 +5,7 @@ import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 import game.Game;
+import game.scenes.LevelScene;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.canvas.GraphicsContext;
@@ -12,7 +13,7 @@ import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 
-public class Outlaw extends Sprite {
+public class Outlaw extends Sprite implements LevelUpdatable {
 
     private String name;
     private int strength;
@@ -140,7 +141,7 @@ public class Outlaw extends Sprite {
     }
     
     // method called if up/down/left/right arrow key is pressed.
-    public void update(long currentNanoTime) {
+    public void update(long currentNanoTime, LevelScene level) {
         super.update(currentNanoTime);
 
         // Keep a list containing bullets to be removed.

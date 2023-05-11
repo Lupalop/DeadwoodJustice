@@ -5,9 +5,10 @@ import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 import game.Game;
+import game.scenes.LevelScene;
 import javafx.scene.canvas.GraphicsContext;
 
-public abstract class Mob extends Sprite {
+public abstract class Mob extends Sprite implements LevelUpdatable {
 
     public static final int TOTAL_MOBS = 3;
     public static final int MIN_MOB_SPEED = 1;
@@ -138,9 +139,9 @@ public abstract class Mob extends Sprite {
     boolean passableX[] = new boolean[2];
     boolean passableY[] = new boolean[2];
 
-    public void update(long currentNanoTime, ArrayList<Sprite> sprites, boolean isMaxSpeed, boolean isSlowSpeed) {
-        this.isMaxSpeed = isMaxSpeed;
-        this.isSlowSpeed = isSlowSpeed;
+    public void update(long currentNanoTime, LevelScene level) {
+        this.isMaxSpeed = level.isMaxSpeed();
+        this.isSlowSpeed = level.isSlowSpeed();
         this.update(currentNanoTime);
 
         if (!this.isAlive()) {
@@ -153,7 +154,7 @@ public abstract class Mob extends Sprite {
         passableY[0] = this.getBounds().getMinY() >= 0;
         passableY[1] = this.getBounds().getMaxY() <= Game.WINDOW_HEIGHT;
 
-        for (Sprite sprite : sprites) {
+        for (Sprite sprite : level.getSprites()) {
             if (sprite == this) {
                 continue;
             } else if (sprite instanceof Outlaw) {
