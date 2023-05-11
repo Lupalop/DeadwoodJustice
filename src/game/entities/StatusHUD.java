@@ -20,6 +20,14 @@ public class StatusHUD extends Sprite {
 
     @Override
     public void draw(GraphicsContext gc) {
+        gc.save();
+
+        drawStatus(gc);
+
+        gc.restore();
+    }
+    
+    private void drawStatus(GraphicsContext gc) {
         gc.setFont(Game.FONT_32);
         gc.setFill(Paint.valueOf("EECA84"));
 
