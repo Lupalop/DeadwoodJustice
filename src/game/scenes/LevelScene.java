@@ -115,7 +115,7 @@ public class LevelScene implements GameScene {
                 (int) getOutlaw().getBounds().getHeight(),
                 Game.WINDOW_HEIGHT - (int) getOutlaw().getBounds().getHeight()));
         this.sprites.add(getOutlaw());
-        this.getOutlaw().handleKeyPressEvent(scene);
+        this.getOutlaw().handleKeyPressEvent(this);
         this.statusHud = new StatusHUD(this);
         this.levelStartTime = System.nanoTime();
         this.mobSpawnTime = System.nanoTime();

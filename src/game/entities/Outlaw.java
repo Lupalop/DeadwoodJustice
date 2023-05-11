@@ -207,9 +207,13 @@ public class Outlaw extends Sprite implements LevelUpdatable {
     }
 
     // method that will listen and handle the key press events
-    public void handleKeyPressEvent(Scene scene) {
+    public void handleKeyPressEvent(LevelScene level) {
+        Scene scene = level.getInnerScene();
         scene.addEventHandler(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>() {
             public void handle(KeyEvent e) {
+                if (level.isLevelDone()) {
+                    return;
+                }
                 KeyCode code = e.getCode();
                 startMoving(code);
             }
