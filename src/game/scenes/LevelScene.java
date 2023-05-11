@@ -417,11 +417,24 @@ public class LevelScene implements GameScene {
         return this.mobKillCount;
     }
     
-    public long getTimeLeft() {
+    public String getTimeLeftDisplayString() {
+        String formatString = "%s:%s";
         if (this.levelTimeLeft < 0) {
-            return 0;
+            return String.format(formatString, "0", "00");
         }
-        return this.levelTimeLeft;
+        long levelTimeLeftMinutes = 
+                TimeUnit.SECONDS.toMinutes(levelTimeLeft);
+        long levelTimeLeftSeconds =
+                levelTimeLeft - (60 * levelTimeLeftMinutes);
+        
+        if (levelTimeLeftSeconds <= 9) {
+            formatString = "%s:0%s";
+        }
+        
+        return String.format(
+                formatString,
+                levelTimeLeftMinutes,
+                levelTimeLeftSeconds);
     }
 
     public void notifyPowerupConsumed(int id) {

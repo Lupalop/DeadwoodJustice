@@ -1,7 +1,5 @@
 package game.entities;
 
-import java.util.concurrent.TimeUnit;
-
 import game.Game;
 import game.scenes.LevelScene;
 import javafx.scene.canvas.GraphicsContext;
@@ -30,7 +28,7 @@ public class StatusHUD extends Sprite {
             strength = "9999";
         }
         String mobKillCount = Integer.toString(level.getMobKillCount());
-        String timeLeft = String.format("%s s", level.getTimeLeft());
+        String timeLeft = level.getTimeLeftDisplayString();
         String powerupLampCount =
                 Integer.toString(level.getPowerupCount(LampPowerup.ID));
         String powerupHayCount =
