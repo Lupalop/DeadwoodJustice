@@ -462,10 +462,14 @@ public class LevelScene implements GameScene {
         return this.isMaxSpeed;
     }
     
-    private void markLevelDone() {
+    public void markLevelDone() {
         this.isLevelDone = true;
     }
 
+    public boolean isLevelDone() {
+        return this.isLevelDone;
+    }
+    
     // FIXME: This will go away soon.
     public ArrayList<Sprite> getSprites() {
         return this.sprites;
