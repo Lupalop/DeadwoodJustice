@@ -167,8 +167,7 @@ public class LevelScene implements GameScene {
                         || (this.bossMob != null
                         && !this.bossMob.isAlive()
                         && !this.bossMob.isDying()))) {
-            this.isLevelDone = true;
-            System.out.println("Game Done.");
+            this.markLevelDone();
         // Spawn the boss mob if the time is right.
         } else if (deltaTime >= LEVEL_BOSS_TIME && this.bossMob == null) {
             this.bossMob = new CowboyMob(Game.WINDOW_WIDTH, (Game.WINDOW_HEIGHT / 2));
@@ -456,5 +455,9 @@ public class LevelScene implements GameScene {
     public boolean isSlowSpeed() {
         return this.isSlowSpeed;
     }
-    
+
+    private void markLevelDone() {
+        this.isLevelDone = true;
+    }
+
 }
