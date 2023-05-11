@@ -32,9 +32,6 @@ public class StatusHUD extends Sprite {
         gc.setFill(Paint.valueOf("EECA84"));
 
         String strength = Integer.toString(level.getOutlaw().getStrength());
-        if (level.getOutlaw().isImmortal()) {
-            strength = "9999";
-        }
         String mobKillCount = Integer.toString(level.getMobKillCount());
         String timeLeft = level.getTimeLeftDisplayString();
         String powerupLampCount =
@@ -51,7 +48,11 @@ public class StatusHUD extends Sprite {
         TILESET.draw(gc, TILE_SIZE * 11, 0, 4);
         
         TILESET.draw(gc, TILE_SIZE * 8, 0, 8);
-        gc.fillText(strength, TILE_SIZE * 3, (32 / 2) + 3);
+        if (level.getOutlaw().isImmortal()) {
+            TILESET.draw(gc, TILE_SIZE * 3, -5, 14);
+        } else {
+            gc.fillText(strength, TILE_SIZE * 3, (32 / 2) + 3);
+        }
 
         TILESET.draw(gc, TILE_SIZE * 5, 0, 12);
         gc.fillText(mobKillCount, TILE_SIZE * 6, (32 / 2) + 3);
@@ -97,4 +98,5 @@ public class StatusHUD extends Sprite {
         TILESET.draw(gc, TILE_SIZE * 22, 0, 7);
         gc.restore();
     }
+
 }
