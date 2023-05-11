@@ -5,7 +5,7 @@ import java.util.concurrent.TimeUnit;
 import game.scenes.LevelScene;
 import javafx.scene.canvas.GraphicsContext;
 
-public abstract class Powerup extends Sprite {
+public abstract class Powerup extends Sprite implements LevelUpdatable {
 
     public static final int TOTAL_POWERUPS = 3;
     public static final long POWERUP_TIMEOUT =
@@ -34,17 +34,17 @@ public abstract class Powerup extends Sprite {
         super.draw(gc);
     }
     
-    public void update(long currentNanoTime, LevelScene scene) {
+    public void update(long currentNanoTime, LevelScene level) {
         if (this.consumed) {
             return;
         }
 
         super.update(currentNanoTime);
         
-        if (scene.getOutlaw().isAlive()) {
-            if (this.intersects(scene.getOutlaw())) {
+        if (level.getOutlaw().isAlive()) {
+            if (this.intersects(level.getOutlaw())) {
                 this.consumed = true;
-                doPowerup(scene);
+                doPowerup(level);
             }
         }
         
