@@ -160,8 +160,8 @@ public class Outlaw extends Sprite implements LevelUpdatable {
         if (this.isDying) {
             if (this.isFrameSequenceDone()) {
                 this.isDying = false;
-                // TODO: trigger game over screen.
-                System.out.println("Game over.");
+                level.markLevelDone();
+                return;
             }
         }
 
