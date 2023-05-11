@@ -56,4 +56,9 @@ public abstract class Powerup extends Sprite {
     }
     
     public abstract void doPowerup(LevelScene scene);
+
+    @Override
+    public int compareTo(Sprite o) {
+        return (int) ((this.getBounds().getMaxY() * 5) - o.getBounds().getMaxY());
+    }
 }
