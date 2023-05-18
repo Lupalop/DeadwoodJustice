@@ -60,6 +60,6 @@ public abstract class Powerup extends Sprite implements LevelUpdatable {
 
     @Override
     public int compareTo(Sprite o) {
-        return (int) ((this.getBounds().getMaxY() * 5) - o.getBounds().getMaxY());
+        return Integer.MAX_VALUE;
     }
 }
