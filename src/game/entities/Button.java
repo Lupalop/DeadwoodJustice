@@ -81,15 +81,6 @@ public class Button extends Sprite {
     }
 
     @Override
-    public void update(long currentNanoTime) {
-        this.text.setX(this.getBounds().getMinX()
-                + (this.getBounds().getWidth() / 2)
-                - (this.text.getBoundsInLocal().getWidth() / 2));
-        this.text.setY(this.getBounds().getMaxY()
-                - ((this.getBounds().getHeight() - Game.FONT_SIZE_BTN) / 2));
-    }
-    
-    @Override
     public void draw(GraphicsContext gc) {
         int[] parts = BUTTON_NORMAL_PARTS;
         if (this.isHover) {
@@ -101,6 +92,21 @@ public class Button extends Sprite {
         for (int i = 0; i < BUTTON_PARTS_COUNT; i++) {
             TILESET.draw(gc, this.getX() + (TILE_SIZE * i), this.getY(), parts[i]);
         }
+    }
+
+    @Override
+    public void setX(int x) {
+        super.setX(x);
+        this.text.setX(this.getBounds().getMinX()
+                + (this.getBounds().getWidth() / 2)
+                - (this.text.getBoundsInLocal().getWidth() / 2));
+    }
+
+    @Override
+    public void setY(int y) {
+        super.setY(y);
+        this.text.setY(this.getBounds().getMaxY()
+                - ((this.getBounds().getHeight() - Game.FONT_SIZE_BTN) / 2));
     }
 
     public String getText() {
