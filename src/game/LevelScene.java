@@ -13,7 +13,6 @@ import game.entities.LevelUpdatable;
 import game.entities.Mob;
 import game.entities.Outlaw;
 import game.entities.Powerup;
-import game.entities.Prop;
 import game.entities.SnakeOilPowerup;
 import game.entities.Sprite;
 import game.entities.StatusHUD;
@@ -193,13 +192,10 @@ public class LevelScene implements GameScene {
             return;
         }
         this.updateSprites(currentNanoTime);
-        this.updateLevelTime(currentNanoTime);
-    }
-
-    private void updateLevelTime(long currentNanoTime) {
-        long deltaTime = (currentNanoTime - this.levelStartTime);
-        this.levelTimeLeft = TimeUnit.NANOSECONDS.toSeconds(LEVEL_END_TIME - deltaTime);
+        this.levelMap.update(currentNanoTime);
         this.actions.update(currentNanoTime);
+        this.levelTimeLeft = TimeUnit.NANOSECONDS.toSeconds(
+                LEVEL_END_TIME - (currentNanoTime - this.levelStartTime));
     }
 
     @Override
@@ -228,8 +224,6 @@ public class LevelScene implements GameScene {
                 sprite.update(currentNanoTime);
             }
         }
-
-        this.levelMap.update(currentNanoTime);
     }
 
     private Mob randomizeMob() {
