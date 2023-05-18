@@ -15,11 +15,9 @@ import game.entities.LevelUpdatable;
 import game.entities.Mob;
 import game.entities.Outlaw;
 import game.entities.Powerup;
-import game.entities.Prop;
 import game.entities.SnakeOilPowerup;
 import game.entities.Sprite;
 import game.entities.StatusHUD;
-import game.entities.Tileset;
 import game.entities.WheelPowerup;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
@@ -32,19 +30,6 @@ import javafx.scene.paint.Color;
 
 public class LevelScene implements GameScene {
 
-    private static final int TILEGEN_MATCH = 1;
-    private static final int TILEGEN_FREQ_GRASS_OR_ROCK = 6;
-    private static final int TILEGEN_FREQ_CACTUS = 50;
-    private static final int TILEGEN_FREQ_PROPS = 150;
-    
-    private static final int TILE_SIZE = 32;
-    private static final int TILES_VERTICAL =
-            (Game.WINDOW_HEIGHT + 8) / TILE_SIZE;
-    private static final int TILES_HORIZONTAL =
-            (Game.WINDOW_WIDTH) / TILE_SIZE;
-    private static final int TILES_TOTAL =
-            TILES_VERTICAL * TILES_HORIZONTAL;
-    
     private Scene scene;
     private Group root;
     public Group getRoot() {
@@ -53,10 +38,6 @@ public class LevelScene implements GameScene {
 
     private Canvas canvas;
     private GraphicsContext gc;
-
-    private int[] tileLayer1;
-    private int[] tileLayer2;
-    private boolean generateTiles;
 
     private Outlaw outlaw;
     private Mob bossMob;
@@ -81,6 +62,8 @@ public class LevelScene implements GameScene {
     private boolean isZeroSpeed;
     private boolean isLevelDone;
 
+    private Tilemap tilemap;
+    
     public static final int MOB_COUNT_AT_SPAWN = 7;
     public static final int MOB_COUNT_PER_INTERVAL = 3;
 
@@ -101,9 +84,6 @@ public class LevelScene implements GameScene {
 
     private static final int OUTLAW_INITIAL_X = 100;
 
-    private static final Tileset TILESET_DESERT =
-            new Tileset("tilemap_desert.png", 3, 4);
-    
     public LevelScene() {
         this.root = new Group();
         this.scene = new Scene(root, Game.WINDOW_WIDTH,
@@ -136,17 +116,19 @@ public class LevelScene implements GameScene {
         this.isMaxSpeed = false;
         this.isSlowSpeed = false;
         this.isZeroSpeed = false;
-        this.generateTiles = true;
         this.isLevelDone = false;
         this.mobKillCount = 0;
         this.powerupsCount = new int[Powerup.TOTAL_POWERUPS];
+        this.tilemap = new Tilemap();
+        this.tilemap.generate();
+        this.tilemap.generateProps(this.sprites);
 
         if (Game.DEBUG_MODE) {
             scene.addEventHandler(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>() {
                 public void handle(KeyEvent e) {
                     KeyCode code = e.getCode();
                     if (code == KeyCode.F1) {
-                        generateTiles = true;
+                        tilemap.generate(true);
                     }
                 }
             });
@@ -242,83 +224,9 @@ public class LevelScene implements GameScene {
         this.gc.clearRect(0, 0, Game.WINDOW_WIDTH,
                 Game.WINDOW_HEIGHT);
 
-        this.drawTiles();
+        this.tilemap.draw(gc);
         this.drawSprites();
         this.statusHud.draw(gc);
-    }
-
-    private void drawTiles() {
-        // Initialize tile layers.
-        if (this.generateTiles) {
-            tileLayer1 = new int[TILES_TOTAL];
-            tileLayer2 = new int[TILES_TOTAL];
-
-            Random rand = new Random();
-            for (int i = 0; i < 3; i++) {
-                Prop tree = new Prop(
-                        rand.nextInt(1, 8) * rand.nextInt(1, 3) * 60,
-                        rand.nextInt(2, 6) * rand.nextInt(1, 3) * 60,
-                        "a_tree.png");
-                System.out.println(tree.getX() + ":" +  tree.getY());
-                sprites.add(tree);
-            }
-
-            Prop wagon = new Prop(
-                    rand.nextInt(50, Game.WINDOW_WIDTH / 2),
-                    rand.nextInt(3, 6) * 100,   
-                    "a_coveredwagon.png");
-            sprites.add(wagon);
-
-            Prop house = new Prop(
-                    rand.nextInt(Game.WINDOW_WIDTH / 2, Game.WINDOW_WIDTH),
-                    -100,
-                    "a_house.png");
-            sprites.add(house);
-        }
-        // Holds the current tile ID.
-        int tileId = 0;
-        // Iterate through each tile.
-        for (int i = 0; i < TILES_VERTICAL; i++) {
-            for (int j = 0; j < TILES_HORIZONTAL; j++) {
-                // The tile generator.
-                if (this.generateTiles) {
-                    Random rand = new Random();
-                    // Generate: land tile.
-                    tileLayer1[tileId] = rand.nextInt(0, 4);
-                    // Generate: grass.
-                    if (rand.nextInt(TILEGEN_FREQ_GRASS_OR_ROCK) == TILEGEN_MATCH) {
-                        tileLayer2[tileId] = rand.nextInt(6, 8);
-                    // Generate: rocks.
-                    } else if (rand.nextInt(TILEGEN_FREQ_GRASS_OR_ROCK) == TILEGEN_MATCH) {
-                        tileLayer2[tileId] = rand.nextInt(8, 10);
-                    // Generate: cactus.
-                    } else if (rand.nextInt(TILEGEN_FREQ_CACTUS) == TILEGEN_MATCH) {
-                        tileLayer2[tileId] = rand.nextInt(4, 6);
-                    // Generate: sign.
-                    } else if (rand.nextInt(TILEGEN_FREQ_PROPS) == TILEGEN_MATCH) {
-                        tileLayer2[tileId] = 10;
-                    // Generate: fossil.
-                    } else if (rand.nextInt(TILEGEN_FREQ_PROPS) == TILEGEN_MATCH) {
-                        tileLayer2[tileId] = 11;
-                    }
-                }
-                // Draw from the desert tileset.
-                gc.save();
-                gc.setGlobalAlpha(0.5);
-                TILESET_DESERT.draw(
-                        gc, TILE_SIZE * j, TILE_SIZE * i, tileLayer1[tileId]);
-                gc.restore();
-                if (tileLayer2[tileId] != 0) {
-                    TILESET_DESERT.draw(
-                            gc, TILE_SIZE * j, TILE_SIZE * i, tileLayer2[tileId]);
-                }
-                tileId++;
-            }
-        }
-        // Mark as done with tile generation.
-        if (this.generateTiles) {
-            this.generateTiles = false;
-        }
     }
     
     // method that will render/draw the mobs to the canvas
