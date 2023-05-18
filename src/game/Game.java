@@ -49,11 +49,14 @@ public final class Game {
     private static GameTimer gameTimer = new GameTimer();
     private static boolean initialized;
 
-    public static void run() {
+    public static void run(Stage primaryStage) {
         if (Game.initialized) {
             return;
         }
 
+        Game.primaryStage = primaryStage;
+        Game.primaryStage.setResizable(false);
+        Game.primaryStage.setTitle(GAME_NAME);
         Game.setGameScene(new LevelScene());
         Game.gameTimer.start();
         Game.primaryStage.show();
@@ -62,12 +65,6 @@ public final class Game {
 
     public static Stage getPrimaryStage() {
         return Game.primaryStage;
-    }
-
-    public static void setPrimaryStage(Stage primaryStage) {
-        Game.primaryStage = primaryStage;
-        Game.primaryStage.setResizable(false);
-        Game.primaryStage.setTitle(GAME_NAME);
     }
 
     public static GameScene getGameScene() {
