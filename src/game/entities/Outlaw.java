@@ -27,7 +27,7 @@ public class Outlaw extends Sprite implements LevelUpdatable {
     private long immortalityStartTime;
     private long immortalityEndTime;
 
-    private Sprite powerupEffect;
+    private Effect powerupEffect;
 
     public final static Image FRAMESET_W = new Image(
             Game.getAsset("player_sheet_w.png"));
@@ -357,10 +357,6 @@ public class Outlaw extends Sprite implements LevelUpdatable {
 
     // TODO: move to effects manager
     public void spawnPowerupEffect() {
-        this.powerupEffect = new SmokeEffect(0, this.getY());
-        this.powerupEffect.setX(
-                (int) (this.getBounds().getMinX()
-                        + (this.getBounds().getWidth() / 2)
-                        - this.powerupEffect.getWidth()));        
+        this.powerupEffect = new SmokeEffect(this);        
     }
 }

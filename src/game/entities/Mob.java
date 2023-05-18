@@ -23,7 +23,7 @@ public abstract class Mob extends Sprite implements LevelUpdatable {
     private boolean isDying;
 
     protected boolean moveRight;
-    private Sprite deathEffect;
+    private Effect deathEffect;
 
     private int health;
     private int damage;
@@ -237,11 +237,7 @@ public abstract class Mob extends Sprite implements LevelUpdatable {
         this.setFrameAutoReset(false);
         this.setFrameInterval(FRAME_DEATH_INTERVAL);
         this.setMinMaxFrame(frameRanges[6], frameRanges[7]);
-        this.deathEffect = new ExplosionEffect(0, this.getY());
-        this.deathEffect.setX(
-                (int) (this.getBounds().getMinX()
-                        + (this.getBounds().getWidth() / 2)
-                        - this.deathEffect.getWidth()));
+        this.deathEffect = new ExplosionEffect(this);
     }
 
     public void changeDirection() {
