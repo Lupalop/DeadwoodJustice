@@ -43,6 +43,7 @@ public final class Game {
     public static final boolean FLAG_FIX_DRAW_ORDER = true;
     public static final boolean FLAG_MOBS_CHECK_PASSABILITY = true;
     public static final boolean FLAG_IGNORE_PROP_COLLISION = true;
+    public static final boolean FLAG_MOBS_CAN_SHOOT = false;
 
     private static Stage primaryStage;
     private static GameScene gameScene;

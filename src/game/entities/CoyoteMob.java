@@ -21,11 +21,13 @@ public class CoyoteMob extends Mob {
                     // On being damaged
                     -1, -1,
                     // Death
-                    71, 74
+                    71, 74,
+                    // On shoot
+                    57, 73
             };
     
     public CoyoteMob(int x, int y) {
-        super(x, y, 1, -1);
+        super(x, y, 1, -1, Game.FLAG_MOBS_CAN_SHOOT);
 
         this.setFrameSet(FRAMESET_W, FRAMESET_ROWS, FRAMESET_COLUMNS);
         this.setBoundsOffset(FRAMESET_OFFSET);

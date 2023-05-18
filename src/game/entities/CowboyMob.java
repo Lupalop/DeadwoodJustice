@@ -21,11 +21,13 @@ public class CowboyMob extends Mob {
                     // On being damaged
                     16, 21,
                     // Death
-                    24, 27
+                    24, 27,
+                    // On shoot
+                    16, 21
             };
     
     public CowboyMob(int x, int y) {
-        super(x, y, 3000, 50);
+        super(x, y, 3000, 50, true);
         
         this.setIsDeadOnPlayerImpact(false);
         this.setFrameSet(FRAMESET_W, FRAMESET_ROWS, FRAMESET_COLUMNS);

@@ -1,5 +1,6 @@
 package game.entities;
 
+import java.util.ArrayList;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
@@ -15,6 +16,8 @@ public abstract class Mob extends Sprite implements LevelUpdatable {
 
     private final static long FRAME_DEATH_INTERVAL = 
             TimeUnit.MILLISECONDS.toNanos(300);
+    private static final long MOB_SHOOT_INTERVAL =
+            TimeUnit.SECONDS.toNanos(1);
 
     public final static int MAX_DAMAGE = 40;
     public final static int MIN_DAMAGE = 30;
@@ -22,6 +25,9 @@ public abstract class Mob extends Sprite implements LevelUpdatable {
     private boolean isAlive;
     private boolean isDying;
 
+    private long lastShootTime;
+    private boolean canShoot;
+    
     protected boolean moveRight;
     private Effect deathEffect;
 
@@ -35,10 +41,11 @@ public abstract class Mob extends Sprite implements LevelUpdatable {
     protected boolean isExcludedFromMaxSpeed;
     private boolean isPlayerInMobBounds;
     private boolean isStuck;
+    private ArrayList<Bullet> bullets;
 
     private int[] frameRanges;
 
-    public Mob(int x, int y, int health, int damage) {
+    public Mob(int x, int y, int health, int damage, boolean canShoot) {
         super(x, y);
         this.health = health;
         this.isDeadOnPlayerImpact = true;
@@ -59,6 +66,11 @@ public abstract class Mob extends Sprite implements LevelUpdatable {
         this.isExcludedFromMaxSpeed = false;
         this.isPlayerInMobBounds = false;
         this.isStuck = false;
+        this.canShoot = canShoot;
+        if (this.canShoot) {
+            this.bullets = new ArrayList<Bullet>();
+            this.lastShootTime = System.nanoTime();
+        }
         
         if (Game.FLAG_SMARTER_MOBS) {
             this.setIsChasingPlayer(rand.nextBoolean());
@@ -143,6 +155,21 @@ public abstract class Mob extends Sprite implements LevelUpdatable {
         this.isSlowSpeed = level.isSlowSpeed();
         this.update(currentNanoTime);
 
+        if (this.canShoot) {
+            // Keep a list containing bullets to be removed.
+            ArrayList<Bullet> removalList = new ArrayList<Bullet>();
+    
+            // Loop through the bullet list and remove used bullets.
+            for (Bullet bullet : this.getBullets()) {
+                bullet.update(currentNanoTime);
+                if (!bullet.getVisible()) {
+                    removalList.add(bullet);
+                }
+            }
+            
+            this.getBullets().removeAll(removalList);
+        }
+
         if (!this.isAlive()) {
             return;
         }
@@ -180,10 +207,24 @@ public abstract class Mob extends Sprite implements LevelUpdatable {
                 passableY[1] = false;
             }
         }
+
+        if (this.canShoot) {
+            // Shoot every n seconds.
+            long deltaTime = (currentNanoTime - lastShootTime);
+            if (deltaTime >= MOB_SHOOT_INTERVAL) {
+                this.shoot();
+                this.lastShootTime = currentNanoTime;
+            }
+        }
     }
     
     public void draw(GraphicsContext gc) {
         super.draw(gc);
+        if (this.canShoot) {
+            for (Bullet bullet : this.getBullets()) {
+                bullet.draw(gc);
+            }
+        }
         if (this.deathEffect != null) {
             this.deathEffect.draw(gc);
         }
@@ -226,7 +267,16 @@ public abstract class Mob extends Sprite implements LevelUpdatable {
                 bullet.setVisible(false);
                 break;
             }
-        }        
+        }
+        
+        if (this.canShoot) {
+            for (Bullet bullet : this.getBullets()) {
+                if (bullet.getVisible() && outlaw.intersects(bullet)) {
+                    outlaw.reduceStrength(this.damage);
+                    bullet.setVisible(false);
+                }
+            }
+        }
     }
     
     private void prepareDeath() {
@@ -243,6 +293,10 @@ public abstract class Mob extends Sprite implements LevelUpdatable {
         this.moveRight = !this.moveRight;
         int multiplier = this.moveRight ? 1 : -1;
         this.addX((int) this.getBounds().getWidth() / 2 * multiplier);
+    }
+
+    public ArrayList<Bullet> getBullets() {
+        return this.bullets;
     }
 
     protected void setIsDeadOnPlayerImpact(boolean value) {
@@ -292,5 +346,24 @@ public abstract class Mob extends Sprite implements LevelUpdatable {
             }
         }
     }
-    
+
+    public void shoot() {
+        if (!this.isAlive() || !this.canShoot) {
+            return;
+        }
+
+        int x = (int) (this.getBounds().getMaxX());
+        int y = (int) (this.getBounds().getMinY()
+            + (this.getBounds().getHeight() / 2)
+            - (Bullet.BULLET_IMAGE.getHeight() / 2));
+
+        // compute for the x and y initial position of the bullet
+        byte activeDirections = this.moveRight
+                ? Game.KEY_DIR_RIGHT
+                : Game.KEY_DIR_LEFT;
+        Bullet bullet = new Bullet(x, y, activeDirections, true);
+        this.bullets.add(bullet);
+        this.playFrames(frameRanges[8], frameRanges[9], null, 50);
+    }
+
 }

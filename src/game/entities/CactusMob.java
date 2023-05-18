@@ -21,11 +21,13 @@ public class CactusMob extends Mob {
                     // On being damaged
                     -1, -1,
                     // Death
-                    33, 36
+                    33, 36,
+                    // On shoot
+                    22, 31
             };
     
     public CactusMob(int x, int y) {
-        super(x, y, 1, -1);
+        super(x, y, 1, -1, Game.FLAG_MOBS_CAN_SHOOT);
 
         this.setFrameSet(FRAMESET_W, FRAMESET_ROWS, FRAMESET_COLUMNS);
         this.setBoundsOffset(FRAMESET_OFFSET);

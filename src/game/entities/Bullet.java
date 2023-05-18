@@ -11,8 +11,9 @@ public class Bullet extends Sprite {
             Bullet.BULLET_WIDTH, Bullet.BULLET_WIDTH, false, false);
     public final static int BULLET_WIDTH = 20;
 
-    public Bullet(int x, int y, byte activeDirections) {
+    public Bullet(int x, int y, byte activeDirections, boolean isDirectional) {
         super(x, y);
+        this.isDirectional = isDirectional;
         this.setImage(Bullet.BULLET_IMAGE);
         this.computeDestination(activeDirections);
     }
@@ -36,9 +37,10 @@ public class Bullet extends Sprite {
     private static final int OFFSET_SE = -30;
     private static final int OFFSET_SW = -20;
     private static final int OFFSET_W = -35;
-    
+    private boolean isDirectional;
+
     private void computeDestination(byte activeDirections) {
-        if (Game.FLAG_DIRECTIONAL_SHOOTING) {
+        if (isDirectional) {
             boolean noHorizontalDirections = !Game.isDirectionActive(activeDirections, Game.KEY_DIR_RIGHT)
                     && !Game.isDirectionActive(activeDirections, Game.KEY_DIR_LEFT);
             if (Game.isDirectionActive(activeDirections, Game.KEY_DIR_UP)) {

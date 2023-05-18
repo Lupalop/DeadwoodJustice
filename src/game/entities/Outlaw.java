@@ -102,7 +102,7 @@ public class Outlaw extends Sprite implements LevelUpdatable {
             - (Bullet.BULLET_IMAGE.getHeight() / 2));
 
         // compute for the x and y initial position of the bullet
-        Bullet bullet = new Bullet(x, y, activeDirections);
+        Bullet bullet = new Bullet(x, y, activeDirections, Game.FLAG_DIRECTIONAL_SHOOTING);
         this.bullets.add(bullet);
     }
 
