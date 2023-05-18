@@ -36,6 +36,7 @@ public abstract class Mob extends Sprite implements LevelUpdatable {
     private int speed;
     private boolean isMaxSpeed;
     private boolean isSlowSpeed;
+    private boolean isZeroSpeed;
     private boolean isDeadOnPlayerImpact;
     private boolean isChasingPlayer;
     protected boolean isExcludedFromMaxSpeed;
@@ -63,6 +64,7 @@ public abstract class Mob extends Sprite implements LevelUpdatable {
         }
         this.isMaxSpeed = false;
         this.isSlowSpeed = false;
+        this.isZeroSpeed = false;
         this.isExcludedFromMaxSpeed = false;
         this.isPlayerInMobBounds = false;
         this.isStuck = false;
@@ -104,6 +106,10 @@ public abstract class Mob extends Sprite implements LevelUpdatable {
                 : this.speed;
         if (this.isSlowSpeed) {
             this.dx = MIN_MOB_SPEED;
+        }
+        // Zero speed power-up takes precedence over slow speed power-up.
+        if (this.isZeroSpeed) {
+            this.dx = 0;
         }
 
         int nextX = (int) (getBounds().getMinX() + dx);
@@ -153,6 +159,7 @@ public abstract class Mob extends Sprite implements LevelUpdatable {
     public void update(long currentNanoTime, LevelScene level) {
         this.isMaxSpeed = level.isMaxSpeed();
         this.isSlowSpeed = level.isSlowSpeed();
+        this.isZeroSpeed = level.isZeroSpeed();
         this.update(currentNanoTime);
 
         if (this.canShoot) {
@@ -328,7 +335,7 @@ public abstract class Mob extends Sprite implements LevelUpdatable {
             return;
         }
 
-        if (outlaw.intersects(this, true, false)) {
+        if (outlaw.intersects(this, true, false) || this.isZeroSpeed) {
             this.dy = 0;
         } else if (outlaw.getBounds().getMinY() > this.getBounds().getMinY()) {
             this.dy = this.speed;

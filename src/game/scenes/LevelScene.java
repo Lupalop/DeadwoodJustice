@@ -17,6 +17,7 @@ import game.entities.Mob;
 import game.entities.Outlaw;
 import game.entities.Powerup;
 import game.entities.Prop;
+import game.entities.SnakeOilPowerup;
 import game.entities.Sprite;
 import game.entities.StatusHUD;
 import game.entities.Tileset;
@@ -74,8 +75,11 @@ public class LevelScene implements GameScene {
     private long levelStartTime;
     private long slowSpeedTime;
     private long slowSpeedEndTime;
+    private long zeroSpeedTime;
+    private long zeroSpeedEndTime;
     private boolean isMaxSpeed;
     private boolean isSlowSpeed;
+    private boolean isZeroSpeed;
     private boolean isLevelDone;
 
     public static final int MOB_COUNT_AT_SPAWN = 7;
@@ -128,8 +132,11 @@ public class LevelScene implements GameScene {
         this.maxSpeedEndTime = -1;
         this.slowSpeedTime = -1;
         this.slowSpeedEndTime = -1;
+        this.zeroSpeedTime = -1;
+        this.zeroSpeedEndTime = -1;
         this.isMaxSpeed = false;
         this.isSlowSpeed = false;
+        this.isZeroSpeed = false;
         this.generateTiles = true;
         this.isLevelDone = false;
         this.mobKillCount = 0;
@@ -213,6 +220,14 @@ public class LevelScene implements GameScene {
             this.isSlowSpeed = false;
             this.slowSpeedTime = -1;
             this.slowSpeedEndTime = -1;
+        }
+
+        // Slow down after provided timeout.
+        deltaTime = (currentNanoTime - zeroSpeedTime);
+        if (deltaTime >= zeroSpeedEndTime) {
+            this.isZeroSpeed = false;
+            this.zeroSpeedTime = -1;
+            this.zeroSpeedEndTime = -1;
         }
 
         // Spawn power-ups every 10 seconds.
@@ -390,6 +405,9 @@ public class LevelScene implements GameScene {
         case WheelPowerup.ID:
             powerup = new WheelPowerup(0, 0);
             break;
+        case SnakeOilPowerup.ID:
+            powerup = new SnakeOilPowerup(0, 0);
+            break;
         default:
             // This should not be reached.
             powerup = null;
@@ -416,6 +434,12 @@ public class LevelScene implements GameScene {
         this.isSlowSpeed = true;
         this.slowSpeedTime = System.nanoTime();
         this.slowSpeedEndTime = powerupTimeout;
+    }
+
+    public void triggerZeroMobSpeed(long powerupTimeout) {
+        this.isZeroSpeed = true;
+        this.zeroSpeedTime = System.nanoTime();
+        this.zeroSpeedEndTime = powerupTimeout;
     }
     
     public int getMobKillCount() {
@@ -460,6 +484,10 @@ public class LevelScene implements GameScene {
     
     public boolean isSlowSpeed() {
         return this.isSlowSpeed;
+    }
+
+    public boolean isZeroSpeed() {
+        return this.isZeroSpeed;
     }
 
     public boolean isMaxSpeed() {

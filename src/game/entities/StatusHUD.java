@@ -71,6 +71,10 @@ public class StatusHUD extends Sprite implements LevelUpdatable {
         String powerupWheelCountText =
                 Integer.toString(powerupWheelCount);
 
+        int powerupSnakeOilCount = level.getPowerupCount(SnakeOilPowerup.ID);
+        String powerupSnakeOilCountText =
+                Integer.toString(powerupSnakeOilCount);
+
         TILESET.draw(gc, TILE_SIZE, 0, 3);
         for (int i = 0; i < 9; i++) {
             TILESET.draw(gc, TILE_SIZE * (i + 2), 0, 1);
@@ -123,9 +127,13 @@ public class StatusHUD extends Sprite implements LevelUpdatable {
         gc.restore();
 
         gc.save();
-        gc.setGlobalAlpha(0.5);
+        if (!level.isZeroSpeed()) {
+            gc.setGlobalAlpha(0.5);
+        }
         TILESET.draw(gc, TILE_SIZE * 21, 0, 5);
+        TILESET.draw(gc, TILE_SIZE * 21, 0, 15);
         TILESET.draw(gc, TILE_SIZE * 22, 0, 7);
+        gc.fillText(powerupSnakeOilCountText, TILE_SIZE * 22, (32 / 2) + 3);
         gc.restore();
     }
     

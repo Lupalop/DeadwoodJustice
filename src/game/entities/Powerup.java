@@ -7,7 +7,7 @@ import javafx.scene.canvas.GraphicsContext;
 
 public abstract class Powerup extends Sprite implements LevelUpdatable {
 
-    public static final int TOTAL_POWERUPS = 3;
+    public static final int TOTAL_POWERUPS = 4;
     public static final long POWERUP_TIMEOUT =
             TimeUnit.SECONDS.toNanos(5);
     
