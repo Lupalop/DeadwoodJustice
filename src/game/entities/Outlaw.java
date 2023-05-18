@@ -355,7 +355,7 @@ public class Outlaw extends Sprite implements LevelUpdatable {
         }
     }
 
-    public void triggerImmortality(long endTime) {
+    public void applyImmortality(long endTime) {
         this.immortalityEffect = new ImmortalityEffect(this);
         this.isImmortal = true;
         this.immortalityStartTime = System.nanoTime();

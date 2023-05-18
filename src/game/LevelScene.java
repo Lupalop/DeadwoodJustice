@@ -337,13 +337,13 @@ public class LevelScene implements GameScene {
         return outlaw;
     }
 
-    public void triggerSlowMobSpeed(long powerupTimeout) {
+    public void applySlowMobSpeed(long powerupTimeout) {
         this.slowSpeed = true;
         this.slowSpeedTime = System.nanoTime();
         this.slowSpeedEndTime = powerupTimeout;
     }
 
-    public void triggerZeroMobSpeed(long powerupTimeout) {
+    public void applyZeroMobSpeed(long powerupTimeout) {
         this.zeroSpeed = true;
         this.zeroSpeedTime = System.nanoTime();
         this.zeroSpeedEndTime = powerupTimeout;

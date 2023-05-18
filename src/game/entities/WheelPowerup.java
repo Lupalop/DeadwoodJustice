@@ -18,7 +18,7 @@ public class WheelPowerup extends Powerup {
 
     @Override
     public void doPowerup(LevelScene scene) {
-        scene.triggerSlowMobSpeed(POWERUP_TIMEOUT);
+        scene.applySlowMobSpeed(POWERUP_TIMEOUT);
         scene.notifyPowerupConsumed(ID);
     }
     

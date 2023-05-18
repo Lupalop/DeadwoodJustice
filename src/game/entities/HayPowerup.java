@@ -18,7 +18,7 @@ public class HayPowerup extends Powerup {
 
     @Override
     public void doPowerup(LevelScene scene) {
-        scene.getOutlaw().triggerImmortality(POWERUP_TIMEOUT);
+        scene.getOutlaw().applyImmortality(POWERUP_TIMEOUT);
         scene.notifyPowerupConsumed(ID);
     }
     

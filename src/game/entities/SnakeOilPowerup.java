@@ -18,7 +18,7 @@ public class SnakeOilPowerup extends Powerup {
 
     @Override
     public void doPowerup(LevelScene scene) {
-        scene.triggerZeroMobSpeed(POWERUP_TIMEOUT);
+        scene.applyZeroMobSpeed(POWERUP_TIMEOUT);
         scene.notifyPowerupConsumed(ID);
     }
     
