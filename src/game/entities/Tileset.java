@@ -6,6 +6,8 @@ import javafx.scene.image.Image;
 
 public class Tileset extends Sprite {
 
+    public static final int TILE_SIZE = 32;
+
     public Tileset(String assetPath, int rows, int columns) {
         super(0, 0);
         

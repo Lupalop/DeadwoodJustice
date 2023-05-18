@@ -19,12 +19,11 @@ public class LevelMap {
     private static final int TILEGEN_FREQ_CACTUS = 50;
     private static final int TILEGEN_FREQ_PROPS = 150;
 
-    private static final int TILE_SIZE = 32;
-    private static final int TILES_VERTICAL =
-            (Game.WINDOW_HEIGHT + 8) / TILE_SIZE;
-    private static final int TILES_HORIZONTAL =
-            (Game.WINDOW_WIDTH) / TILE_SIZE;
-    private static final int TILES_TOTAL =
+    public static final int TILES_VERTICAL =
+            (Game.WINDOW_HEIGHT + 8) / Tileset.TILE_SIZE;
+    public static final int TILES_HORIZONTAL =
+            (Game.WINDOW_WIDTH) / Tileset.TILE_SIZE;
+    public static final int TILES_TOTAL =
             TILES_VERTICAL * TILES_HORIZONTAL;
 
     private static final Tileset TILESET_DESERT =
@@ -134,11 +133,11 @@ public class LevelMap {
                     gc.save();
                     gc.setGlobalAlpha(0.5);
                     TILESET_DESERT.draw(
-                            gc, TILE_SIZE * j, TILE_SIZE * i, tileLayer1[tileId]);
+                            gc, Tileset.TILE_SIZE * j, Tileset.TILE_SIZE * i, tileLayer1[tileId]);
                     gc.restore();
                     if (tileLayer2[tileId] != 0) {
                         TILESET_DESERT.draw(
-                                gc, TILE_SIZE * j, TILE_SIZE * i, tileLayer2[tileId]);
+                                gc, Tileset.TILE_SIZE * j, Tileset.TILE_SIZE * i, tileLayer2[tileId]);
                     }
                     tileId++;
                 }

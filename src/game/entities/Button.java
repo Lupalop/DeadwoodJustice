@@ -13,7 +13,6 @@ public class Button extends Sprite {
 
     private static final Tileset TILESET =
             new Tileset("tilemap_ui.png", 4, 8);
-    private static int TILE_SIZE = 32;
 
     private static final int BUTTON_PARTS_COUNT = 4;
     private static final int BUTTON_NORMAL_PARTS[] = {19, 20, 20, 21};
@@ -35,8 +34,8 @@ public class Button extends Sprite {
         this.handleMouseEvent(scene.getInnerScene());
         this.isHover = false;
         this.isActive = false;
-        this.setWidth(TILE_SIZE * BUTTON_PARTS_COUNT);
-        this.setHeight(TILE_SIZE);
+        this.setWidth(Tileset.TILE_SIZE * BUTTON_PARTS_COUNT);
+        this.setHeight(Tileset.TILE_SIZE);
         text = new Text();
         text.setFont(Game.FONT_BTN);
         text.setFill(Paint.valueOf("49276d"));
@@ -90,7 +89,7 @@ public class Button extends Sprite {
             parts = BUTTON_ACTIVE_PARTS;
         }
         for (int i = 0; i < BUTTON_PARTS_COUNT; i++) {
-            TILESET.draw(gc, this.getX() + (TILE_SIZE * i), this.getY(), parts[i]);
+            TILESET.draw(gc, this.getX() + (Tileset.TILE_SIZE * i), this.getY(), parts[i]);
         }
     }
 
