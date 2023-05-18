@@ -422,7 +422,7 @@ public class LevelScene implements GameScene {
         return this.mobKillCount;
     }
     
-    public String getTimeLeftDisplayString() {
+    public String getTimeLeftDisplayText() {
         String formatString = "%s:%s";
         if (this.levelTimeLeft < 0) {
             return String.format(formatString, "0", "00");
