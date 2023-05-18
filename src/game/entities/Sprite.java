@@ -73,6 +73,10 @@ public abstract class Sprite implements Comparable<Sprite> {
         this.boundsOffset = null;
     }
 
+    public Sprite() {
+        this(0, 0);
+    }
+    
     public void draw(GraphicsContext gc) {
         double flipOffsetX = (flipHorizontal ? (this.getWidth() * this.scale) : 0);
         double flipOffsetY = (flipVertical ? (this.getHeight() * this.scale) : 0);
