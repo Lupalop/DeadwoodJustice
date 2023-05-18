@@ -161,13 +161,11 @@ public abstract class Mob extends Sprite implements LevelUpdatable {
                 continue;
             }
 
-            if ((Game.FLAG_IGNORE_PROP_COLLISION && sprite instanceof Prop)
+            if (!Game.FLAG_MOBS_CHECK_PASSABILITY
+                    || (Game.FLAG_IGNORE_PROP_COLLISION && sprite instanceof Prop)
+                    || (sprite instanceof Mob && !((Mob)sprite).isAlive()) 
                     || sprite instanceof Powerup
                     || sprite instanceof StatusHUD) {
-                continue;
-            }
-            
-            if (!Game.FLAG_MOBS_CHECK_PASSABILITY) {
                 continue;
             }
             
