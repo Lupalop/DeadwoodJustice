@@ -45,6 +45,7 @@ public abstract class Powerup extends Sprite implements LevelUpdatable {
             if (this.intersects(level.getOutlaw())) {
                 this.consumed = true;
                 doPowerup(level);
+                level.getOutlaw().spawnPowerupEffect();
             }
         }
         

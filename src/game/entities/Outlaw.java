@@ -27,6 +27,8 @@ public class Outlaw extends Sprite implements LevelUpdatable {
     private long immortalityStartTime;
     private long immortalityEndTime;
 
+    private Sprite powerupEffect;
+
     public final static Image FRAMESET_W = new Image(
             Game.getAsset("player_sheet_w.png"));
     public final static Image FRAMESET_SW = new Image(
@@ -138,11 +140,19 @@ public class Outlaw extends Sprite implements LevelUpdatable {
         for (Bullet bullet : this.getBullets()) {
             bullet.draw(gc);
         }
+
+        if (powerupEffect != null) {
+            powerupEffect.draw(gc);
+        }
     }
     
     // method called if up/down/left/right arrow key is pressed.
     public void update(long currentNanoTime, LevelScene level) {
         super.update(currentNanoTime);
+
+        if (powerupEffect != null) {
+            powerupEffect.update(currentNanoTime);
+        }
 
         // Keep a list containing bullets to be removed.
         ArrayList<Bullet> removalList = new ArrayList<Bullet>();
@@ -344,5 +354,13 @@ public class Outlaw extends Sprite implements LevelUpdatable {
     public boolean isImmortal() {
         return this.isImmortal;
     }
-    
+
+    // TODO: move to effects manager
+    public void spawnPowerupEffect() {
+        this.powerupEffect = new SmokeEffect(0, this.getY());
+        this.powerupEffect.setX(
+                (int) (this.getBounds().getMinX()
+                        + (this.getBounds().getWidth() / 2)
+                        - this.powerupEffect.getWidth()));        
+    }
 }
