@@ -57,10 +57,10 @@ public class LevelScene implements GameScene {
     private long slowSpeedEndTime;
     private long zeroSpeedTime;
     private long zeroSpeedEndTime;
-    private boolean isMaxSpeed;
-    private boolean isSlowSpeed;
-    private boolean isZeroSpeed;
-    private boolean isLevelDone;
+    private boolean maxSpeed;
+    private boolean slowSpeed;
+    private boolean zeroSpeed;
+    private boolean levelDone;
 
     private Tilemap tilemap;
     
@@ -113,10 +113,10 @@ public class LevelScene implements GameScene {
         this.slowSpeedEndTime = -1;
         this.zeroSpeedTime = -1;
         this.zeroSpeedEndTime = -1;
-        this.isMaxSpeed = false;
-        this.isSlowSpeed = false;
-        this.isZeroSpeed = false;
-        this.isLevelDone = false;
+        this.maxSpeed = false;
+        this.slowSpeed = false;
+        this.zeroSpeed = false;
+        this.levelDone = false;
         this.mobKillCount = 0;
         this.powerupsCount = new int[Powerup.TOTAL_POWERUPS];
         this.tilemap = new Tilemap();
@@ -145,7 +145,7 @@ public class LevelScene implements GameScene {
     @Override
     public void update(long currentNanoTime) {
         this.statusHud.update(currentNanoTime, this);
-        if (this.isLevelDone) {
+        if (this.levelDone) {
             return;
         }
         this.updateSprites(currentNanoTime);
@@ -181,7 +181,7 @@ public class LevelScene implements GameScene {
         // Speed up mob movement every 15 seconds.
         deltaTime = (currentNanoTime - maxSpeedTime);
         if (deltaTime >= MOB_MAX_SPEED_INTERVAL) {
-            this.isMaxSpeed = true;
+            this.maxSpeed = true;
             this.maxSpeedTime = currentNanoTime + MOB_MAX_SPEED_END_INTERVAL;
             this.maxSpeedEndTime = currentNanoTime;
         }
@@ -190,7 +190,7 @@ public class LevelScene implements GameScene {
         if (maxSpeedEndTime != -1) {
             deltaTime = (currentNanoTime - maxSpeedEndTime);
             if (deltaTime >= MOB_MAX_SPEED_END_INTERVAL) {
-                this.isMaxSpeed = false;
+                this.maxSpeed = false;
                 this.maxSpeedEndTime = -1;
             }
         }
@@ -198,7 +198,7 @@ public class LevelScene implements GameScene {
         // Slow down after provided timeout.
         deltaTime = (currentNanoTime - slowSpeedTime);
         if (deltaTime >= slowSpeedEndTime) {
-            this.isSlowSpeed = false;
+            this.slowSpeed = false;
             this.slowSpeedTime = -1;
             this.slowSpeedEndTime = -1;
         }
@@ -206,7 +206,7 @@ public class LevelScene implements GameScene {
         // Slow down after provided timeout.
         deltaTime = (currentNanoTime - zeroSpeedTime);
         if (deltaTime >= zeroSpeedEndTime) {
-            this.isZeroSpeed = false;
+            this.zeroSpeed = false;
             this.zeroSpeedTime = -1;
             this.zeroSpeedEndTime = -1;
         }
@@ -338,13 +338,13 @@ public class LevelScene implements GameScene {
     }
 
     public void triggerSlowMobSpeed(long powerupTimeout) {
-        this.isSlowSpeed = true;
+        this.slowSpeed = true;
         this.slowSpeedTime = System.nanoTime();
         this.slowSpeedEndTime = powerupTimeout;
     }
 
     public void triggerZeroMobSpeed(long powerupTimeout) {
-        this.isZeroSpeed = true;
+        this.zeroSpeed = true;
         this.zeroSpeedTime = System.nanoTime();
         this.zeroSpeedEndTime = powerupTimeout;
     }
@@ -390,25 +390,25 @@ public class LevelScene implements GameScene {
     }
     
     public boolean isSlowSpeed() {
-        return this.isSlowSpeed;
+        return this.slowSpeed;
     }
 
     public boolean isZeroSpeed() {
-        return this.isZeroSpeed;
+        return this.zeroSpeed;
     }
 
     public boolean isMaxSpeed() {
-        return this.isMaxSpeed;
-    }
-    
-    public void markLevelDone() {
-        this.isLevelDone = true;
+        return this.maxSpeed;
     }
 
     public boolean isLevelDone() {
-        return this.isLevelDone;
+        return this.levelDone;
     }
-    
+
+    public void markLevelDone() {
+        this.levelDone = true;
+    }
+
     // FIXME: This will go away soon.
     public ArrayList<Sprite> getSprites() {
         return this.sprites;
