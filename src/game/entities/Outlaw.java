@@ -28,6 +28,7 @@ public class Outlaw extends Sprite implements LevelUpdatable {
     private long immortalityEndTime;
 
     private Effect powerupEffect;
+    private Effect immortalityEffect;
 
     public final static Image FRAMESET_W = new Image(
             Game.getAsset("player_sheet_w.png"));
@@ -136,6 +137,10 @@ public class Outlaw extends Sprite implements LevelUpdatable {
     
     @Override
     public void draw(GraphicsContext gc) {
+        if (immortalityEffect != null) {
+            immortalityEffect.draw(gc);
+        }
+
         super.draw(gc);
         for (Bullet bullet : this.getBullets()) {
             bullet.draw(gc);
@@ -149,6 +154,10 @@ public class Outlaw extends Sprite implements LevelUpdatable {
     // method called if up/down/left/right arrow key is pressed.
     public void update(long currentNanoTime, LevelScene level) {
         super.update(currentNanoTime);
+
+        if (immortalityEffect != null) {
+            immortalityEffect.update(currentNanoTime);
+        }
 
         if (powerupEffect != null) {
             powerupEffect.update(currentNanoTime);
@@ -210,6 +219,7 @@ public class Outlaw extends Sprite implements LevelUpdatable {
         
         long deltaTime = (currentNanoTime - this.immortalityStartTime);
         if (deltaTime >= this.immortalityEndTime) {
+            this.immortalityEffect = null;
             this.immortalityStartTime = -1;
             this.immortalityEndTime = -1;
             this.isImmortal = false;
@@ -346,6 +356,7 @@ public class Outlaw extends Sprite implements LevelUpdatable {
     }
 
     public void triggerImmortality(long endTime) {
+        this.immortalityEffect = new ImmortalityEffect(this);
         this.isImmortal = true;
         this.immortalityStartTime = System.nanoTime();
         this.immortalityEndTime = endTime;
