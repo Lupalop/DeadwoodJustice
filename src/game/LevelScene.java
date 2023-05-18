@@ -55,7 +55,8 @@ public class LevelScene implements GameScene {
     private boolean levelDone;
 
     private LevelMap levelMap;
-    
+    private Random random;
+
     public static final int MOB_COUNT_AT_SPAWN = 7;
     public static final int MOB_COUNT_PER_INTERVAL = 3;
 
@@ -85,11 +86,11 @@ public class LevelScene implements GameScene {
         this.gc = canvas.getGraphicsContext2D();
         this.gc.setImageSmoothing(false);
         this.root.getChildren().add(canvas);
-        Random rand = new Random();
+        this.random = new Random();
         this.outlaw = new Outlaw(
                 "Going merry",
                 OUTLAW_INITIAL_X, 0);
-        this.getOutlaw().setY(rand.nextInt(
+        this.getOutlaw().setY(this.random.nextInt(
                 (int) getOutlaw().getBounds().getHeight(),
                 Game.WINDOW_HEIGHT - (int) getOutlaw().getBounds().getHeight()));
         this.getOutlaw().handleKeyPressEvent(this);
@@ -232,8 +233,7 @@ public class LevelScene implements GameScene {
     }
 
     private Mob randomizeMob() {
-        Random rand = new Random();
-        switch (rand.nextInt(0, Mob.TOTAL_MOBS)) {
+        switch (this.random.nextInt(0, Mob.TOTAL_MOBS)) {
         case 0:
             return new CactusMob(0, 0);
         case 1:
@@ -248,17 +248,16 @@ public class LevelScene implements GameScene {
     
     // method that will spawn/instantiate three mobs at a random x,y location
     private void spawnMobs(int mobCount) {
-        Random r = new Random();
         for (int i = 0; i < mobCount; i++) {
             Mob mob = randomizeMob();
             
             int mobWidth = (int) mob.getBounds().getWidth();
             int mobHeight = (int) mob.getBounds().getHeight();
 
-            mob.setX(r.nextInt(
+            mob.setX(this.random.nextInt(
                     Game.WINDOW_WIDTH / 2,
                     Game.WINDOW_WIDTH - mobWidth));
-            mob.setY(r.nextInt(
+            mob.setY(this.random.nextInt(
                     mobHeight,
                     Game.WINDOW_HEIGHT - mobHeight * 2));
             
@@ -267,9 +266,8 @@ public class LevelScene implements GameScene {
     }
 
     private void spawnPowerups() {
-        Random r = new Random();
         Powerup powerup = null;
-        switch (r.nextInt(0, Powerup.TOTAL_POWERUPS)) {
+        switch (this.random.nextInt(0, Powerup.TOTAL_POWERUPS)) {
         case LampPowerup.ID:
             powerup = new LampPowerup(0, 0);
             break;
@@ -290,10 +288,10 @@ public class LevelScene implements GameScene {
         int powerupWidth = (int) powerup.getBounds().getWidth();
         int powerupHeight = (int) powerup.getBounds().getHeight();
 
-        powerup.setX(r.nextInt(
+        powerup.setX(this.random.nextInt(
                 powerupWidth,
                 Game.WINDOW_WIDTH / 2));
-        powerup.setY(r.nextInt(
+        powerup.setY(this.random.nextInt(
                 powerupHeight,
                 Game.WINDOW_HEIGHT - powerupHeight * 2));
 
