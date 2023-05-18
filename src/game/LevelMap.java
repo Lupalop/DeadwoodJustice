@@ -1,6 +1,7 @@
 package game;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Random;
 
 import game.entities.Prop;
@@ -8,7 +9,7 @@ import game.entities.Sprite;
 import game.entities.Tileset;
 import javafx.scene.canvas.GraphicsContext;
 
-public class Tilemap {
+public class LevelMap {
 
     private static final int TILEGEN_MATCH = 1;
     private static final int TILEGEN_FREQ_GRASS_OR_ROCK = 6;
@@ -29,10 +30,18 @@ public class Tilemap {
     private int[] tileLayer1;
     private int[] tileLayer2;
 
+    private ArrayList<Sprite> sprites;
+    private ArrayList<Sprite> pendingSpriteAdds;
+    private ArrayList<Sprite> pendingSpriteRemoves;
+
     private boolean doneGenerating;
 
-    public Tilemap() {
+    public LevelMap() {
         this.doneGenerating = false;
+
+        this.sprites = new ArrayList<Sprite>();
+        this.pendingSpriteAdds = new ArrayList<Sprite>();
+        this.pendingSpriteRemoves = new ArrayList<Sprite>();
     }
 
     public void generate(boolean regenerate) {
@@ -79,14 +88,14 @@ public class Tilemap {
         generate(false);
     }
 
-    public void generateProps(ArrayList<Sprite> sprites) {
+    public void generateProps() {
         Random rand = new Random();
         for (int i = 0; i < 3; i++) {
             Prop tree = new Prop(
                     rand.nextInt(1, 8) * rand.nextInt(1, 3) * 60,
                     rand.nextInt(2, 6) * rand.nextInt(1, 3) * 60,
                     "a_tree.png");
-            sprites.add(tree);
+            this.sprites.add(tree);
         }
 
         Prop wagon = new Prop(
@@ -98,35 +107,72 @@ public class Tilemap {
                 -100,
                 "a_house.png");
 
-        sprites.add(wagon);
-        sprites.add(house);
+        this.sprites.add(wagon);
+        this.sprites.add(house);
     }
 
     public void draw(GraphicsContext gc) {
-        if (!this.doneGenerating) {
-            return;
+        this.drawTiles(gc);
+        this.drawSprites(gc);
+    }
+
+    private void drawSprites(GraphicsContext gc) {
+        for (Sprite sprite : this.sprites) {
+            sprite.draw(gc);
         }
-        
-        int tileId = 0;
-        for (int i = 0; i < TILES_VERTICAL; i++) {
-            for (int j = 0; j < TILES_HORIZONTAL; j++) {
-                // Draw from the desert tileset.
-                gc.save();
-                gc.setGlobalAlpha(0.5);
-                TILESET_DESERT.draw(
-                        gc, TILE_SIZE * j, TILE_SIZE * i, tileLayer1[tileId]);
-                gc.restore();
-                if (tileLayer2[tileId] != 0) {
+    }
+
+    private void drawTiles(GraphicsContext gc) {
+        if (this.doneGenerating) {
+            int tileId = 0;
+            for (int i = 0; i < TILES_VERTICAL; i++) {
+                for (int j = 0; j < TILES_HORIZONTAL; j++) {
+                    // Draw from the desert tileset.
+                    gc.save();
+                    gc.setGlobalAlpha(0.5);
                     TILESET_DESERT.draw(
-                            gc, TILE_SIZE * j, TILE_SIZE * i, tileLayer2[tileId]);
+                            gc, TILE_SIZE * j, TILE_SIZE * i, tileLayer1[tileId]);
+                    gc.restore();
+                    if (tileLayer2[tileId] != 0) {
+                        TILESET_DESERT.draw(
+                                gc, TILE_SIZE * j, TILE_SIZE * i, tileLayer2[tileId]);
+                    }
+                    tileId++;
                 }
-                tileId++;
             }
+        }
+    }
+
+    public void update(long now) {
+        if (Game.FLAG_FIX_DRAW_ORDER) {
+            Collections.sort(this.sprites);
+        }
+
+        if (this.pendingSpriteAdds.size() > 0) {
+            this.getSprites().addAll(this.pendingSpriteAdds);
+            this.pendingSpriteAdds.clear();
+        }
+
+        if (this.pendingSpriteRemoves.size() > 0) {
+            this.getSprites().removeAll(this.pendingSpriteRemoves);
+            this.pendingSpriteRemoves.clear();
         }
     }
 
     public boolean isDoneGenerating() {
         return doneGenerating;
+    }
+
+    public ArrayList<Sprite> getSprites() {
+        return this.sprites;
+    }
+
+    public void addSpriteOnUpdate(Sprite sprite) {
+        this.pendingSpriteAdds.add(sprite);
+    }
+
+    public void removeSpriteOnUpdate(Sprite sprite) {
+        this.pendingSpriteRemoves.add(sprite);
     }
 
 }

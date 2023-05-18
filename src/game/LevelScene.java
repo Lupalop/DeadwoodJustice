@@ -1,7 +1,5 @@
 package game;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
@@ -42,7 +40,6 @@ public class LevelScene implements GameScene {
     private Outlaw outlaw;
     private Mob bossMob;
     private StatusHUD statusHud;
-    private ArrayList<Sprite> sprites;
     private TimedActionManager actions;
 
     private int mobKillCount;
@@ -56,7 +53,7 @@ public class LevelScene implements GameScene {
     private boolean zeroSpeed;
     private boolean levelDone;
 
-    private Tilemap tilemap;
+    private LevelMap levelMap;
     
     public static final int MOB_COUNT_AT_SPAWN = 7;
     public static final int MOB_COUNT_PER_INTERVAL = 3;
@@ -87,7 +84,6 @@ public class LevelScene implements GameScene {
         this.gc = canvas.getGraphicsContext2D();
         this.gc.setImageSmoothing(false);
         this.root.getChildren().add(canvas);
-        this.sprites = new ArrayList<Sprite>();
         Random rand = new Random();
         this.outlaw = new Outlaw(
                 "Going merry",
@@ -95,7 +91,6 @@ public class LevelScene implements GameScene {
         this.getOutlaw().setY(rand.nextInt(
                 (int) getOutlaw().getBounds().getHeight(),
                 Game.WINDOW_HEIGHT - (int) getOutlaw().getBounds().getHeight()));
-        this.sprites.add(getOutlaw());
         this.getOutlaw().handleKeyPressEvent(this);
         this.statusHud = new StatusHUD(this);
         this.levelStartTime = System.nanoTime();
@@ -107,16 +102,18 @@ public class LevelScene implements GameScene {
         this.levelDone = false;
         this.mobKillCount = 0;
         this.powerupsCount = new int[Powerup.TOTAL_POWERUPS];
-        this.tilemap = new Tilemap();
-        this.tilemap.generate();
-        this.tilemap.generateProps(this.sprites);
 
+        this.levelMap = new LevelMap();
+        this.levelMap.generate();
+        this.levelMap.generateProps();
+        this.levelMap.getSprites().add(getOutlaw());
+        
         if (Game.DEBUG_MODE) {
             scene.addEventHandler(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>() {
                 public void handle(KeyEvent e) {
                     KeyCode code = e.getCode();
                     if (code == KeyCode.F1) {
-                        tilemap.generate(true);
+                        levelMap.generate(true);
                     }
                 }
             });
@@ -148,7 +145,7 @@ public class LevelScene implements GameScene {
                 bossMob = new CowboyMob(Game.WINDOW_WIDTH, (Game.WINDOW_HEIGHT / 2));
                 bossMob.addY((int) -bossMob.getBounds().getHeight() / 2);
                 bossMob.addX((int) -bossMob.getBounds().getWidth());
-                sprites.add(bossMob);
+                levelMap.getSprites().add(bossMob);
             }
         });
         // Action: spawn mobs every 3 seconds.
@@ -208,31 +205,20 @@ public class LevelScene implements GameScene {
         this.gc.clearRect(0, 0, Game.WINDOW_WIDTH,
                 Game.WINDOW_HEIGHT);
 
-        this.tilemap.draw(gc);
-        this.drawSprites();
+        this.levelMap.draw(gc);
         this.statusHud.draw(gc);
     }
     
-    // method that will render/draw the mobs to the canvas
-    private void drawSprites() {
-        for (Sprite sprite : this.sprites) {
-            sprite.draw(this.gc);
-        }
-    }
-    
     private void updateSprites(long currentNanoTime) {
-        // Keep a list containing mobs to be removed. 
-        ArrayList<Sprite> removalList = new ArrayList<Sprite>();
-        
-        for (Sprite sprite : this.sprites) {
+        for (Sprite sprite : this.levelMap.getSprites()) {
             if (sprite instanceof Mob) {
                 Mob mob = (Mob)sprite;
                 if (!mob.isAlive() && !mob.isDying()) {
-                    removalList.add(mob);
+                    this.levelMap.removeSpriteOnUpdate(mob);
                     this.mobKillCount++;
                 }
             }
-            
+
             if (sprite instanceof LevelUpdatable) {
                 LevelUpdatable levelSprite = (LevelUpdatable)sprite;
                 levelSprite.update(currentNanoTime, this);
@@ -240,12 +226,8 @@ public class LevelScene implements GameScene {
                 sprite.update(currentNanoTime);
             }
         }
-        
-        this.sprites.removeAll(removalList);
 
-        if (Game.FLAG_FIX_DRAW_ORDER) {
-            Collections.sort(this.sprites);
-        }
+        this.levelMap.update(currentNanoTime);
     }
 
     private Mob randomizeMob() {
@@ -279,7 +261,7 @@ public class LevelScene implements GameScene {
                     mobHeight,
                     Game.WINDOW_HEIGHT - mobHeight * 2));
             
-            this.sprites.add(mob);
+            this.levelMap.addSpriteOnUpdate(mob);
         }
     }
 
@@ -313,8 +295,8 @@ public class LevelScene implements GameScene {
         powerup.setY(r.nextInt(
                 powerupHeight,
                 Game.WINDOW_HEIGHT - powerupHeight * 2));
-        
-        this.sprites.add(powerup);
+
+        this.levelMap.addSpriteOnUpdate(powerup);
     }
 
     public Outlaw getOutlaw() {
@@ -399,11 +381,6 @@ public class LevelScene implements GameScene {
 
     public void markLevelDone() {
         this.levelDone = true;
-    }
-
-    // FIXME: This will go away soon.
-    public ArrayList<Sprite> getSprites() {
-        return this.sprites;
     }
 
 }
