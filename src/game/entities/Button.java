@@ -1,7 +1,7 @@
 package game.entities;
 
 import game.Game;
-import game.scenes.GameScene;
+import game.GameScene;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.canvas.GraphicsContext;

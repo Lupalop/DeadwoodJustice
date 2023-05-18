@@ -5,7 +5,7 @@ import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 import game.Game;
-import game.scenes.LevelScene;
+import game.LevelScene;
 import javafx.scene.canvas.GraphicsContext;
 
 public abstract class Mob extends Sprite implements LevelUpdatable {

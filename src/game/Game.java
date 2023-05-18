@@ -2,8 +2,6 @@ package game;
 
 import java.util.HashMap;
 
-import game.scenes.GameScene;
-import game.scenes.LevelScene;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 

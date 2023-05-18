@@ -1,7 +1,7 @@
 package game.entities;
 
 import game.Game;
-import game.scenes.LevelScene;
+import game.LevelScene;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Paint;
 import javafx.scene.image.Image;

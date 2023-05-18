@@ -2,7 +2,7 @@ package game.entities;
 
 import java.util.concurrent.TimeUnit;
 
-import game.scenes.LevelScene;
+import game.LevelScene;
 import javafx.scene.canvas.GraphicsContext;
 
 public abstract class Powerup extends Sprite implements LevelUpdatable {

@@ -1,11 +1,10 @@
-package game.scenes;
+package game;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
-import game.Game;
 import game.entities.CactusMob;
 import game.entities.CoffinMob;
 import game.entities.CowboyMob;
