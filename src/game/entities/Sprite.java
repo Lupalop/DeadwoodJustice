@@ -74,8 +74,8 @@ public abstract class Sprite implements Comparable<Sprite> {
     }
 
     public void draw(GraphicsContext gc) {
-        double flipOffsetX = (flipHorizontal ? (this.width * this.scale) : 0);
-        double flipOffsetY = (flipVertical ? (this.height * this.scale) : 0);
+        double flipOffsetX = (flipHorizontal ? (this.getWidth() * this.scale) : 0);
+        double flipOffsetY = (flipVertical ? (this.getHeight() * this.scale) : 0);
         double flipMultiplierWidth = (flipHorizontal ? -1 : 1);
         double flipMultiplierHeight = (flipVertical ? -1 : 1);
         
@@ -87,17 +87,17 @@ public abstract class Sprite implements Comparable<Sprite> {
                     source.getMinY(),
                     source.getWidth(),
                     source.getHeight(),
-                    this.x + flipOffsetX,
-                    this.y + flipOffsetY,
-                    this.width * this.scale * flipMultiplierWidth,
-                    this.height * this.scale * flipMultiplierHeight);
+                    this.getX() + flipOffsetX,
+                    this.getY() + flipOffsetY,
+                    this.getWidth() * this.scale * flipMultiplierWidth,
+                    this.getHeight() * this.scale * flipMultiplierHeight);
         } else {
             gc.drawImage(
                     this.getImage(),
-                    this.x + flipOffsetX,
-                    this.y + flipOffsetY,
-                    this.width * this.scale * flipMultiplierWidth,
-                    this.height * this.scale * flipMultiplierHeight);
+                    this.getX() + flipOffsetX,
+                    this.getY() + flipOffsetY,
+                    this.getWidth() * this.scale * flipMultiplierWidth,
+                    this.getHeight() * this.scale * flipMultiplierHeight);
         }
         
         if (game.Game.DEBUG_MODE) {
@@ -198,10 +198,10 @@ public abstract class Sprite implements Comparable<Sprite> {
     
     public Rectangle2D getBounds() {
         if (this.boundsDirty) {
-            double newX = this.x;
-            double newY = this.y;
-            double newWidth = this.width;
-            double newHeight = this.height;
+            double newX = this.getX();
+            double newY = this.getY();
+            double newWidth = this.getWidth();
+            double newHeight = this.getHeight();
             
             if (this.getBoundsOffset() != null) {
                 if (this.flipHorizontal) {
@@ -299,11 +299,11 @@ public abstract class Sprite implements Comparable<Sprite> {
     }
     
     public void addX(int x) {
-        this.setX(this.x + x);
+        this.setX(this.getX() + x);
     }
     
     public void addY(int y) {
-        this.setY(this.y + y);
+        this.setY(this.getY() + y);
     }
 
     protected void setScale(int scale) {
@@ -331,8 +331,8 @@ public abstract class Sprite implements Comparable<Sprite> {
     
     protected void setImage(Image image) {
         this.image = image;
-        this.boundsDirty = (this.width != image.getWidth()
-                || this.height != image.getHeight());
+        this.boundsDirty = (this.getWidth() != image.getWidth()
+                || this.getHeight() != image.getHeight());
         if (boundsDirty) {
             this.width = image.getWidth();
             this.height = image.getHeight();
@@ -406,10 +406,10 @@ public abstract class Sprite implements Comparable<Sprite> {
         for (int row = 0; row < rows; row++) {
             for (int column = 0; column < columns; column++) {
                 sourceRectangles[sourceFrame] = new Rectangle2D(
-                        this.width * column,
-                        this.height * row,
-                        this.width,
-                        this.height);
+                        this.getWidth() * column,
+                        this.getHeight() * row,
+                        this.getWidth(),
+                        this.getHeight());
                 sourceFrame++;
             }
         }
