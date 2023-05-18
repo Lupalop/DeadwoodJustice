@@ -17,11 +17,17 @@ public class Game {
 
     private static final String FONT_PATH =
             Game.getAsset("THALEAHFAT.ttf");
+    private static final String FONT_MUP_PATH =
+            Game.getAsset("MATCHUPPRO.ttf");
 
     public static final int FONT_SIZE_32 = 32;
     public static final Font FONT_32 =
             Font.loadFont(FONT_PATH, FONT_SIZE_32);
-    
+
+    public static final int FONT_SIZE_BTN = 21;
+    public static final Font FONT_BTN =
+            Font.loadFont(FONT_MUP_PATH, 16 * 3);
+
     public static final int WINDOW_WIDTH = 800;
     public static final int WINDOW_HEIGHT = 600;
 
