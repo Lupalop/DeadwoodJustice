@@ -12,13 +12,11 @@ public abstract class Effect extends Sprite {
     public Effect(Sprite spriteTarget) {
         super();
         this.spriteTarget = spriteTarget;
+        this.setScale(2);
         initialize();
     }
 
-    public void initialize() {
-        this.setScale(2);
-        this.setFrameAutoReset(false);
-    }
+    public abstract void initialize();
 
     @Override
     public int getX() {

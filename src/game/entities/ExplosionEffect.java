@@ -21,7 +21,7 @@ public class ExplosionEffect extends Effect {
 
     @Override
     public void initialize() {
-        super.initialize();
+        this.setFrameAutoReset(false);
         this.setFrameSet(FRAMESET_FX, FRAMESET_ROWS, FRAMESET_COLUMNS);
         this.setMinMaxFrame(0, 7);
     }
