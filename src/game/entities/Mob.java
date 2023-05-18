@@ -69,6 +69,7 @@ public abstract class Mob extends Sprite implements LevelUpdatable {
         this.isPlayerInMobBounds = false;
         this.isStuck = false;
         this.canShoot = canShoot;
+        this.passability = new boolean[4];
         if (this.canShoot) {
             this.bullets = new ArrayList<Bullet>();
             this.lastShootTime = System.nanoTime();
@@ -122,10 +123,10 @@ public abstract class Mob extends Sprite implements LevelUpdatable {
         }
 
         if (this.isChasingPlayer) {
-            if (!passableX[this.moveRight ? 1 : 0]) {
+            if (!passability[this.moveRight ? 1 : 0]) {
                 this.dx = 0;
             }
-            if (!passableY[0] && this.dy >= 0 || !passableY[1] && this.dy <= 0) {
+            if (!passability[2] && this.dy >= 0 || !passability[3] && this.dy <= 0) {
                 this.dy = 0;
             }
         } else {
@@ -135,16 +136,16 @@ public abstract class Mob extends Sprite implements LevelUpdatable {
             }
             // Check for passability if we're not stuck.
             if (!this.isStuck) {
-                if (!passableX[0] && !passableX[1]) {
+                if (!passability[0] && !passability[1]) {
                     this.dx = 0;
                     this.isStuck = true;
-                } else if (!passableX[this.moveRight ? 1 : 0]) {
+                } else if (!passability[this.moveRight ? 1 : 0]) {
                     this.dx = 0;
                     this.changeDirection();
                     this.isStuck = true;
                 }
             // Stop marking as stuck if one side is now passable.
-            } else if (passableX[0] || passableX[1]) {
+            } else if (passability[0] || passability[1]) {
                 this.isStuck = false;
             }
         }
@@ -153,8 +154,7 @@ public abstract class Mob extends Sprite implements LevelUpdatable {
         this.addY(dy);
     }
 
-    boolean passableX[] = new boolean[2];
-    boolean passableY[] = new boolean[2];
+    boolean passability[];
 
     public void update(long currentNanoTime, LevelScene level) {
         this.isMaxSpeed = level.isMaxSpeed();
@@ -181,40 +181,9 @@ public abstract class Mob extends Sprite implements LevelUpdatable {
             return;
         }
 
-        passableX[0] = this.getBounds().getMinX() >= 0;
-        passableX[1] = this.getBounds().getMaxX() <= Game.WINDOW_WIDTH;
+        this.passability = level.getLevelMap().getPassability(this);
+        checkOutlaw(level.getOutlaw());
         
-        passableY[0] = this.getBounds().getMinY() >= 0;
-        passableY[1] = this.getBounds().getMaxY() <= Game.WINDOW_HEIGHT;
-
-        for (Sprite sprite : level.getSprites()) {
-            if (sprite == this) {
-                continue;
-            } else if (sprite instanceof Outlaw) {
-                checkOutlaw((Outlaw)sprite);
-                continue;
-            }
-
-            if (!Game.FLAG_MOBS_CHECK_PASSABILITY
-                    || (Game.FLAG_IGNORE_PROP_COLLISION && sprite instanceof Prop)
-                    || (sprite instanceof Mob && !((Mob)sprite).isAlive()) 
-                    || sprite instanceof Powerup
-                    || sprite instanceof StatusHUD) {
-                continue;
-            }
-            
-            int side = this.baseIntersectsSide(sprite.getBaseBounds());
-            if (passableX[0] && side == 0) {
-                passableX[0] = false;
-            } else if (passableX[1] && side == 1) {
-                passableX[1] = false;
-            } else if (passableY[0] && side == 2) {
-                passableY[0] = false;
-            } else if (passableY[1] && side == 3) {
-                passableY[1] = false;
-            }
-        }
-
         if (this.canShoot) {
             // Shoot every n seconds.
             long deltaTime = (currentNanoTime - lastShootTime);

@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
 
+import game.entities.Mob;
+import game.entities.Outlaw;
+import game.entities.Powerup;
 import game.entities.Prop;
 import game.entities.Sprite;
 import game.entities.Tileset;
@@ -157,6 +160,38 @@ public class LevelMap {
             this.getSprites().removeAll(this.pendingSpriteRemoves);
             this.pendingSpriteRemoves.clear();
         }
+    }
+
+    public boolean[] getPassability(Sprite source) {
+        boolean passability[] = new boolean[4];
+        passability[0] = source.getBounds().getMinX() >= 0;
+        passability[1] = source.getBounds().getMaxX() <= Game.WINDOW_WIDTH;
+        passability[2] = source.getBounds().getMinY() >= 0;
+        passability[3] = source.getBounds().getMaxY() <= Game.WINDOW_HEIGHT;
+
+        for (Sprite sprite : this.getSprites()) {
+            if (!Game.FLAG_MOBS_CHECK_PASSABILITY
+                    || (Game.FLAG_IGNORE_PROP_COLLISION && sprite instanceof Prop)
+                    || (sprite instanceof Mob && !((Mob)sprite).isAlive())
+                    || sprite instanceof Powerup
+                    || sprite instanceof Outlaw
+                    || sprite == source) {
+                continue;
+            }
+
+            int side = source.baseIntersectsSide(sprite.getBaseBounds());
+            if (passability[0] && side == 0) {
+                passability[0] = false;
+            } else if (passability[1] && side == 1) {
+                passability[1] = false;
+            } else if (passability[2] && side == 2) {
+                passability[2] = false;
+            } else if (passability[3] && side == 3) {
+                passability[3] = false;
+            }
+        }
+
+        return passability;
     }
 
     public boolean isDoneGenerating() {

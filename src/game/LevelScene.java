@@ -13,6 +13,7 @@ import game.entities.LevelUpdatable;
 import game.entities.Mob;
 import game.entities.Outlaw;
 import game.entities.Powerup;
+import game.entities.Prop;
 import game.entities.SnakeOilPowerup;
 import game.entities.Sprite;
 import game.entities.StatusHUD;
@@ -381,6 +382,10 @@ public class LevelScene implements GameScene {
 
     public void markLevelDone() {
         this.levelDone = true;
+    }
+
+    public LevelMap getLevelMap() {
+        return this.levelMap;
     }
 
 }
