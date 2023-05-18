@@ -1,5 +1,6 @@
 package game.scenes;
 
+import javafx.scene.Group;
 import javafx.scene.Scene;
 
 public interface GameScene {
@@ -7,4 +8,6 @@ public interface GameScene {
 
     public void update(long currentNanoTime);
     public void draw(long currentNanoTime);
+    
+    public Group getRoot();
 }
