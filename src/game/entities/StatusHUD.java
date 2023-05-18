@@ -31,28 +31,6 @@ public class StatusHUD extends Sprite implements LevelUpdatable {
         TILESET.setScale(2);
         this.level = scene;
         this.isGameEndVisible = false;
-
-        playButton = new Button(50, 50, level);
-        playButton.setText("PLAY");
-        playButton.setX((int) ((Game.WINDOW_WIDTH / 5) - playButton.getWidth() / 2));
-        playButton.setY((Game.WINDOW_HEIGHT / 2) + 50);
-        playButton.setClickAction(new Runnable() {
-            @Override
-            public void run() {
-                Game.setGameScene(new LevelScene());
-            }
-        });
-        
-        exitButton = new Button(0, 0, level);
-        exitButton.setText("EXIT");
-        exitButton.setX((int) ((Game.WINDOW_WIDTH) - (Game.WINDOW_WIDTH / 5) - exitButton.getWidth() / 2));
-        exitButton.setY((Game.WINDOW_HEIGHT / 2) + 50);
-        exitButton.setClickAction(new Runnable() {
-            @Override
-            public void run() {
-                System.exit(0);
-            }
-        });
     }
 
     @Override
@@ -146,9 +124,34 @@ public class StatusHUD extends Sprite implements LevelUpdatable {
             playButton.update(currentNanoTime);
         } else if (level.isLevelDone()) {
             this.isGameEndVisible = true;
+            this.initializeGameEndButtons();
         }
     }
 
+    private void initializeGameEndButtons() {
+        playButton = new Button(0, 0, level);
+        playButton.setText("PLAY");
+        playButton.setX((int) ((Game.WINDOW_WIDTH / 5) - playButton.getWidth() / 2));
+        playButton.setY((Game.WINDOW_HEIGHT / 2) + 50);
+        playButton.setClickAction(new Runnable() {
+            @Override
+            public void run() {
+                Game.setGameScene(new LevelScene());
+            }
+        });
+        
+        exitButton = new Button(0, 0, level);
+        exitButton.setText("EXIT");
+        exitButton.setX((int) ((Game.WINDOW_WIDTH) - (Game.WINDOW_WIDTH / 5) - exitButton.getWidth() / 2));
+        exitButton.setY((Game.WINDOW_HEIGHT / 2) + 50);
+        exitButton.setClickAction(new Runnable() {
+            @Override
+            public void run() {
+                System.exit(0);
+            }
+        });
+    }
+    
     private void drawGameEnd(GraphicsContext gc) {
         int base = 6;
         for (int i = 0; i < (Game.WINDOW_WIDTH) / TILE_SIZE; i++) {
