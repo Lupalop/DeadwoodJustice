@@ -43,20 +43,14 @@ public class LevelScene implements GameScene {
     private Mob bossMob;
     private StatusHUD statusHud;
     private ArrayList<Sprite> sprites;
+    private TimedActionManager actions;
 
     private int mobKillCount;
     private int powerupsCount[];
     
     private long levelTimeLeft;
-    private long mobSpawnTime;
-    private long powerupSpawnTime;
-    private long maxSpeedTime;
-    private long maxSpeedEndTime;
     private long levelStartTime;
-    private long slowSpeedTime;
-    private long slowSpeedEndTime;
-    private long zeroSpeedTime;
-    private long zeroSpeedEndTime;
+
     private boolean maxSpeed;
     private boolean slowSpeed;
     private boolean zeroSpeed;
@@ -105,14 +99,8 @@ public class LevelScene implements GameScene {
         this.getOutlaw().handleKeyPressEvent(this);
         this.statusHud = new StatusHUD(this);
         this.levelStartTime = System.nanoTime();
-        this.mobSpawnTime = System.nanoTime();
-        this.powerupSpawnTime = System.nanoTime();
-        this.maxSpeedTime = System.nanoTime();
-        this.maxSpeedEndTime = -1;
-        this.slowSpeedTime = -1;
-        this.slowSpeedEndTime = -1;
-        this.zeroSpeedTime = -1;
-        this.zeroSpeedEndTime = -1;
+        this.actions = new TimedActionManager();
+        this.initializeActions();
         this.maxSpeed = false;
         this.slowSpeed = false;
         this.zeroSpeed = false;
@@ -137,6 +125,63 @@ public class LevelScene implements GameScene {
         this.spawnMobs(MOB_COUNT_AT_SPAWN);
     }
 
+    public void initializeActions() {
+        // Action: mark level done if time's up.
+        actions.add(LEVEL_END_TIME, false, new Runnable() {
+            @Override
+            public void run() {
+                if (!Game.FLAG_DELAY_IF_BOSS_IS_ALIVE
+                        || (bossMob != null
+                        && !bossMob.isAlive()
+                        && !bossMob.isDying())) {
+                    markLevelDone();
+                }
+            }
+        });
+        // Action: spawn boss.
+        actions.add(LEVEL_BOSS_TIME, false, new Runnable() {
+            @Override
+            public void run() {
+                if (bossMob != null) {
+                    return;
+                }
+                bossMob = new CowboyMob(Game.WINDOW_WIDTH, (Game.WINDOW_HEIGHT / 2));
+                bossMob.addY((int) -bossMob.getBounds().getHeight() / 2);
+                bossMob.addX((int) -bossMob.getBounds().getWidth());
+                sprites.add(bossMob);
+            }
+        });
+        // Action: spawn mobs every 3 seconds.
+        actions.add(MOB_SPAWN_INTERVAL, true, new Runnable() {
+            @Override
+            public void run() {
+                spawnMobs(MOB_COUNT_PER_INTERVAL);
+            }
+        });
+        // Speed up mob movement every 15 seconds.
+        actions.add(MOB_MAX_SPEED_INTERVAL, true, new Runnable() {
+            @Override
+            public void run() {
+                maxSpeed = true;
+                // Reset back to normal speed after 3 seconds if we've
+                // sped up mob movement.
+                actions.add(MOB_MAX_SPEED_END_INTERVAL, false, new Runnable() {
+                    @Override
+                    public void run() {
+                        maxSpeed = false;
+                    }
+                });
+            }
+        });
+        // Spawn power-ups every 10 seconds.
+        actions.add(POWERUP_SPAWN_INTERVAL, true, new Runnable() {
+            @Override
+            public void run() {
+                spawnPowerups();
+            }
+        });
+    }
+    
     @Override
     public Scene getInnerScene() {
         return this.scene;
@@ -153,70 +198,9 @@ public class LevelScene implements GameScene {
     }
 
     private void updateLevelTime(long currentNanoTime) {
-        long deltaTime = (currentNanoTime - levelStartTime);
-        // Detect if the game should've ended by now.
-        if (deltaTime >= LEVEL_END_TIME
-                && (!Game.FLAG_DELAY_IF_BOSS_IS_ALIVE
-                        || (this.bossMob != null
-                        && !this.bossMob.isAlive()
-                        && !this.bossMob.isDying()))) {
-            this.markLevelDone();
-        // Spawn the boss mob if the time is right.
-        } else if (deltaTime >= LEVEL_BOSS_TIME && this.bossMob == null) {
-            this.bossMob = new CowboyMob(Game.WINDOW_WIDTH, (Game.WINDOW_HEIGHT / 2));
-            this.bossMob.addY((int) -this.bossMob.getBounds().getHeight() / 2);
-            this.bossMob.addX((int) -this.bossMob.getBounds().getWidth());
-            this.sprites.add(bossMob);
-            System.out.println("boss spawned");
-        }
-
+        long deltaTime = (currentNanoTime - this.levelStartTime);
         this.levelTimeLeft = TimeUnit.NANOSECONDS.toSeconds(LEVEL_END_TIME - deltaTime);
-        
-        // Spawn mobs every 3 seconds.
-        deltaTime = (currentNanoTime - mobSpawnTime);
-        if (deltaTime >= MOB_SPAWN_INTERVAL) {
-            this.spawnMobs(MOB_COUNT_PER_INTERVAL);
-            this.mobSpawnTime = currentNanoTime;
-        }
-        // Speed up mob movement every 15 seconds.
-        deltaTime = (currentNanoTime - maxSpeedTime);
-        if (deltaTime >= MOB_MAX_SPEED_INTERVAL) {
-            this.maxSpeed = true;
-            this.maxSpeedTime = currentNanoTime + MOB_MAX_SPEED_END_INTERVAL;
-            this.maxSpeedEndTime = currentNanoTime;
-        }
-        // Reset back to normal speed after 3 seconds if we've
-        // sped up mob movement.
-        if (maxSpeedEndTime != -1) {
-            deltaTime = (currentNanoTime - maxSpeedEndTime);
-            if (deltaTime >= MOB_MAX_SPEED_END_INTERVAL) {
-                this.maxSpeed = false;
-                this.maxSpeedEndTime = -1;
-            }
-        }
-
-        // Slow down after provided timeout.
-        deltaTime = (currentNanoTime - slowSpeedTime);
-        if (deltaTime >= slowSpeedEndTime) {
-            this.slowSpeed = false;
-            this.slowSpeedTime = -1;
-            this.slowSpeedEndTime = -1;
-        }
-
-        // Slow down after provided timeout.
-        deltaTime = (currentNanoTime - zeroSpeedTime);
-        if (deltaTime >= zeroSpeedEndTime) {
-            this.zeroSpeed = false;
-            this.zeroSpeedTime = -1;
-            this.zeroSpeedEndTime = -1;
-        }
-
-        // Spawn power-ups every 10 seconds.
-        deltaTime = (currentNanoTime - powerupSpawnTime);
-        if (deltaTime >= POWERUP_SPAWN_INTERVAL) {
-            this.spawnPowerups();
-            this.powerupSpawnTime = currentNanoTime;
-        }
+        this.actions.update(currentNanoTime);
     }
 
     @Override
@@ -339,14 +323,22 @@ public class LevelScene implements GameScene {
 
     public void applySlowMobSpeed(long powerupTimeout) {
         this.slowSpeed = true;
-        this.slowSpeedTime = System.nanoTime();
-        this.slowSpeedEndTime = powerupTimeout;
+        actions.add(powerupTimeout, false, new Runnable() {
+            @Override
+            public void run() {
+                slowSpeed = false;
+            }            
+        });
     }
 
     public void applyZeroMobSpeed(long powerupTimeout) {
         this.zeroSpeed = true;
-        this.zeroSpeedTime = System.nanoTime();
-        this.zeroSpeedEndTime = powerupTimeout;
+        actions.add(powerupTimeout, false, new Runnable() {
+            @Override
+            public void run() {
+                zeroSpeed = false;
+            }            
+        });
     }
     
     public int getMobKillCount() {
