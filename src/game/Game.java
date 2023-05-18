@@ -7,7 +7,7 @@ import game.scenes.LevelScene;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
-public class Game {
+public final class Game {
 
     private static HashMap<String, String> cachedAssetUrls =
             new HashMap<String, String>();
@@ -44,36 +44,39 @@ public class Game {
     public static final boolean FLAG_MOBS_CHECK_PASSABILITY = true;
     public static final boolean FLAG_IGNORE_PROP_COLLISION = true;
 
-    private Stage primaryStage;
-    private GameScene gameScene;
-    private GameTimer gameTimer;
-    private boolean initialized;
+    private static Stage primaryStage;
+    private static GameScene gameScene;
+    private static GameTimer gameTimer = new GameTimer();
+    private static boolean initialized;
 
-    public Game(Stage primaryStage) {
-        this.primaryStage = primaryStage;
-        this.primaryStage.setResizable(false);
-        this.primaryStage.setTitle(GAME_NAME);
-        this.gameTimer = new GameTimer(this);
-    }
-
-    public void run() {
-        if (this.initialized) {
+    public static void run() {
+        if (Game.initialized) {
             return;
         }
 
-        this.setGameScene(new LevelScene(this));
-        this.gameTimer.start();
-        this.primaryStage.show();
-        this.initialized = true;
+        Game.setGameScene(new LevelScene());
+        Game.gameTimer.start();
+        Game.primaryStage.show();
+        Game.initialized = true;
     }
 
-    public GameScene getGameScene() {
-        return this.gameScene;
+    public static Stage getPrimaryStage() {
+        return Game.primaryStage;
     }
 
-    public void setGameScene(GameScene gameScene) {
-        this.gameScene = gameScene;
-        this.primaryStage.setScene(this.gameScene.getInnerScene());
+    public static void setPrimaryStage(Stage primaryStage) {
+        Game.primaryStage = primaryStage;
+        Game.primaryStage.setResizable(false);
+        Game.primaryStage.setTitle(GAME_NAME);
+    }
+
+    public static GameScene getGameScene() {
+        return Game.gameScene;
+    }
+
+    public static void setGameScene(GameScene gameScene) {
+        Game.gameScene = gameScene;
+        Game.primaryStage.setScene(Game.gameScene.getInnerScene());
     }
     
     public static String getAsset(String path) {

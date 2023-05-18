@@ -10,8 +10,8 @@ public class Main extends Application {
     }
 
     public void start(Stage primaryStage) {
-        Game game = new Game(primaryStage);
-        game.run();
+        Game.setPrimaryStage(primaryStage);
+        Game.run();
     }
 
 }

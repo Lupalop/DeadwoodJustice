@@ -102,7 +102,7 @@ public class LevelScene implements GameScene {
     private static final Tileset TILESET_DESERT =
             new Tileset("tilemap_desert.png", 3, 4);
     
-    public LevelScene(Game manager) {
+    public LevelScene() {
         this.root = new Group();
         this.scene = new Scene(root, Game.WINDOW_WIDTH,
                 Game.WINDOW_HEIGHT, Color.valueOf("eeca84"));
