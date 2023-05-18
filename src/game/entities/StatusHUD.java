@@ -23,12 +23,36 @@ public class StatusHUD extends Sprite implements LevelUpdatable {
     
     private LevelScene level;
     private boolean isGameEndVisible;
-    
+    Button playButton;
+    Button exitButton;
+
     public StatusHUD(LevelScene scene) {
         super(0, 0);
         TILESET.setScale(2);
         this.level = scene;
         this.isGameEndVisible = false;
+
+        playButton = new Button(50, 50, level);
+        playButton.setText("PLAY");
+        playButton.setX((int) ((Game.WINDOW_WIDTH / 5) - playButton.getWidth() / 2));
+        playButton.setY((Game.WINDOW_HEIGHT / 2) + 50);
+        playButton.setClickAction(new Runnable() {
+            @Override
+            public void run() {
+                Game.setGameScene(new LevelScene());
+            }
+        });
+        
+        exitButton = new Button(0, 0, level);
+        exitButton.setText("EXIT");
+        exitButton.setX((int) ((Game.WINDOW_WIDTH) - (Game.WINDOW_WIDTH / 5) - exitButton.getWidth() / 2));
+        exitButton.setY((Game.WINDOW_HEIGHT / 2) + 50);
+        exitButton.setClickAction(new Runnable() {
+            @Override
+            public void run() {
+                System.exit(0);
+            }
+        });
     }
 
     @Override
@@ -117,7 +141,10 @@ public class StatusHUD extends Sprite implements LevelUpdatable {
     
     @Override
     public void update(long currentNanoTime, LevelScene level) {
-        if (!this.isGameEndVisible && level.isLevelDone()) {
+        if (this.isGameEndVisible) {
+            exitButton.update(currentNanoTime);
+            playButton.update(currentNanoTime);
+        } else if (level.isLevelDone()) {
             this.isGameEndVisible = true;
         }
     }
@@ -161,6 +188,8 @@ public class StatusHUD extends Sprite implements LevelUpdatable {
                 (Game.WINDOW_WIDTH) - (Game.WINDOW_WIDTH / 5) - standeeExitImage.getWidth() / 2,
                 (Game.WINDOW_HEIGHT / 2) - standeeExitImage.getHeight() / 2);
 
+        playButton.draw(gc);
+        exitButton.draw(gc);
     }
 
 }
