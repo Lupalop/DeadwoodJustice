@@ -156,12 +156,12 @@ public class LevelScene implements GameScene {
     
     @Override
     public void update(long currentNanoTime) {
+        this.statusHud.update(currentNanoTime, this);
         if (this.isLevelDone) {
             return;
         }
         this.updateSprites(currentNanoTime);
         this.updateLevelTime(currentNanoTime);
-        this.statusHud.update(currentNanoTime, this);
     }
 
     private void updateLevelTime(long currentNanoTime) {
