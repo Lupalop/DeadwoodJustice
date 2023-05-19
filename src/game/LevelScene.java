@@ -336,6 +336,10 @@ public class LevelScene implements GameScene {
         return outlaw;
     }
 
+    public TimedActionManager getActions() {
+        return this.actions;
+    }
+
     public int getMobKillCount() {
         return this.mobKillCount;
     }
