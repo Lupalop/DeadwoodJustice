@@ -6,10 +6,10 @@ import javafx.scene.image.Image;
 
 public class HayPowerup extends Powerup {
 
-    public final static Image FRAMESET = new Image(
-            Game.getAsset("pw_hay.png"));
-
     public static final int ID = 1;
+
+    public static final Image FRAMESET = new Image(
+            Game.getAsset("pw_hay.png"));
 
     public HayPowerup(int xPos, int yPos) {
         super(xPos, yPos);
@@ -17,9 +17,9 @@ public class HayPowerup extends Powerup {
     }
 
     @Override
-    public void doPowerup(LevelScene scene) {
+    public void applyPowerup(LevelScene scene) {
         scene.getOutlaw().applyImmortality(POWERUP_TIMEOUT);
-        scene.notifyPowerupConsumed(ID);
+        scene.consumePowerup(ID);
     }
-    
+
 }

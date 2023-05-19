@@ -10,7 +10,7 @@ public class Tileset extends Sprite {
 
     public Tileset(String assetPath, int rows, int columns) {
         super(0, 0);
-        
+
         Image tilesetImage = new Image(Game.getAsset(assetPath));
         this.setFrameSet(tilesetImage, rows, columns);
         this.setFrameAutoReset(false);
@@ -23,4 +23,5 @@ public class Tileset extends Sprite {
         this.setY(y);
         super.draw(gc);
     }
+
 }

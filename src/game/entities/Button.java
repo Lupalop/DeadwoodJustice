@@ -21,17 +21,14 @@ public class Button extends Sprite {
 
     private boolean isHover;
     private boolean isActive;
-    private Runnable clickAction;
-    public void setClickAction(Runnable clickAction) {
-        this.clickAction = clickAction;
-    }
 
     private Text text;
-    
+    private Runnable clickAction;
+
     public Button(int xPos, int yPos, GameScene scene) {
         super(xPos, yPos);
         TILESET.setScale(2);
-        this.handleMouseEvent(scene.getInnerScene());
+        this.handleMouseEvent(scene.getInner());
         this.isHover = false;
         this.isActive = false;
         this.setWidth(Tileset.TILE_SIZE * BUTTON_PARTS_COUNT);
@@ -42,7 +39,7 @@ public class Button extends Sprite {
         scene.getRoot().getChildren().add(text);
     }
 
-    private void doState(double x, double y, boolean hover) {
+    private void updateState(double x, double y, boolean hover) {
         boolean newState = getBounds().contains(x, y);
         if (hover) {
             this.isHover = newState;
@@ -50,19 +47,19 @@ public class Button extends Sprite {
             this.isActive = newState;
         }
     }
-    
+
     private void handleMouseEvent(Scene scene) {
         scene.addEventHandler(MouseEvent.MOUSE_MOVED, new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-                doState(event.getSceneX(), event.getSceneY(), true);
+                updateState(event.getSceneX(), event.getSceneY(), true);
             }
         });
 
         scene.addEventHandler(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-                doState(event.getSceneX(), event.getSceneY(), false);
+                updateState(event.getSceneX(), event.getSceneY(), false);
             }
         });
         scene.addEventHandler(MouseEvent.MOUSE_RELEASED, new EventHandler<MouseEvent>() {
@@ -70,7 +67,7 @@ public class Button extends Sprite {
             public void handle(MouseEvent event) {
                 if (isActive) {
                     isActive = false;
-                    doState(event.getSceneX(), event.getSceneY(), true);
+                    updateState(event.getSceneX(), event.getSceneY(), true);
                     if (isHover && clickAction != null) {
                         clickAction.run();
                     }
@@ -115,5 +112,9 @@ public class Button extends Sprite {
     public void setText(String text) {
         this.text.setText(text);
     }
-    
+
+    public void setClickAction(Runnable clickAction) {
+        this.clickAction = clickAction;
+    }
+
 }

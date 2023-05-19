@@ -33,7 +33,7 @@ public abstract class Effect extends Sprite {
         if (this.spriteTarget == null) {
             return super.getY();
         }
-        return (int) spriteTarget.getY();
+        return spriteTarget.getY();
     }
 
 }

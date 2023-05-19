@@ -1,4 +1,5 @@
 module FajardoProject {
+
     requires transitive javafx.base;
     requires transitive javafx.controls;
     requires transitive javafx.graphics;
@@ -6,4 +7,5 @@ module FajardoProject {
 
     exports game;
     exports game.entities;
+
 }

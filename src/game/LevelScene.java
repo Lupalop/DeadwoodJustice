@@ -28,34 +28,6 @@ import javafx.scene.paint.Color;
 
 public class LevelScene implements GameScene {
 
-    private Scene scene;
-    private Group root;
-    public Group getRoot() {
-        return root;
-    }
-
-    private Canvas canvas;
-    private GraphicsContext gc;
-
-    private Outlaw outlaw;
-    private Mob bossMob;
-    private StatusHUD statusHud;
-    private TimedActionManager actions;
-
-    private int mobKillCount;
-    private int powerupsCount[];
-    
-    private long levelTimeLeft;
-    private long levelStartTime;
-
-    private boolean maxSpeed;
-    private boolean slowSpeed;
-    private boolean zeroSpeed;
-    private boolean levelDone;
-
-    private LevelMap levelMap;
-    private Random random;
-
     public static final int MOB_COUNT_AT_SPAWN = 7;
     public static final int MOB_COUNT_PER_INTERVAL = 3;
 
@@ -68,7 +40,7 @@ public class LevelScene implements GameScene {
 
     private static final long POWERUP_SPAWN_INTERVAL =
             TimeUnit.SECONDS.toNanos(10);
-    
+
     private static final long LEVEL_BOSS_TIME =
             TimeUnit.SECONDS.toNanos(30);
     private static final long LEVEL_END_TIME =
@@ -76,41 +48,74 @@ public class LevelScene implements GameScene {
 
     private static final int OUTLAW_INITIAL_X = 100;
 
+    private Group root;
+    private Scene scene;
+    private Canvas canvas;
+    private GraphicsContext gc;
+    private Random random;
+
+    private Outlaw outlaw;
+    private Mob bossMob;
+    private StatusHUD statusHud;
+
+    private TimedActionManager actions;
+
+    private int mobKillCount;
+    private int powerupsCount[];
+
+    private long levelTimeLeft;
+    private long levelStartTime;
+
+    private boolean maxSpeed;
+    private boolean slowSpeed;
+    private boolean zeroSpeed;
+    private boolean levelDone;
+
+    private LevelMap levelMap;
+
     public LevelScene() {
         this.root = new Group();
-        this.scene = new Scene(root, Game.WINDOW_WIDTH,
-                Game.WINDOW_HEIGHT, Color.valueOf("eeca84"));
-        this.canvas = new Canvas(Game.WINDOW_WIDTH,
-                Game.WINDOW_HEIGHT);
+        this.scene = new Scene(root, Game.WINDOW_MAX_WIDTH,
+                Game.WINDOW_MAX_HEIGHT, Color.valueOf("eeca84"));
+        this.canvas = new Canvas(Game.WINDOW_MAX_WIDTH,
+                Game.WINDOW_MAX_HEIGHT);
+        this.root.getChildren().add(canvas);
         this.gc = canvas.getGraphicsContext2D();
         this.gc.setImageSmoothing(false);
-        this.root.getChildren().add(canvas);
         this.random = new Random();
+
         this.outlaw = new Outlaw(
                 "Going merry",
                 OUTLAW_INITIAL_X, 0);
         this.getOutlaw().setY(this.random.nextInt(
                 (int) getOutlaw().getBounds().getHeight(),
-                Game.WINDOW_HEIGHT - (int) getOutlaw().getBounds().getHeight()));
+                Game.WINDOW_MAX_HEIGHT - (int) getOutlaw().getBounds().getHeight()));
         this.getOutlaw().handleKeyPressEvent(this);
+        this.bossMob = null;
         this.statusHud = new StatusHUD(this);
-        this.levelStartTime = System.nanoTime();
+
         this.actions = new TimedActionManager();
         this.initializeActions();
+
+        this.levelTimeLeft = 0;
+        this.levelStartTime = System.nanoTime();
+
+        this.mobKillCount = 0;
+        this.powerupsCount = new int[Powerup.TOTAL_POWERUPS];
+
         this.maxSpeed = false;
         this.slowSpeed = false;
         this.zeroSpeed = false;
         this.levelDone = false;
-        this.mobKillCount = 0;
-        this.powerupsCount = new int[Powerup.TOTAL_POWERUPS];
 
         this.levelMap = new LevelMap();
         this.levelMap.generate();
         this.levelMap.generateProps();
         this.levelMap.getSprites().add(getOutlaw());
-        
+
         if (Game.DEBUG_MODE) {
             scene.addEventHandler(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>() {
+                @Override
                 public void handle(KeyEvent e) {
                     KeyCode code = e.getCode();
                     if (code == KeyCode.F1) {
@@ -119,11 +124,11 @@ public class LevelScene implements GameScene {
                 }
             });
         }
-        
+
         this.spawnMobs(MOB_COUNT_AT_SPAWN);
     }
 
-    public void initializeActions() {
+    private void initializeActions() {
         // Action: mark level done if time's up.
         actions.add(LEVEL_END_TIME, false, new Runnable() {
             @Override
@@ -143,7 +148,7 @@ public class LevelScene implements GameScene {
                 if (bossMob != null) {
                     return;
                 }
-                bossMob = new CowboyMob(Game.WINDOW_WIDTH, (Game.WINDOW_HEIGHT / 2));
+                bossMob = new CowboyMob(Game.WINDOW_MAX_WIDTH, (Game.WINDOW_MAX_HEIGHT / 2));
                 bossMob.addY((int) -bossMob.getBounds().getHeight() / 2);
                 bossMob.addX((int) -bossMob.getBounds().getWidth());
                 levelMap.getSprites().add(bossMob);
@@ -179,35 +184,30 @@ public class LevelScene implements GameScene {
             }
         });
     }
-    
+
     @Override
-    public Scene getInnerScene() {
-        return this.scene;
-    }    
-    
-    @Override
-    public void update(long currentNanoTime) {
-        this.statusHud.update(currentNanoTime, this);
+    public void update(long now) {
+        this.statusHud.update(now, this);
         if (this.levelDone) {
             return;
         }
-        this.updateSprites(currentNanoTime);
-        this.levelMap.update(currentNanoTime);
-        this.actions.update(currentNanoTime);
+        this.updateSprites(now);
+        this.levelMap.update(now);
+        this.actions.update(now);
         this.levelTimeLeft = TimeUnit.NANOSECONDS.toSeconds(
-                LEVEL_END_TIME - (currentNanoTime - this.levelStartTime));
+                LEVEL_END_TIME - (now - this.levelStartTime));
     }
 
     @Override
-    public void draw(long currentNanoTime) {
-        this.gc.clearRect(0, 0, Game.WINDOW_WIDTH,
-                Game.WINDOW_HEIGHT);
+    public void draw(long now) {
+        this.gc.clearRect(0, 0, Game.WINDOW_MAX_WIDTH,
+                Game.WINDOW_MAX_HEIGHT);
 
         this.levelMap.draw(gc);
         this.statusHud.draw(gc);
     }
-    
-    private void updateSprites(long currentNanoTime) {
+
+    private void updateSprites(long now) {
         for (Sprite sprite : this.levelMap.getSprites()) {
             if (sprite instanceof Mob) {
                 Mob mob = (Mob)sprite;
@@ -219,42 +219,41 @@ public class LevelScene implements GameScene {
 
             if (sprite instanceof LevelUpdatable) {
                 LevelUpdatable levelSprite = (LevelUpdatable)sprite;
-                levelSprite.update(currentNanoTime, this);
+                levelSprite.update(now, this);
             } else {
-                sprite.update(currentNanoTime);
+                sprite.update(now);
             }
         }
     }
 
-    private Mob randomizeMob() {
-        switch (this.random.nextInt(0, Mob.TOTAL_MOBS)) {
-        case 0:
-            return new CactusMob(0, 0);
-        case 1:
-            return new CoyoteMob(0, 0);
-        case 2:
-            return new CoffinMob(0, 0);
-        default:
-            // This should not be reached.
-            return null;
-        }
-    }
-    
-    // method that will spawn/instantiate three mobs at a random x,y location
     private void spawnMobs(int mobCount) {
         for (int i = 0; i < mobCount; i++) {
-            Mob mob = randomizeMob();
-            
+            Mob mob = null;
+            switch (this.random.nextInt(0, Mob.TOTAL_MOBS)) {
+            case 0:
+                mob = new CactusMob(0, 0);
+                break;
+            case 1:
+                mob = new CoyoteMob(0, 0);
+                break;
+            case 2:
+                mob = new CoffinMob(0, 0);
+                break;
+            default:
+                // This should not be reached.
+                break;
+            }
+
             int mobWidth = (int) mob.getBounds().getWidth();
             int mobHeight = (int) mob.getBounds().getHeight();
 
             mob.setX(this.random.nextInt(
-                    Game.WINDOW_WIDTH / 2,
-                    Game.WINDOW_WIDTH - mobWidth));
+                    Game.WINDOW_MAX_WIDTH / 2,
+                    Game.WINDOW_MAX_WIDTH - mobWidth));
             mob.setY(this.random.nextInt(
                     mobHeight,
-                    Game.WINDOW_HEIGHT - mobHeight * 2));
-            
+                    Game.WINDOW_MAX_HEIGHT - mobHeight * 2));
+
             this.levelMap.addSpriteOnUpdate(mob);
         }
     }
@@ -284,16 +283,12 @@ public class LevelScene implements GameScene {
 
         powerup.setX(this.random.nextInt(
                 powerupWidth,
-                Game.WINDOW_WIDTH / 2));
+                Game.WINDOW_MAX_WIDTH / 2));
         powerup.setY(this.random.nextInt(
                 powerupHeight,
-                Game.WINDOW_HEIGHT - powerupHeight * 2));
+                Game.WINDOW_MAX_HEIGHT - powerupHeight * 2));
 
         this.levelMap.addSpriteOnUpdate(powerup);
-    }
-
-    public Outlaw getOutlaw() {
-        return outlaw;
     }
 
     public void applySlowMobSpeed(long powerupTimeout) {
@@ -302,7 +297,7 @@ public class LevelScene implements GameScene {
             @Override
             public void run() {
                 slowSpeed = false;
-            }            
+            }
         });
     }
 
@@ -312,60 +307,58 @@ public class LevelScene implements GameScene {
             @Override
             public void run() {
                 zeroSpeed = false;
-            }            
+            }
         });
     }
-    
-    public int getMobKillCount() {
-        return this.mobKillCount;
-    }
-    
-    public String getTimeLeftDisplayText() {
-        String formatString = "%s:%s";
-        if (this.levelTimeLeft < 0) {
-            return String.format(formatString, "0", "00");
-        }
-        long levelTimeLeftMinutes = 
-                TimeUnit.SECONDS.toMinutes(levelTimeLeft);
-        long levelTimeLeftSeconds =
-                levelTimeLeft - (60 * levelTimeLeftMinutes);
-        
-        if (levelTimeLeftSeconds <= 9) {
-            formatString = "%s:0%s";
-        }
-        
-        return String.format(
-                formatString,
-                levelTimeLeftMinutes,
-                levelTimeLeftSeconds);
-    }
 
-    public void notifyPowerupConsumed(int id) {
+    public void consumePowerup(int id) {
         if (id < 0 || id >= Powerup.TOTAL_POWERUPS) {
             return;
         }
-        
+
         this.powerupsCount[id]++;
     }
-    
+
+    @Override
+    public Scene getInner() {
+        return this.scene;
+    }
+
+    @Override
+    public Group getRoot() {
+        return root;
+    }
+
+    public Outlaw getOutlaw() {
+        return outlaw;
+    }
+
+    public int getMobKillCount() {
+        return this.mobKillCount;
+    }
+
     public int getPowerupCount(int id) {
         if (id < 0 || id >= Powerup.TOTAL_POWERUPS) {
             return -1;
         }
-        
+
         return this.powerupsCount[id];
     }
-    
+
+    public long getLevelTimeLeft() {
+        return this.levelTimeLeft;
+    }
+
+    public boolean isMaxSpeed() {
+        return this.maxSpeed;
+    }
+
     public boolean isSlowSpeed() {
         return this.slowSpeed;
     }
 
     public boolean isZeroSpeed() {
         return this.zeroSpeed;
-    }
-
-    public boolean isMaxSpeed() {
-        return this.maxSpeed;
     }
 
     public boolean isLevelDone() {

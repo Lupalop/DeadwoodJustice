@@ -1,6 +1,7 @@
 package game;
 
 public class TimedAction {
+
     private long startTime;
     private long endTime;
     private boolean autoReset;
@@ -27,4 +28,5 @@ public class TimedAction {
             }
         }
     }
+
 }

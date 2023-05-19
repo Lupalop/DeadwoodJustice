@@ -6,10 +6,10 @@ import javafx.scene.image.Image;
 
 public class SnakeOilPowerup extends Powerup {
 
-    public final static Image FRAMESET = new Image(
-            Game.getAsset("pw_snakeoil.png"));
-
     public static final int ID = 3;
+
+    public static final Image FRAMESET = new Image(
+            Game.getAsset("pw_snakeoil.png"));
 
     public SnakeOilPowerup(int xPos, int yPos) {
         super(xPos, yPos);
@@ -17,9 +17,9 @@ public class SnakeOilPowerup extends Powerup {
     }
 
     @Override
-    public void doPowerup(LevelScene scene) {
+    public void applyPowerup(LevelScene scene) {
         scene.applyZeroMobSpeed(POWERUP_TIMEOUT);
-        scene.notifyPowerupConsumed(ID);
+        scene.consumePowerup(ID);
     }
-    
+
 }

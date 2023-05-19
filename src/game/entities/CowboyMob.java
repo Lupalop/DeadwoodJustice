@@ -5,14 +5,14 @@ import javafx.scene.image.Image;
 
 public class CowboyMob extends Mob {
 
-    public final static Image FRAMESET_W = new Image(
+    public static final Image FRAMESET_W = new Image(
             Game.getAsset("cowboy_sheet_w.png"));
 
-    public final static int FRAMESET_ROWS = 4;
-    public final static int FRAMESET_COLUMNS = 8;
-    public final static int[] FRAMESET_OFFSET = 
+    public static final int FRAMESET_ROWS = 4;
+    public static final int FRAMESET_COLUMNS = 8;
+    public static final int[] FRAMESET_OFFSET =
             new int[] { 15, 14, 7, 0 };
-    public final static int[] FRAME_RANGES =
+    public static final int[] FRAME_RANGES =
             new int[] {
                     // Walking
                     0, 7,
@@ -25,26 +25,26 @@ public class CowboyMob extends Mob {
                     // On shoot
                     16, 21
             };
-    
+
     public CowboyMob(int x, int y) {
         super(x, y, 3000, 50, true);
-        
-        this.setIsDeadOnPlayerImpact(false);
+
+        this.setDeadOnPlayerImpact(false);
         this.setFrameSet(FRAMESET_W, FRAMESET_ROWS, FRAMESET_COLUMNS);
         this.setBoundsOffset(FRAMESET_OFFSET);
         this.setFrameRanges(FRAME_RANGES);
-        
+
         super.initialize();
         this.setScale(3);
-        
-        if (this.moveRight) {
+
+        if (this.isMovingRight()) {
             this.changeDirection();
         }
-        
-        this.isExcludedFromMaxSpeed = true;
+
+        this.excludedFromMaxSpeed = true;
         if (Game.FLAG_SMARTER_MOBS) {
-            this.setIsChasingPlayer(true);
+            this.setChasingPlayer(true);
         }
     }
-    
+
 }

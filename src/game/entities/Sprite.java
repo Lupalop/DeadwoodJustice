@@ -2,11 +2,20 @@ package game.entities;
 
 import java.util.concurrent.TimeUnit;
 
+import game.Game;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 
 public abstract class Sprite implements Comparable<Sprite> {
+
+    protected int dx, dy;
+    protected boolean boundsDirty;
+
+    private static final long DEFAULT_FRAME_INTERVAL =
+            TimeUnit.MILLISECONDS.toNanos(100);
+    private static final int DEFAULT_SCALE = 1;
+    private static final int BASE_DIVIDER = 4;
 
     private Image image;
     private int x, y;
@@ -20,7 +29,7 @@ public abstract class Sprite implements Comparable<Sprite> {
     private boolean flipVertical;
 
     private Rectangle2D sourceRectangles[];
-    private int currentFrame;
+    private int frame;
     private int totalFrames;
     private long lastFrameTime;
     private long frameInterval;
@@ -28,8 +37,8 @@ public abstract class Sprite implements Comparable<Sprite> {
     private int minFrame;
     private int maxFrame;
 
-    private boolean isFrameAutoReset;
-    private boolean isFrameSequenceDone;
+    private boolean frameAutoReset;
+    private boolean frameSequenceDone;
     private boolean hasFrameOverride;
     private Image overrideImage;
     private int overrideMinFrame;
@@ -37,54 +46,53 @@ public abstract class Sprite implements Comparable<Sprite> {
     private long overrideFrameInterval;
 
     private int[] boundsOffset;
-    
-    private final static long DEFAULT_FRAME_INTERVAL =
-            TimeUnit.MILLISECONDS.toNanos(100);
-    private final static int BASE_DIVIDER = 4;
 
-    protected int dx, dy;
-    protected boolean boundsDirty;
+    public Sprite(int x, int y) {
+        this.dx = 0;
+        this.dy = 0;
+        this.boundsDirty = true;
 
-    public Sprite(int xPos, int yPos) {
-        this.x = xPos;
-        this.y = yPos;
-        this.scale = 1;
+        this.x = x;
+        this.y = y;
+        this.width = 0;
+        this.height = 0;
+        this.bounds = null;
+        this.baseBounds = null;
+        this.scale = DEFAULT_SCALE;
         this.visible = true;
         this.flipHorizontal = false;
         this.flipVertical = false;
-        this.boundsDirty = true;
 
-        this.currentFrame = -1;
+        this.sourceRectangles = null;
+        this.frame = -1;
         this.totalFrames = 0;
         this.lastFrameTime = -1;
         this.frameInterval = DEFAULT_FRAME_INTERVAL;
-        
         this.minFrame = -1;
         this.maxFrame = -1;
-
-        this.isFrameSequenceDone = false;
-        this.isFrameAutoReset = true;
+        this.frameSequenceDone = false;
+        this.frameAutoReset = true;
         this.hasFrameOverride = false;
         this.overrideImage = null;
         this.overrideMinFrame = -1;
         this.overrideMaxFrame = -1;
         this.overrideFrameInterval = -1;
-        
+
         this.boundsOffset = null;
     }
 
     public Sprite() {
         this(0, 0);
     }
-    
+
     public void draw(GraphicsContext gc) {
         double flipOffsetX = (flipHorizontal ? (this.getWidth() * this.scale) : 0);
         double flipOffsetY = (flipVertical ? (this.getHeight() * this.scale) : 0);
         double flipMultiplierWidth = (flipHorizontal ? -1 : 1);
         double flipMultiplierHeight = (flipVertical ? -1 : 1);
-        
-        if (currentFrame != -1 && totalFrames != 0) {
-            Rectangle2D source = this.sourceRectangles[currentFrame];
+
+        if (frame != -1 && totalFrames != 0) {
+            Rectangle2D source = this.sourceRectangles[frame];
             gc.drawImage(
                     this.getImage(),
                     source.getMinX(),
@@ -103,8 +111,8 @@ public abstract class Sprite implements Comparable<Sprite> {
                     this.getWidth() * this.scale * flipMultiplierWidth,
                     this.getHeight() * this.scale * flipMultiplierHeight);
         }
-        
-        if (game.Game.DEBUG_MODE) {
+
+        if (Game.DEBUG_MODE) {
             gc.save();
             gc.setStroke(javafx.scene.paint.Color.RED);
             gc.strokeRect(
@@ -118,39 +126,44 @@ public abstract class Sprite implements Comparable<Sprite> {
         }
     }
 
-    public void update(long currentNanoTime) {
-        if (this.currentFrame == -1 || this.totalFrames == 0
+    public void update(long now) {
+        if (this.frame == -1 || this.totalFrames == 0
                 || this.maxFrame == -1 || this.minFrame == -1) {
             return;
         }
 
-        long deltaTime = (currentNanoTime - lastFrameTime);
+        long deltaTime = (now - lastFrameTime);
         if (lastFrameTime == -1) {
-            this.lastFrameTime = currentNanoTime;
+            this.lastFrameTime = now;
             return;
         }
 
-        if (deltaTime < getFrameInterval()) {
+        long realFrameInterval = this.frameInterval;
+        if (this.overrideFrameInterval > 0) {
+            realFrameInterval = this.overrideFrameInterval;
+        }
+
+        if (deltaTime < realFrameInterval) {
             return;
         }
-        
-        if (this.isFrameAutoReset || !this.isFrameSequenceDone) { 
-            this.currentFrame++;
+
+        if (this.frameAutoReset || !this.frameSequenceDone) {
+            this.frame++;
         }
 
         if (this.hasFrameOverride) {
-            if (this.currentFrame == this.overrideMaxFrame) {
+            if (this.frame == this.overrideMaxFrame) {
                 this.clearFrameOverride();
             }
-        }
-        else if (this.currentFrame == this.maxFrame) {
-            if (this.isFrameAutoReset) {
-                this.currentFrame = this.minFrame;
+        } else if (this.frame == this.maxFrame) {
+            if (this.frameAutoReset) {
+                this.frame = this.minFrame;
             } else {
-                this.isFrameSequenceDone = true;
+                this.frameSequenceDone = true;
             }
         }
-        this.lastFrameTime = currentNanoTime;
+
+        this.lastFrameTime = now;
     }
 
     public boolean intersects(Sprite rect2, boolean xIgnore, boolean yIgnore) {
@@ -166,12 +179,12 @@ public abstract class Sprite implements Comparable<Sprite> {
 
         return rectangle1.intersects(rectangle2);
     }
-    
+
     public boolean intersects(Sprite rect2) {
         return intersects(rect2, false, false);
     }
 
-    public static int getIntersectionSide(Rectangle2D r1, Rectangle2D r2) {
+    private int intersectsSide(Rectangle2D r1, Rectangle2D r2) {
         // Check if the rectangles intersect.
         if (!r1.intersects(r2)) {
             return -1;
@@ -189,172 +202,17 @@ public abstract class Sprite implements Comparable<Sprite> {
         }
 
         // Should never reach this point.
-        return -1;        
+        return -1;
     }
-    
+
     public int intersectsSide(Rectangle2D r2) {
-        return getIntersectionSide(this.getBounds(), r2);
+        return intersectsSide(this.getBounds(), r2);
     }
-    
+
     public int baseIntersectsSide(Rectangle2D r2) {
-        return getIntersectionSide(this.getBaseBounds(), r2);
-    }
-    
-    public Rectangle2D getBounds() {
-        if (this.boundsDirty) {
-            double newX = this.getX();
-            double newY = this.getY();
-            double newWidth = this.getWidth();
-            double newHeight = this.getHeight();
-            
-            if (this.getBoundsOffset() != null) {
-                if (this.flipHorizontal) {
-                    newX += this.getBoundsOffset()[1] * scale;
-                } else {
-                    newX += this.getBoundsOffset()[0] * scale;
-                }
-                newWidth -= this.getBoundsOffset()[0] + this.getBoundsOffset()[1];
-                
-                if (this.flipVertical) {
-                    newY += this.getBoundsOffset()[3] * scale;
-                } else {
-                    newY += this.getBoundsOffset()[2] * scale;
-                }
-                newHeight -= this.getBoundsOffset()[2] + this.getBoundsOffset()[3];
-            }
-            newWidth *= scale;
-            newHeight *= scale;
-            
-            this.bounds = new Rectangle2D(
-                    newX, newY, newWidth, newHeight);
-            double baseHeight = newHeight / BASE_DIVIDER;
-            this.baseBounds = new Rectangle2D(
-                    newX, newY + newHeight - baseHeight,
-                    newWidth, baseHeight);
-        }
-        return bounds;
+        return intersectsSide(this.getBaseBounds(), r2);
     }
 
-    public Rectangle2D getBaseBounds() {
-        if (this.boundsDirty) {
-            this.getBounds();
-        }
-        return this.baseBounds;
-    }
-    
-    public int getX() {
-        return this.x;
-    }
-
-    public int getY() {
-        return this.y;
-    }
-
-    protected int getScale() {
-        return this.scale;
-    }
-    
-    public boolean getVisible() {
-        return visible;
-    }
-
-    protected Image getImage() {
-        if (this.overrideImage != null) {
-            return this.overrideImage;
-        }
-        return this.image;
-    }
-
-    public double getWidth() {
-        return this.width;
-    }
-    
-    public double getHeight() {
-        return this.height;
-    }
-    
-    protected double getFrameInterval() {
-        if (this.overrideFrameInterval > 0) {
-            return this.overrideFrameInterval;
-        }
-        return frameInterval;
-    }
-    
-    public boolean isFrameAutoReset() {
-        return isFrameAutoReset;
-    }
-
-    protected boolean isFrameSequenceDone() {
-        return this.isFrameSequenceDone;
-    }
-    
-    protected int[] getBoundsOffset() {
-        return this.boundsOffset;
-    }
-    
-    public void setX(int x) {
-        this.x = x;
-        this.boundsDirty = true;
-    }
-
-    public void setY(int y) {
-        this.y = y;
-        this.boundsDirty = true;
-    }
-    
-    public void addX(int x) {
-        this.setX(this.getX() + x);
-    }
-    
-    public void addY(int y) {
-        this.setY(this.getY() + y);
-    }
-
-    protected void setScale(int scale) {
-        this.scale = scale;
-        this.boundsDirty = true;
-    }
-    
-    public void setVisible(boolean value) {
-        this.visible = value;
-    }
-
-    protected void flipHorizontal(boolean value) {
-        if (this.flipHorizontal != value) {
-            this.flipHorizontal = value;
-            this.boundsDirty = true;
-        }
-    }
-    
-    protected void flipVertical(boolean value) {
-        if (this.flipVertical != value) {
-            this.flipVertical = value;
-            this.boundsDirty = true;
-        }
-    }
-    
-    protected void setImage(Image image) {
-        this.image = image;
-        this.boundsDirty = (this.getWidth() != image.getWidth()
-                || this.getHeight() != image.getHeight());
-        if (boundsDirty) {
-            this.width = image.getWidth();
-            this.height = image.getHeight();
-        }
-    }
-    
-    protected void setMinMaxFrame(int min, int max) {
-        boolean shouldReset =
-                this.minFrame != min || this.maxFrame != max;
-        this.minFrame = min;
-        this.maxFrame = max;
-        if (shouldReset) {
-            this.clearFrameOverride();
-            this.isFrameSequenceDone = false;
-            this.currentFrame = min;
-        }
-    }
-    
     protected void playFrames(int min, int max, Image frameSetOverride, long frameIntervalOverride) {
         // An existing frame range is already being played temporarily
         // or an invalid value was passed to min/max parameters.
@@ -373,21 +231,161 @@ public abstract class Sprite implements Comparable<Sprite> {
         }
         this.hasFrameOverride = true;
         if (shouldReset) {
-            this.isFrameSequenceDone = false;
-            this.currentFrame = min;
+            this.frameSequenceDone = false;
+            this.frame = min;
         }
     }
-    
+
     private void clearFrameOverride() {
         this.overrideMinFrame = -1;
         this.overrideMaxFrame = -1;
         this.overrideFrameInterval = -1;
         this.overrideImage = null;
         this.hasFrameOverride = false;
-        this.isFrameSequenceDone = true;
-        this.currentFrame = this.minFrame;
+        this.frameSequenceDone = true;
+        this.frame = this.minFrame;
     }
-    
+
+    public Rectangle2D getBounds() {
+        if (this.boundsDirty) {
+            double newX = this.getX();
+            double newY = this.getY();
+            double newWidth = this.getWidth();
+            double newHeight = this.getHeight();
+
+            if (this.boundsOffset != null) {
+                if (this.flipHorizontal) {
+                    newX += this.boundsOffset[1] * scale;
+                } else {
+                    newX += this.boundsOffset[0] * scale;
+                }
+                newWidth -= this.boundsOffset[0] + this.boundsOffset[1];
+
+                if (this.flipVertical) {
+                    newY += this.boundsOffset[3] * scale;
+                } else {
+                    newY += this.boundsOffset[2] * scale;
+                }
+                newHeight -= this.boundsOffset[2] + this.boundsOffset[3];
+            }
+            newWidth *= scale;
+            newHeight *= scale;
+
+            this.bounds = new Rectangle2D(
+                    newX, newY, newWidth, newHeight);
+
+            double baseHeight = newHeight / BASE_DIVIDER;
+            this.baseBounds = new Rectangle2D(
+                    newX, newY + newHeight - baseHeight,
+                    newWidth, baseHeight);
+        }
+
+        return this.bounds;
+    }
+
+    public Rectangle2D getBaseBounds() {
+        if (this.boundsDirty) {
+            this.getBounds();
+        }
+        return this.baseBounds;
+    }
+
+    public Image getImage() {
+        if (this.overrideImage != null) {
+            return this.overrideImage;
+        }
+        return this.image;
+    }
+
+    public int getX() {
+        return this.x;
+    }
+
+    public int getY() {
+        return this.y;
+    }
+
+    public double getWidth() {
+        return this.width;
+    }
+
+    public double getHeight() {
+        return this.height;
+    }
+
+    public int getScale() {
+        return this.scale;
+    }
+
+    public boolean getVisible() {
+        return this.visible;
+    }
+
+    public boolean isFrameAutoReset() {
+        return this.frameAutoReset;
+    }
+
+    public boolean isFrameSequenceDone() {
+        return this.frameSequenceDone;
+    }
+
+    public void setX(int x) {
+        this.x = x;
+        this.boundsDirty = true;
+    }
+
+    public void setY(int y) {
+        this.y = y;
+        this.boundsDirty = true;
+    }
+
+    public void addX(int x) {
+        this.setX(this.getX() + x);
+    }
+
+    public void addY(int y) {
+        this.setY(this.getY() + y);
+    }
+
+    protected void setImage(Image image) {
+        this.image = image;
+        this.boundsDirty = (this.getWidth() != image.getWidth()
+                || this.getHeight() != image.getHeight());
+        if (boundsDirty) {
+            this.width = image.getWidth();
+            this.height = image.getHeight();
+        }
+    }
+
+    protected void setWidth(double val) {
+        this.width = val;
+        this.boundsDirty = true;
+    }
+
+    protected void setHeight(double val) {
+        this.height = val;
+        this.boundsDirty = true;
+    }
+
+    protected void setScale(int scale) {
+        this.scale = scale;
+        this.boundsDirty = true;
+    }
+
+    protected void setVisible(boolean value) {
+        this.visible = value;
+    }
+
+    protected void setFlip(boolean value, boolean isVertical) {
+        if (isVertical) {
+            this.flipVertical = value;
+            this.boundsDirty = (this.flipVertical != value);
+        } else {
+            this.flipHorizontal = value;
+            this.boundsDirty = (this.flipHorizontal != value);
+        }
+    }
+
     protected void setFrameSet(Image frameSet, int rows, int columns, boolean reframe) {
         if (this.image != frameSet) {
             this.image = frameSet;
@@ -418,35 +416,37 @@ public abstract class Sprite implements Comparable<Sprite> {
             }
         }
     }
-    
+
     protected void setFrameSet(Image frameSet, int rows, int columns) {
         this.setFrameSet(frameSet, rows, columns, true);
     }
-    
+
     protected void setFrameSet(Image frameSet) {
         this.setFrameSet(frameSet, -1, -1, false);
     }
-    
-    public void setWidth(double val) {
-        this.width = val;
-        this.boundsDirty = true;
+
+    protected void setFrame(int frame) {
+        this.frame = frame;
     }
 
-    public void setHeight(double val) {
-        this.height = val;
-        this.boundsDirty = true;
-    }
-    
-    protected void setFrame(int frameId) {
-        this.currentFrame = frameId;
-    }
-    
     protected void setFrameInterval(long interval) {
         this.frameInterval = interval;
     }
 
-    public void setFrameAutoReset(boolean frameAutoReset) {
-        this.isFrameAutoReset = frameAutoReset;
+    protected void setMinMaxFrame(int min, int max) {
+        boolean shouldReset =
+                this.minFrame != min || this.maxFrame != max;
+        this.minFrame = min;
+        this.maxFrame = max;
+        if (shouldReset) {
+            this.clearFrameOverride();
+            this.frameSequenceDone = false;
+            this.frame = min;
+        }
+    }
+
+    protected void setFrameAutoReset(boolean frameAutoReset) {
+        this.frameAutoReset = frameAutoReset;
     }
 
     protected void setBoundsOffset(int boundsOffset[]) {
@@ -458,4 +458,5 @@ public abstract class Sprite implements Comparable<Sprite> {
     public int compareTo(Sprite o) {
         return (int) (this.getBounds().getMaxY() - o.getBounds().getMaxY());
     }
+
 }

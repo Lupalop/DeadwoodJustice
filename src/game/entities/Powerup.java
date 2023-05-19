@@ -8,23 +8,24 @@ import javafx.scene.canvas.GraphicsContext;
 public abstract class Powerup extends Sprite implements LevelUpdatable {
 
     public static final int TOTAL_POWERUPS = 4;
+
     public static final long POWERUP_TIMEOUT =
             TimeUnit.SECONDS.toNanos(5);
-    
-    public long spawnTime;
-    
+
+    private long spawnTime;
+
     public Powerup(int xPos, int yPos) {
         super(xPos, yPos);
         this.setScale(2);
         this.spawnTime = System.nanoTime();
     }
-    
+
     private boolean consumed;
-    
+
     public boolean getConsumed() {
         return this.consumed;
     }
-    
+
     @Override
     public void draw(GraphicsContext gc) {
         if (this.consumed) {
@@ -33,33 +34,35 @@ public abstract class Powerup extends Sprite implements LevelUpdatable {
 
         super.draw(gc);
     }
-    
-    public void update(long currentNanoTime, LevelScene level) {
+
+    @Override
+    public void update(long now, LevelScene level) {
         if (this.consumed) {
             return;
         }
 
-        super.update(currentNanoTime);
-        
+        super.update(now);
+
         if (level.getOutlaw().isAlive()) {
             if (this.intersects(level.getOutlaw())) {
                 this.consumed = true;
-                doPowerup(level);
+                applyPowerup(level);
                 level.getOutlaw().spawnPowerupEffect();
             }
         }
-        
-        long deltaTime = (currentNanoTime - spawnTime);
+
+        long deltaTime = (now - spawnTime);
         if (deltaTime >= POWERUP_TIMEOUT) {
-            this.spawnTime = currentNanoTime;
+            this.spawnTime = now;
             this.consumed = true;
         }
     }
-    
-    public abstract void doPowerup(LevelScene scene);
+
+    public abstract void applyPowerup(LevelScene scene);
 
     @Override
     public int compareTo(Sprite o) {
         return Integer.MAX_VALUE;
     }
+
 }

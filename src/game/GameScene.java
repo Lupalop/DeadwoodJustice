@@ -4,10 +4,11 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 
 public interface GameScene {
-    public Scene getInnerScene();
 
-    public void update(long currentNanoTime);
-    public void draw(long currentNanoTime);
-    
+    public void update(long now);
+    public void draw(long now);
+
+    public Scene getInner();
     public Group getRoot();
+
 }

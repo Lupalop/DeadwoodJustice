@@ -15,42 +15,44 @@ import javafx.scene.input.KeyEvent;
 
 public class Outlaw extends Sprite implements LevelUpdatable {
 
+    public static final Image FRAMESET_W = new Image(
+            Game.getAsset("player_sheet_w.png"));
+    public static final Image FRAMESET_SW = new Image(
+            Game.getAsset("player_sheet_sw.png"));
+    public static final Image FRAMESET_N = new Image(
+            Game.getAsset("player_sheet_n.png"));
+    public static final Image FRAMESET_NW = new Image(
+            Game.getAsset("player_sheet_nw.png"));
+    public static final Image FRAMESET_S = new Image(
+            Game.getAsset("player_sheet_s.png"));
+
+    public static final int FRAMESET_ROWS = 5;
+    public static final int FRAMESET_COLUMNS = 14;
+    public static final int[] FRAMESET_OFFSET =
+            new int[] { 15, 17, 9, 3 };
+
+    public static final int OUTLAW_SPEED = 10;
+
     private String name;
     private int strength;
-    private boolean isShootBlocked;
-    private boolean isAlive;
-    private boolean isDying;
-    private boolean isImmortal;
+
+    private boolean alive;
+    private boolean dying;
+    private boolean immortal;
+    private boolean blockedFromShooting;
+
     private ArrayList<Bullet> bullets;
     private byte activeDirections;
-    
+
     private long immortalityStartTime;
     private long immortalityEndTime;
 
     private Effect powerupEffect;
     private Effect immortalityEffect;
 
-    public final static Image FRAMESET_W = new Image(
-            Game.getAsset("player_sheet_w.png"));
-    public final static Image FRAMESET_SW = new Image(
-            Game.getAsset("player_sheet_sw.png"));
-    public final static Image FRAMESET_N = new Image(
-            Game.getAsset("player_sheet_n.png"));
-    public final static Image FRAMESET_NW = new Image(
-            Game.getAsset("player_sheet_nw.png"));
-    public final static Image FRAMESET_S = new Image(
-            Game.getAsset("player_sheet_s.png"));
-
-    public final static int FRAMESET_ROWS = 5;
-    public final static int FRAMESET_COLUMNS = 14;
-    public final static int[] FRAMESET_OFFSET = 
-            new int[] { 15, 17, 9, 3 };
-
-    public final static int OUTLAW_SPEED = 10;
-
     public Outlaw(String name, int x, int y) {
         super(x, y);
-        
+
         this.setFrameSet(FRAMESET_W, FRAMESET_ROWS, FRAMESET_COLUMNS);
         this.setMinMaxFrame(0, 5);
         this.setScale(2);
@@ -58,31 +60,23 @@ public class Outlaw extends Sprite implements LevelUpdatable {
 
         this.name = name;
         Random r = new Random();
-        this.strength = r.nextInt(151) + 100;
-        if (Game.DEBUG_MODE) {
-            this.strength = 1;
-        }
-        this.isShootBlocked = false;
-        this.isAlive = true;
-        this.isDying = false;
-        this.isImmortal = false;
+        this.strength = Game.DEBUG_MODE
+                ? 1
+                : r.nextInt(151) + 100;
+
+        this.alive = true;
+        this.dying = false;
+        this.immortal = false;
+        this.blockedFromShooting = false;
+
         this.bullets = new ArrayList<Bullet>();
-    }
+        this.activeDirections = 0;
 
-    public boolean isAlive() {
-        return this.isAlive;
-    }
+        this.immortalityStartTime = -1;
+        this.immortalityEndTime = -1;
 
-    public boolean isDying() {
-        return this.isDying;
-    }
-
-    public int getStrength() {
-        return this.strength;
-    }
-    
-    public String getName() {
-        return this.name;
+        this.powerupEffect = null;
+        this.immortalityEffect = null;
     }
 
     // method that will get the bullets 'shot' by the outlaw
@@ -116,7 +110,7 @@ public class Outlaw extends Sprite implements LevelUpdatable {
 
     public void reduceStrength(int value) {
         // This must be a positive integer.
-        if (value < 0 || this.isImmortal) {
+        if (value < 0 || this.immortal) {
             return;
         }
         // Clamp the strength value to 0.
@@ -126,15 +120,15 @@ public class Outlaw extends Sprite implements LevelUpdatable {
             this.strength -= value;
         }
         if (this.strength == 0) {
-            this.isAlive = false;
-            this.isDying = true;
+            this.alive = false;
+            this.dying = true;
             this.setFrameAutoReset(false);
             this.setMinMaxFrame(56, 69);
         } else {
             this.playFrames(56, 58, null, TimeUnit.MILLISECONDS.toNanos(200));
         }
     }
-    
+
     @Override
     public void draw(GraphicsContext gc) {
         if (immortalityEffect != null) {
@@ -150,17 +144,18 @@ public class Outlaw extends Sprite implements LevelUpdatable {
             powerupEffect.draw(gc);
         }
     }
-    
+
     // method called if up/down/left/right arrow key is pressed.
-    public void update(long currentNanoTime, LevelScene level) {
-        super.update(currentNanoTime);
+    @Override
+    public void update(long now, LevelScene level) {
+        super.update(now);
 
         if (immortalityEffect != null) {
-            immortalityEffect.update(currentNanoTime);
+            immortalityEffect.update(now);
         }
 
         if (powerupEffect != null) {
-            powerupEffect.update(currentNanoTime);
+            powerupEffect.update(now);
         }
 
         // Keep a list containing bullets to be removed.
@@ -168,17 +163,17 @@ public class Outlaw extends Sprite implements LevelUpdatable {
 
         // Loop through the bullet list and remove used bullets.
         for (Bullet bullet : this.getBullets()) {
-            bullet.update(currentNanoTime);
+            bullet.update(now);
             if (!bullet.getVisible()) {
                 removalList.add(bullet);
             }
         }
-        
+
         this.getBullets().removeAll(removalList);
-        
-        if (this.isDying) {
+
+        if (this.dying) {
             if (this.isFrameSequenceDone()) {
-                this.isDying = false;
+                this.dying = false;
                 level.markLevelDone();
                 return;
             }
@@ -187,22 +182,22 @@ public class Outlaw extends Sprite implements LevelUpdatable {
         if (!this.isAlive()) {
             return;
         }
-        
+
         if (this.getBounds().getMinX() + dx >= 0 &&
-                Game.isDirectionActive(this.activeDirections, Game.KEY_DIR_LEFT)) {
+                Game.isDirectionActive(this.activeDirections, Game.DIR_LEFT)) {
             this.dx = -OUTLAW_SPEED;
-        } else if (this.getBounds().getMinX() + this.dx <= Game.WINDOW_WIDTH - this.getBounds().getWidth()
-                && Game.isDirectionActive(this.activeDirections, Game.KEY_DIR_RIGHT)) {
+        } else if (this.getBounds().getMinX() + this.dx <= Game.WINDOW_MAX_WIDTH - this.getBounds().getWidth()
+                && Game.isDirectionActive(this.activeDirections, Game.DIR_RIGHT)) {
             this.dx = OUTLAW_SPEED;
         } else {
             this.dx = 0;
         }
 
         if (this.getBounds().getMinY() + dy >= 0 &&
-                Game.isDirectionActive(this.activeDirections, Game.KEY_DIR_UP)) {
+                Game.isDirectionActive(this.activeDirections, Game.DIR_UP)) {
             this.dy = -OUTLAW_SPEED;
-        } else if (this.getBounds().getMinY() + dy <= Game.WINDOW_HEIGHT - this.getBounds().getHeight()
-                && Game.isDirectionActive(this.activeDirections, Game.KEY_DIR_DOWN)) {
+        } else if (this.getBounds().getMinY() + dy <= Game.WINDOW_MAX_HEIGHT - this.getBounds().getHeight()
+                && Game.isDirectionActive(this.activeDirections, Game.DIR_DOWN)) {
             this.dy = OUTLAW_SPEED;
         } else {
             this.dy = 0;
@@ -213,23 +208,24 @@ public class Outlaw extends Sprite implements LevelUpdatable {
         } else {
             this.setMinMaxFrame(0,  5);
         }
-        
+
         this.addX(this.dx);
         this.addY(this.dy);
-        
-        long deltaTime = (currentNanoTime - this.immortalityStartTime);
+
+        long deltaTime = (now - this.immortalityStartTime);
         if (deltaTime >= this.immortalityEndTime) {
             this.immortalityEffect = null;
             this.immortalityStartTime = -1;
             this.immortalityEndTime = -1;
-            this.isImmortal = false;
+            this.immortal = false;
         }
     }
 
     // method that will listen and handle the key press events
     public void handleKeyPressEvent(LevelScene level) {
-        Scene scene = level.getInnerScene();
+        Scene scene = level.getInner();
         scene.addEventHandler(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>() {
+            @Override
             public void handle(KeyEvent e) {
                 if (level.isLevelDone()) {
                     return;
@@ -240,6 +236,7 @@ public class Outlaw extends Sprite implements LevelUpdatable {
         });
 
         scene.addEventHandler(KeyEvent.KEY_RELEASED, new EventHandler<KeyEvent>() {
+            @Override
             public void handle(KeyEvent e) {
                 KeyCode code = e.getCode();
                 stopMoving(code);
@@ -252,35 +249,35 @@ public class Outlaw extends Sprite implements LevelUpdatable {
         if (!this.isAlive()) {
             return;
         }
-        
+
         switch (keyCode) {
         case UP:
         case W:
-            this.activeDirections |= Game.KEY_DIR_UP;
+            this.activeDirections |= Game.DIR_UP;
             break;
         case DOWN:
         case S:
-            this.activeDirections |= Game.KEY_DIR_DOWN;
+            this.activeDirections |= Game.DIR_DOWN;
             break;
         case LEFT:
         case A:
-            this.activeDirections |= Game.KEY_DIR_LEFT;
+            this.activeDirections |= Game.DIR_LEFT;
             if (!Game.FLAG_DIRECTIONAL_SHOOTING) {
-                this.isShootBlocked = true;
+                this.blockedFromShooting = true;
             }
             break;
         case RIGHT:
         case D:
-            this.activeDirections |= Game.KEY_DIR_RIGHT;
+            this.activeDirections |= Game.DIR_RIGHT;
             break;
         case SPACE:
         case ENTER:
-            if (this.isShootBlocked) {
+            if (this.blockedFromShooting) {
                 break;
             }
             // We can't shoot in other directions, following a limitation
             // imposed by the problem domain.
-            this.isShootBlocked = true;
+            this.blockedFromShooting = true;
             if (Game.FLAG_DIRECTIONAL_SHOOTING) {
                 this.playFrames(28, 33, null, TimeUnit.MILLISECONDS.toNanos(50));
             } else {
@@ -299,57 +296,58 @@ public class Outlaw extends Sprite implements LevelUpdatable {
         switch (keyCode) {
         case UP:
         case W:
-            this.activeDirections &= ~Game.KEY_DIR_UP;
+            this.activeDirections &= ~Game.DIR_UP;
             break;
         case DOWN:
         case S:
-            this.activeDirections &= ~Game.KEY_DIR_DOWN;
+            this.activeDirections &= ~Game.DIR_DOWN;
             break;
         case LEFT:
         case A:
-            this.activeDirections &= ~Game.KEY_DIR_LEFT;
-            this.isShootBlocked = false;
+            this.activeDirections &= ~Game.DIR_LEFT;
+            this.blockedFromShooting = false;
             break;
         case RIGHT:
         case D:
-            this.activeDirections &= ~Game.KEY_DIR_RIGHT;
+            this.activeDirections &= ~Game.DIR_RIGHT;
             break;
         case SPACE:
         case ENTER:
-            if (Game.isDirectionActive(this.activeDirections, Game.KEY_DIR_LEFT) && !Game.FLAG_DIRECTIONAL_SHOOTING) {
+            if (Game.isDirectionActive(this.activeDirections, Game.DIR_LEFT) && !Game.FLAG_DIRECTIONAL_SHOOTING) {
                 break;
             }
-            this.isShootBlocked = false;
+            this.blockedFromShooting = false;
             break;
         default:
             break;
         }
+
         this.updateFrameSet();
     }
 
     private void updateFrameSet() {
-        this.flipHorizontal(false);
-        if (Game.isDirectionActive(this.activeDirections, Game.KEY_DIR_UP)) {
-            if (Game.isDirectionActive(this.activeDirections, Game.KEY_DIR_RIGHT)) {
+        this.setFlip(false, false);
+        if (Game.isDirectionActive(this.activeDirections, Game.DIR_UP)) {
+            if (Game.isDirectionActive(this.activeDirections, Game.DIR_RIGHT)) {
                 this.setFrameSet(FRAMESET_NW);
-            } else if (Game.isDirectionActive(this.activeDirections, Game.KEY_DIR_LEFT)) {
+            } else if (Game.isDirectionActive(this.activeDirections, Game.DIR_LEFT)) {
                 this.setFrameSet(FRAMESET_NW);
-                this.flipHorizontal(true);
+                this.setFlip(true, false);
             } else {
                 this.setFrameSet(FRAMESET_N);
             }
-        } else if (Game.isDirectionActive(this.activeDirections, Game.KEY_DIR_DOWN)) {
-            if (Game.isDirectionActive(this.activeDirections, Game.KEY_DIR_RIGHT)) {
+        } else if (Game.isDirectionActive(this.activeDirections, Game.DIR_DOWN)) {
+            if (Game.isDirectionActive(this.activeDirections, Game.DIR_RIGHT)) {
                 this.setFrameSet(FRAMESET_SW);
-            } else if (Game.isDirectionActive(this.activeDirections, Game.KEY_DIR_LEFT)) {
+            } else if (Game.isDirectionActive(this.activeDirections, Game.DIR_LEFT)) {
                 this.setFrameSet(FRAMESET_SW);
-                this.flipHorizontal(true);
+                this.setFlip(true, false);
             } else {
                 this.setFrameSet(FRAMESET_S);
             }
         } else {
-            if (Game.isDirectionActive(this.activeDirections, Game.KEY_DIR_LEFT)) {
-                this.flipHorizontal(true);
+            if (Game.isDirectionActive(this.activeDirections, Game.DIR_LEFT)) {
+                this.setFlip(true, false);
             }
             this.setFrameSet(FRAMESET_W);
         }
@@ -357,17 +355,34 @@ public class Outlaw extends Sprite implements LevelUpdatable {
 
     public void applyImmortality(long endTime) {
         this.immortalityEffect = new ImmortalityEffect(this);
-        this.isImmortal = true;
+        this.immortal = true;
         this.immortalityStartTime = System.nanoTime();
         this.immortalityEndTime = endTime;
-    }
-    
-    public boolean isImmortal() {
-        return this.isImmortal;
     }
 
     // TODO: move to effects manager
     public void spawnPowerupEffect() {
-        this.powerupEffect = new SmokeEffect(this);        
+        this.powerupEffect = new SmokeEffect(this);
     }
+
+    public String getName() {
+        return this.name;
+    }
+
+    public int getStrength() {
+        return this.strength;
+    }
+
+    public boolean isAlive() {
+        return this.alive;
+    }
+
+    public boolean isDying() {
+        return this.dying;
+    }
+
+    public boolean isImmortal() {
+        return this.immortal;
+    }
+
 }
