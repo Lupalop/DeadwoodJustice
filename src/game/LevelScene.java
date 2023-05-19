@@ -9,7 +9,6 @@ import game.entities.CowboyMob;
 import game.entities.CoyoteMob;
 import game.entities.HayPowerup;
 import game.entities.LampPowerup;
-import game.entities.LevelUpdatable;
 import game.entities.Mob;
 import game.entities.Outlaw;
 import game.entities.Powerup;
@@ -86,7 +85,7 @@ public class LevelScene implements GameScene {
 
         this.outlaw = new Outlaw(
                 "Going merry",
-                OUTLAW_INITIAL_X, 0);
+                OUTLAW_INITIAL_X, 0, this);
         this.getOutlaw().setY(this.random.nextInt(
                 (int) getOutlaw().getBounds().getHeight(),
                 Game.WINDOW_MAX_HEIGHT - (int) getOutlaw().getBounds().getHeight()));
@@ -148,7 +147,10 @@ public class LevelScene implements GameScene {
                 if (bossMob != null) {
                     return;
                 }
-                bossMob = new CowboyMob(Game.WINDOW_MAX_WIDTH, (Game.WINDOW_MAX_HEIGHT / 2));
+                bossMob = new CowboyMob(
+                        Game.WINDOW_MAX_WIDTH,
+                        Game.WINDOW_MAX_HEIGHT / 2,
+                        LevelScene.this);
                 bossMob.addY((int) -bossMob.getBounds().getHeight() / 2);
                 bossMob.addX((int) -bossMob.getBounds().getWidth());
                 levelMap.getSprites().add(bossMob);
@@ -187,7 +189,7 @@ public class LevelScene implements GameScene {
 
     @Override
     public void update(long now) {
-        this.statusHud.update(now, this);
+        this.statusHud.update(now);
         if (this.levelDone) {
             return;
         }
@@ -217,12 +219,7 @@ public class LevelScene implements GameScene {
                 }
             }
 
-            if (sprite instanceof LevelUpdatable) {
-                LevelUpdatable levelSprite = (LevelUpdatable)sprite;
-                levelSprite.update(now, this);
-            } else {
-                sprite.update(now);
-            }
+            sprite.update(now);
         }
     }
 
@@ -231,13 +228,13 @@ public class LevelScene implements GameScene {
             Mob mob = null;
             switch (this.random.nextInt(0, Mob.TOTAL_MOBS)) {
             case 0:
-                mob = new CactusMob(0, 0);
+                mob = new CactusMob(0, 0, this);
                 break;
             case 1:
-                mob = new CoyoteMob(0, 0);
+                mob = new CoyoteMob(0, 0, this);
                 break;
             case 2:
-                mob = new CoffinMob(0, 0);
+                mob = new CoffinMob(0, 0, this);
                 break;
             default:
                 // This should not be reached.
@@ -262,16 +259,16 @@ public class LevelScene implements GameScene {
         Powerup powerup = null;
         switch (this.random.nextInt(0, Powerup.TOTAL_POWERUPS)) {
         case LampPowerup.ID:
-            powerup = new LampPowerup(0, 0);
+            powerup = new LampPowerup(0, 0, this);
             break;
         case HayPowerup.ID:
-            powerup = new HayPowerup(0, 0);
+            powerup = new HayPowerup(0, 0, this);
             break;
         case WheelPowerup.ID:
-            powerup = new WheelPowerup(0, 0);
+            powerup = new WheelPowerup(0, 0, this);
             break;
         case SnakeOilPowerup.ID:
-            powerup = new SnakeOilPowerup(0, 0);
+            powerup = new SnakeOilPowerup(0, 0, this);
             break;
         default:
             // This should not be reached.

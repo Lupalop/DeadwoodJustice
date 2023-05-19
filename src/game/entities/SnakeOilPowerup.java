@@ -11,15 +11,15 @@ public class SnakeOilPowerup extends Powerup {
     public static final Image FRAMESET = new Image(
             Game.getAsset("pw_snakeoil.png"));
 
-    public SnakeOilPowerup(int xPos, int yPos) {
-        super(xPos, yPos);
+    public SnakeOilPowerup(int x, int y, LevelScene parent) {
+        super(x, y, parent);
         this.setImage(FRAMESET);
     }
 
     @Override
-    public void applyPowerup(LevelScene scene) {
-        scene.applyZeroMobSpeed(POWERUP_TIMEOUT);
-        scene.consumePowerup(ID);
+    public void applyPowerup() {
+        this.getParent().applyZeroMobSpeed(POWERUP_TIMEOUT);
+        this.getParent().consumePowerup(ID);
     }
 
 }

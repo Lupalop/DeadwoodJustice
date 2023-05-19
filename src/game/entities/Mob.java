@@ -8,7 +8,7 @@ import game.Game;
 import game.LevelScene;
 import javafx.scene.canvas.GraphicsContext;
 
-public abstract class Mob extends Sprite implements LevelUpdatable {
+public abstract class Mob extends Sprite {
 
     public static final int TOTAL_MOBS = 3;
 
@@ -28,9 +28,6 @@ public abstract class Mob extends Sprite implements LevelUpdatable {
 
     private boolean alive;
     private boolean dying;
-    private boolean maxSpeed;
-    private boolean slowSpeed;
-    private boolean zeroSpeed;
     protected boolean excludedFromMaxSpeed;
     private boolean deadOnPlayerImpact;
     private boolean chasingPlayer;
@@ -46,8 +43,9 @@ public abstract class Mob extends Sprite implements LevelUpdatable {
     private long lastShootTime;
 
     private Effect deathEffect;
+    private LevelScene parent;
 
-    public Mob(int x, int y, int health, int damage, boolean isShooter) {
+    public Mob(int x, int y, int health, int damage, boolean isShooter, LevelScene parent) {
         super(x, y);
 
         Random rand = new Random();
@@ -61,9 +59,6 @@ public abstract class Mob extends Sprite implements LevelUpdatable {
 
         this.alive = true;
         this.dying = false;
-        this.maxSpeed = false;
-        this.slowSpeed = false;
-        this.zeroSpeed = false;
         this.excludedFromMaxSpeed = false;
         this.deadOnPlayerImpact = true;
         this.chasingPlayer = false;
@@ -85,6 +80,7 @@ public abstract class Mob extends Sprite implements LevelUpdatable {
         }
 
         this.setFlip(!this.movingRight, false);
+        this.parent = parent;
     }
 
     protected void initialize() {
@@ -105,18 +101,33 @@ public abstract class Mob extends Sprite implements LevelUpdatable {
             }
         }
 
+        if (this.shooter) {
+            // Keep a list containing bullets to be removed.
+            ArrayList<Bullet> removalList = new ArrayList<Bullet>();
+
+            // Loop through the bullet list and remove used bullets.
+            for (Bullet bullet : this.getBullets()) {
+                bullet.update(now);
+                if (!bullet.getVisible()) {
+                    removalList.add(bullet);
+                }
+            }
+
+            this.getBullets().removeAll(removalList);
+        }
+
         if (!this.isAlive()) {
             return;
         }
 
-        this.dx = (this.maxSpeed && !this.excludedFromMaxSpeed)
+        this.dx = (this.parent.isMaxSpeed() && !this.excludedFromMaxSpeed)
                 ? MAX_SPEED
                 : this.speed;
-        if (this.slowSpeed) {
+        if (this.parent.isSlowSpeed()) {
             this.dx = MIN_SPEED;
         }
         // Zero speed power-up takes precedence over slow speed power-up.
-        if (this.zeroSpeed) {
+        if (this.parent.isZeroSpeed()) {
             this.dx = 0;
         }
 
@@ -159,36 +170,9 @@ public abstract class Mob extends Sprite implements LevelUpdatable {
 
         this.addX(this.movingRight ? this.dx : -this.dx);
         this.addY(dy);
-    }
 
-    @Override
-    public void update(long now, LevelScene level) {
-        this.maxSpeed = level.isMaxSpeed();
-        this.slowSpeed = level.isSlowSpeed();
-        this.zeroSpeed = level.isZeroSpeed();
-        this.update(now);
-
-        if (this.shooter) {
-            // Keep a list containing bullets to be removed.
-            ArrayList<Bullet> removalList = new ArrayList<Bullet>();
-
-            // Loop through the bullet list and remove used bullets.
-            for (Bullet bullet : this.getBullets()) {
-                bullet.update(now);
-                if (!bullet.getVisible()) {
-                    removalList.add(bullet);
-                }
-            }
-
-            this.getBullets().removeAll(removalList);
-        }
-
-        if (!this.isAlive()) {
-            return;
-        }
-
-        this.passability = level.getLevelMap().getPassability(this);
-        checkOutlaw(level.getOutlaw());
+        this.passability = this.parent.getLevelMap().getPassability(this);
+        checkOutlaw(this.parent.getOutlaw());
 
         if (this.shooter) {
             // Shoot every n seconds.
@@ -287,7 +271,7 @@ public abstract class Mob extends Sprite implements LevelUpdatable {
             return;
         }
 
-        if (outlaw.intersects(this, true, false) || this.zeroSpeed) {
+        if (outlaw.intersects(this, true, false) || this.parent.isZeroSpeed()) {
             this.dy = 0;
         } else if (outlaw.getBounds().getMinY() > this.getBounds().getMinY()) {
             this.dy = this.speed;

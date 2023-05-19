@@ -11,15 +11,16 @@ public class LampPowerup extends Powerup {
     public static final Image FRAMESET = new Image(
             Game.getAsset("pw_lamp.png"));
 
-    public LampPowerup(int xPos, int yPos) {
-        super(xPos, yPos);
+    public LampPowerup(int x, int y, LevelScene parent) {
+        super(x, y, parent);
         this.setImage(FRAMESET);
     }
 
     @Override
-    public void applyPowerup(LevelScene scene) {
-        scene.getOutlaw().increaseStrength(scene.getOutlaw().getStrength());
-        scene.consumePowerup(ID);
+    public void applyPowerup() {
+        this.getParent().getOutlaw().increaseStrength(
+                this.getParent().getOutlaw().getStrength());
+        this.getParent().consumePowerup(ID);
     }
 
 }

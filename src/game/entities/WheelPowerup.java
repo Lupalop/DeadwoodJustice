@@ -11,15 +11,15 @@ public class WheelPowerup extends Powerup {
     public static final Image FRAMESET = new Image(
             Game.getAsset("pw_wheel.png"));
 
-    public WheelPowerup(int xPos, int yPos) {
-        super(xPos, yPos);
+    public WheelPowerup(int x, int y, LevelScene parent) {
+        super(x, y, parent);
         this.setImage(FRAMESET);
     }
 
     @Override
-    public void applyPowerup(LevelScene scene) {
-        scene.applySlowMobSpeed(POWERUP_TIMEOUT);
-        scene.consumePowerup(ID);
+    public void applyPowerup() {
+        this.getParent().applySlowMobSpeed(POWERUP_TIMEOUT);
+        this.getParent().consumePowerup(ID);
     }
 
 }

@@ -1,6 +1,7 @@
 package game.entities;
 
 import game.Game;
+import game.LevelScene;
 import javafx.scene.image.Image;
 
 public class CoyoteMob extends Mob {
@@ -26,8 +27,8 @@ public class CoyoteMob extends Mob {
                     57, 73
             };
 
-    public CoyoteMob(int x, int y) {
-        super(x, y, 1, -1, Game.FLAG_MOBS_CAN_SHOOT);
+    public CoyoteMob(int x, int y, LevelScene parent) {
+        super(x, y, 1, -1, Game.FLAG_MOBS_CAN_SHOOT, parent);
 
         this.setFrameSet(FRAMESET_W, FRAMESET_ROWS, FRAMESET_COLUMNS);
         this.setBoundsOffset(FRAMESET_OFFSET);

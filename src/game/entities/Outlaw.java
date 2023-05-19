@@ -13,7 +13,7 @@ import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 
-public class Outlaw extends Sprite implements LevelUpdatable {
+public class Outlaw extends LevelSprite {
 
     public static final Image FRAMESET_W = new Image(
             Game.getAsset("player_sheet_w.png"));
@@ -50,8 +50,8 @@ public class Outlaw extends Sprite implements LevelUpdatable {
     private Effect powerupEffect;
     private Effect immortalityEffect;
 
-    public Outlaw(String name, int x, int y) {
-        super(x, y);
+    public Outlaw(String name, int x, int y, LevelScene parent) {
+        super(x, y, parent);
 
         this.setFrameSet(FRAMESET_W, FRAMESET_ROWS, FRAMESET_COLUMNS);
         this.setMinMaxFrame(0, 5);
@@ -79,7 +79,7 @@ public class Outlaw extends Sprite implements LevelUpdatable {
     }
 
     @Override
-    public void update(long now, LevelScene level) {
+    public void update(long now) {
         super.update(now);
 
         if (immortalityEffect != null) {
@@ -106,7 +106,7 @@ public class Outlaw extends Sprite implements LevelUpdatable {
         if (this.dying) {
             if (this.isFrameSequenceDone()) {
                 this.dying = false;
-                level.markLevelDone();
+                this.getParent().markLevelDone();
                 return;
             }
         }

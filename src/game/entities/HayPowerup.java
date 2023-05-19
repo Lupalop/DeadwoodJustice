@@ -11,15 +11,15 @@ public class HayPowerup extends Powerup {
     public static final Image FRAMESET = new Image(
             Game.getAsset("pw_hay.png"));
 
-    public HayPowerup(int xPos, int yPos) {
-        super(xPos, yPos);
+    public HayPowerup(int x, int y, LevelScene parent) {
+        super(x, y, parent);
         this.setImage(FRAMESET);
     }
 
     @Override
-    public void applyPowerup(LevelScene scene) {
-        scene.getOutlaw().applyImmortality(POWERUP_TIMEOUT);
-        scene.consumePowerup(ID);
+    public void applyPowerup() {
+        this.getParent().getOutlaw().applyImmortality(POWERUP_TIMEOUT);
+        this.getParent().consumePowerup(ID);
     }
 
 }

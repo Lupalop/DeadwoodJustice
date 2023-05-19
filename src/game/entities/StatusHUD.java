@@ -8,7 +8,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Paint;
 
-public class StatusHUD extends Sprite implements LevelUpdatable {
+public class StatusHUD extends Sprite {
 
     private static final Tileset TILESET =
             new Tileset("tilemap_ui.png", 4, 8);
@@ -38,7 +38,7 @@ public class StatusHUD extends Sprite implements LevelUpdatable {
     }
 
     @Override
-    public void update(long now, LevelScene level) {
+    public void update(long now) {
         if (this.isGameEndVisible) {
             exitButton.update(now);
             playButton.update(now);

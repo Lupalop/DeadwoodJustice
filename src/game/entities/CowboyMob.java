@@ -1,6 +1,7 @@
 package game.entities;
 
 import game.Game;
+import game.LevelScene;
 import javafx.scene.image.Image;
 
 public class CowboyMob extends Mob {
@@ -28,8 +29,8 @@ public class CowboyMob extends Mob {
 
     private static final int MOB_SCALE = 3;
 
-    public CowboyMob(int x, int y) {
-        super(x, y, 3000, 50, true);
+    public CowboyMob(int x, int y, LevelScene parent) {
+        super(x, y, 3000, 50, true, parent);
 
         this.setDeadOnPlayerImpact(false);
         this.setFrameSet(FRAMESET_W, FRAMESET_ROWS, FRAMESET_COLUMNS);
