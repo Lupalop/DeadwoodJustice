@@ -381,10 +381,10 @@ public abstract class Sprite implements Comparable<Sprite> {
     protected void setFlip(boolean value, boolean isVertical) {
         if (isVertical) {
             this.flipVertical = value;
-            this.boundsDirty = (this.flipVertical != value);
+            this.boundsDirty = this.boundsDirty || (this.flipVertical != value);
         } else {
             this.flipHorizontal = value;
-            this.boundsDirty = (this.flipHorizontal != value);
+            this.boundsDirty = this.boundsDirty || (this.flipHorizontal != value);
         }
     }
 
