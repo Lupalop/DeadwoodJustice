@@ -38,8 +38,6 @@ public abstract class Mob extends LevelSprite {
     private boolean passability[];
     private int[] frameRanges;
 
-    private long lastShootTime;
-
     private Effect deathEffect;
 
     public Mob(int x, int y, int health, int damage, boolean isShooter, LevelScene parent) {
@@ -68,7 +66,16 @@ public abstract class Mob extends LevelSprite {
         this.frameRanges = null;
 
         if (this.shooter) {
-            this.lastShootTime = System.nanoTime();
+            // Shoot every n seconds.
+            this.getParent().getActions().add(MOB_SHOOT_INTERVAL, true, new Runnable() {
+                @Override
+                public void run() {
+                    if (!isAlive()) {
+                        return;
+                    }
+                    shoot();
+                }
+            });
         }
 
         if (Game.FLAG_SMARTER_MOBS) {
@@ -153,15 +160,6 @@ public abstract class Mob extends LevelSprite {
 
         this.passability = this.getParent().getLevelMap().getPassability(this);
         checkOutlaw(this.getParent().getOutlaw());
-
-        if (this.shooter) {
-            // Shoot every n seconds.
-            long deltaTime = (now - lastShootTime);
-            if (deltaTime >= MOB_SHOOT_INTERVAL) {
-                this.shoot();
-                this.lastShootTime = now;
-            }
-        }
     }
 
     @Override
