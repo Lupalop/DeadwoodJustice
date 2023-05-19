@@ -12,12 +12,17 @@ public abstract class Powerup extends LevelSprite {
     public static final long POWERUP_TIMEOUT =
             TimeUnit.SECONDS.toNanos(5);
 
-    private long spawnTime;
     private boolean consumed;
 
     public Powerup(int x, int y, LevelScene parent) {
         super(x, y, parent);
-        this.spawnTime = System.nanoTime();
+
+        parent.getActions().add(POWERUP_TIMEOUT, false, new Runnable() {
+            @Override
+            public void run() {
+                consumed = true;
+            }
+        });
     }
 
     @Override
@@ -34,12 +39,6 @@ public abstract class Powerup extends LevelSprite {
                 this.applyPowerup();
                 this.getParent().getOutlaw().spawnPowerupEffect();
             }
-        }
-
-        long deltaTime = (now - spawnTime);
-        if (deltaTime >= POWERUP_TIMEOUT) {
-            this.spawnTime = now;
-            this.consumed = true;
         }
     }
 
