@@ -78,73 +78,6 @@ public class Outlaw extends Sprite implements LevelUpdatable {
         this.immortalityEffect = null;
     }
 
-    // method that will get the bullets 'shot' by the outlaw
-    public ArrayList<Bullet> getBullets() {
-        return this.bullets;
-    }
-
-    // method called if spacebar is pressed
-    public void shoot() {
-        if (!this.isAlive()) {
-            return;
-        }
-
-        int x = (int) (this.getBounds().getMaxX());
-        int y = (int) (this.getBounds().getMinY()
-            + (this.getBounds().getHeight() / 2)
-            - (Bullet.BULLET_IMAGE.getHeight() / 2));
-
-        // compute for the x and y initial position of the bullet
-        Bullet bullet = new Bullet(x, y, activeDirections, Game.FLAG_DIRECTIONAL_SHOOTING);
-        this.bullets.add(bullet);
-    }
-
-    public void increaseStrength(int value) {
-        // This must be a positive integer.
-        if (value < 0) {
-            return;
-        }
-        this.strength += value;
-    }
-
-    public void reduceStrength(int value) {
-        // This must be a positive integer.
-        if (value < 0 || this.immortal) {
-            return;
-        }
-        // Clamp the strength value to 0.
-        if (this.strength - value < 0) {
-            this.strength = 0;
-        } else {
-            this.strength -= value;
-        }
-        if (this.strength == 0) {
-            this.alive = false;
-            this.dying = true;
-            this.setFrameAutoReset(false);
-            this.setMinMaxFrame(56, 69);
-        } else {
-            this.playFrames(56, 58, null, TimeUnit.MILLISECONDS.toNanos(200));
-        }
-    }
-
-    @Override
-    public void draw(GraphicsContext gc) {
-        if (immortalityEffect != null) {
-            immortalityEffect.draw(gc);
-        }
-
-        super.draw(gc);
-        for (Bullet bullet : this.getBullets()) {
-            bullet.draw(gc);
-        }
-
-        if (powerupEffect != null) {
-            powerupEffect.draw(gc);
-        }
-    }
-
-    // method called if up/down/left/right arrow key is pressed.
     @Override
     public void update(long now, LevelScene level) {
         super.update(now);
@@ -217,6 +150,67 @@ public class Outlaw extends Sprite implements LevelUpdatable {
             this.immortalityStartTime = -1;
             this.immortalityEndTime = -1;
             this.immortal = false;
+        }
+    }
+
+    @Override
+    public void draw(GraphicsContext gc) {
+        if (immortalityEffect != null) {
+            immortalityEffect.draw(gc);
+        }
+
+        super.draw(gc);
+        for (Bullet bullet : this.getBullets()) {
+            bullet.draw(gc);
+        }
+
+        if (powerupEffect != null) {
+            powerupEffect.draw(gc);
+        }
+    }
+
+    // method called if spacebar is pressed
+    public void shoot() {
+        if (!this.isAlive()) {
+            return;
+        }
+
+        int x = (int) (this.getBounds().getMaxX());
+        int y = (int) (this.getBounds().getMinY()
+            + (this.getBounds().getHeight() / 2)
+            - (Bullet.BULLET_IMAGE.getHeight() / 2));
+
+        // compute for the x and y initial position of the bullet
+        Bullet bullet = new Bullet(x, y, activeDirections, Game.FLAG_DIRECTIONAL_SHOOTING);
+        this.bullets.add(bullet);
+    }
+
+    public void increaseStrength(int value) {
+        // This must be a positive integer.
+        if (value < 0) {
+            return;
+        }
+        this.strength += value;
+    }
+
+    public void reduceStrength(int value) {
+        // This must be a positive integer.
+        if (value < 0 || this.immortal) {
+            return;
+        }
+        // Clamp the strength value to 0.
+        if (this.strength - value < 0) {
+            this.strength = 0;
+        } else {
+            this.strength -= value;
+        }
+        if (this.strength == 0) {
+            this.alive = false;
+            this.dying = true;
+            this.setFrameAutoReset(false);
+            this.setMinMaxFrame(56, 69);
+        } else {
+            this.playFrames(56, 58, null, TimeUnit.MILLISECONDS.toNanos(200));
         }
     }
 
@@ -382,6 +376,10 @@ public class Outlaw extends Sprite implements LevelUpdatable {
 
     public boolean isImmortal() {
         return this.immortal;
+    }
+
+    public ArrayList<Bullet> getBullets() {
+        return this.bullets;
     }
 
 }

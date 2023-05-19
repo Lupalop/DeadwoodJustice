@@ -278,34 +278,6 @@ public abstract class Mob extends Sprite implements LevelUpdatable {
         this.addX((int) this.getBounds().getWidth() / 2 * multiplier);
     }
 
-    public ArrayList<Bullet> getBullets() {
-        return this.bullets;
-    }
-
-    public boolean isAlive() {
-        return this.alive;
-    }
-
-    public boolean isDying() {
-        return this.dying;
-    }
-
-    public boolean isMovingRight() {
-        return this.movingRight;
-    }
-
-    protected void setDeadOnPlayerImpact(boolean value) {
-        this.deadOnPlayerImpact = value;
-    }
-
-    protected void setChasingPlayer(boolean value) {
-        this.chasingPlayer = value;
-    }
-
-    protected void setFrameRanges(int[] frameRanges) {
-        this.frameRanges = frameRanges;
-    }
-
     protected void chasePlayer(Outlaw outlaw) {
         if (!outlaw.isAlive()) {
             return;
@@ -351,6 +323,34 @@ public abstract class Mob extends Sprite implements LevelUpdatable {
         Bullet bullet = new Bullet(x, y, activeDirections, true);
         this.bullets.add(bullet);
         this.playFrames(frameRanges[8], frameRanges[9], null, 50);
+    }
+
+    public ArrayList<Bullet> getBullets() {
+        return this.bullets;
+    }
+
+    public boolean isAlive() {
+        return this.alive;
+    }
+
+    public boolean isDying() {
+        return this.dying;
+    }
+
+    public boolean isMovingRight() {
+        return this.movingRight;
+    }
+
+    protected void setDeadOnPlayerImpact(boolean value) {
+        this.deadOnPlayerImpact = value;
+    }
+
+    protected void setChasingPlayer(boolean value) {
+        this.chasingPlayer = value;
+    }
+
+    protected void setFrameRanges(int[] frameRanges) {
+        this.frameRanges = frameRanges;
     }
 
 }

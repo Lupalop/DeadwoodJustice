@@ -13,25 +13,11 @@ public abstract class Powerup extends Sprite implements LevelUpdatable {
             TimeUnit.SECONDS.toNanos(5);
 
     private long spawnTime;
+    private boolean consumed;
 
     public Powerup(int xPos, int yPos) {
         super(xPos, yPos);
         this.spawnTime = System.nanoTime();
-    }
-
-    private boolean consumed;
-
-    public boolean getConsumed() {
-        return this.consumed;
-    }
-
-    @Override
-    public void draw(GraphicsContext gc) {
-        if (this.consumed) {
-            return;
-        }
-
-        super.draw(gc);
     }
 
     @Override
@@ -57,7 +43,20 @@ public abstract class Powerup extends Sprite implements LevelUpdatable {
         }
     }
 
+    @Override
+    public void draw(GraphicsContext gc) {
+        if (this.consumed) {
+            return;
+        }
+
+        super.draw(gc);
+    }
+
     public abstract void applyPowerup(LevelScene scene);
+
+    public boolean getConsumed() {
+        return this.consumed;
+    }
 
     @Override
     public int compareTo(Sprite o) {

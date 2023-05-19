@@ -38,6 +38,17 @@ public class StatusHUD extends Sprite implements LevelUpdatable {
     }
 
     @Override
+    public void update(long now, LevelScene level) {
+        if (this.isGameEndVisible) {
+            exitButton.update(now);
+            playButton.update(now);
+        } else if (level.isLevelDone()) {
+            this.isGameEndVisible = true;
+            this.addGameEndButtons();
+        }
+    }
+
+    @Override
     public void draw(GraphicsContext gc) {
         gc.save();
 
@@ -135,41 +146,6 @@ public class StatusHUD extends Sprite implements LevelUpdatable {
         gc.restore();
     }
 
-    @Override
-    public void update(long now, LevelScene level) {
-        if (this.isGameEndVisible) {
-            exitButton.update(now);
-            playButton.update(now);
-        } else if (level.isLevelDone()) {
-            this.isGameEndVisible = true;
-            this.addGameEndButtons();
-        }
-    }
-
-    private void addGameEndButtons() {
-        playButton = new Button(0, 0, level);
-        playButton.setText("PLAY");
-        playButton.setX((int) ((Game.WINDOW_MAX_WIDTH / 5) - playButton.getBounds().getWidth() / 2));
-        playButton.setY((Game.WINDOW_MAX_HEIGHT / 2) + 50);
-        playButton.setClickAction(new Runnable() {
-            @Override
-            public void run() {
-                Game.setGameScene(new LevelScene());
-            }
-        });
-
-        exitButton = new Button(0, 0, level);
-        exitButton.setText("EXIT");
-        exitButton.setX((int) ((Game.WINDOW_MAX_WIDTH) - (Game.WINDOW_MAX_WIDTH / 5) - exitButton.getBounds().getWidth() / 2));
-        exitButton.setY((Game.WINDOW_MAX_HEIGHT / 2) + 50);
-        exitButton.setClickAction(new Runnable() {
-            @Override
-            public void run() {
-                System.exit(0);
-            }
-        });
-    }
-
     private void drawGameEnd(GraphicsContext gc) {
         int base = 6;
         int tileSize = Tileset.TILE_SIZE_MID;
@@ -212,6 +188,30 @@ public class StatusHUD extends Sprite implements LevelUpdatable {
 
         playButton.draw(gc);
         exitButton.draw(gc);
+    }
+
+    private void addGameEndButtons() {
+        playButton = new Button(0, 0, level);
+        playButton.setText("PLAY");
+        playButton.setX((int) ((Game.WINDOW_MAX_WIDTH / 5) - playButton.getBounds().getWidth() / 2));
+        playButton.setY((Game.WINDOW_MAX_HEIGHT / 2) + 50);
+        playButton.setClickAction(new Runnable() {
+            @Override
+            public void run() {
+                Game.setGameScene(new LevelScene());
+            }
+        });
+
+        exitButton = new Button(0, 0, level);
+        exitButton.setText("EXIT");
+        exitButton.setX((int) ((Game.WINDOW_MAX_WIDTH) - (Game.WINDOW_MAX_WIDTH / 5) - exitButton.getBounds().getWidth() / 2));
+        exitButton.setY((Game.WINDOW_MAX_HEIGHT / 2) + 50);
+        exitButton.setClickAction(new Runnable() {
+            @Override
+            public void run() {
+                System.exit(0);
+            }
+        });
     }
 
     private String getLevelTimeLeftText() {

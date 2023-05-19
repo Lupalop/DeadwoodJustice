@@ -86,6 +86,47 @@ public abstract class Sprite implements Comparable<Sprite> {
         this(0, 0);
     }
 
+    public void update(long now) {
+        if (this.frame == -1 || this.totalFrames == 0
+                || this.maxFrame == -1 || this.minFrame == -1) {
+            return;
+        }
+
+        long deltaTime = (now - lastFrameTime);
+        if (lastFrameTime == -1) {
+            this.lastFrameTime = now;
+            return;
+        }
+
+        long realFrameInterval = this.frameInterval;
+        if (this.overrideFrameInterval > 0) {
+            realFrameInterval = this.overrideFrameInterval;
+        }
+
+        if (deltaTime < realFrameInterval) {
+            return;
+        }
+
+        if (this.frameAutoReset || !this.frameSequenceDone) {
+            this.frame++;
+        }
+
+        if (this.hasFrameOverride) {
+            if (this.frame == this.overrideMaxFrame) {
+                this.clearFrameOverride();
+            }
+        } else if (this.frame == this.maxFrame) {
+            if (this.frameAutoReset) {
+                this.frame = this.minFrame;
+            } else {
+                this.frameSequenceDone = true;
+            }
+        }
+
+        this.lastFrameTime = now;
+    }
+
+
     public void draw(GraphicsContext gc) {
         double flipOffsetX = (flipHorizontal ? (this.getWidth() * this.getScale()) : 0);
         double flipOffsetY = (flipVertical ? (this.getHeight() * this.getScale()) : 0);
@@ -125,46 +166,6 @@ public abstract class Sprite implements Comparable<Sprite> {
                     this.getBaseBounds().getWidth(), this.getBaseBounds().getHeight());
             gc.restore();
         }
-    }
-
-    public void update(long now) {
-        if (this.frame == -1 || this.totalFrames == 0
-                || this.maxFrame == -1 || this.minFrame == -1) {
-            return;
-        }
-
-        long deltaTime = (now - lastFrameTime);
-        if (lastFrameTime == -1) {
-            this.lastFrameTime = now;
-            return;
-        }
-
-        long realFrameInterval = this.frameInterval;
-        if (this.overrideFrameInterval > 0) {
-            realFrameInterval = this.overrideFrameInterval;
-        }
-
-        if (deltaTime < realFrameInterval) {
-            return;
-        }
-
-        if (this.frameAutoReset || !this.frameSequenceDone) {
-            this.frame++;
-        }
-
-        if (this.hasFrameOverride) {
-            if (this.frame == this.overrideMaxFrame) {
-                this.clearFrameOverride();
-            }
-        } else if (this.frame == this.maxFrame) {
-            if (this.frameAutoReset) {
-                this.frame = this.minFrame;
-            } else {
-                this.frameSequenceDone = true;
-            }
-        }
-
-        this.lastFrameTime = now;
     }
 
     public boolean intersects(Sprite rect2, boolean xIgnore, boolean yIgnore) {

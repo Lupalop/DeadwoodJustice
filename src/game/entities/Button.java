@@ -38,6 +38,21 @@ public class Button extends Sprite {
         scene.getRoot().getChildren().add(text);
     }
 
+    @Override
+    public void draw(GraphicsContext gc) {
+        int[] parts = BUTTON_NORMAL_PARTS;
+        if (this.isHover) {
+            parts = BUTTON_HOVER_PARTS;
+        }
+        if (this.isActive) {
+            parts = BUTTON_ACTIVE_PARTS;
+        }
+        for (int i = 0; i < BUTTON_PARTS_COUNT; i++) {
+            TILESET.draw(gc, this.getX() + (Tileset.TILE_SIZE_MID * i), this.getY(), parts[i]);
+        }
+    }
+
+
     private void updateState(double x, double y, boolean hover) {
         boolean newState = getBounds().contains(x, y);
         if (hover) {
@@ -73,20 +88,6 @@ public class Button extends Sprite {
                 }
             }
         });
-    }
-
-    @Override
-    public void draw(GraphicsContext gc) {
-        int[] parts = BUTTON_NORMAL_PARTS;
-        if (this.isHover) {
-            parts = BUTTON_HOVER_PARTS;
-        }
-        if (this.isActive) {
-            parts = BUTTON_ACTIVE_PARTS;
-        }
-        for (int i = 0; i < BUTTON_PARTS_COUNT; i++) {
-            TILESET.draw(gc, this.getX() + (Tileset.TILE_SIZE_MID * i), this.getY(), parts[i]);
-        }
     }
 
     @Override
