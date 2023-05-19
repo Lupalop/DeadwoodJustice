@@ -119,13 +119,17 @@ public class Bullet extends LevelSprite {
         Outlaw outlaw = this.getParent().getOutlaw();
         if (this.fromOutlaw) {
             for (Sprite sprite : this.getParent().getLevelMap().getSprites()) {
-                if (!(sprite instanceof Mob)) {
-                    continue;
-                }
-                Mob mob = (Mob) sprite;
-                if (this.intersects(sprite)) {
-                    mob.reduceHealth(outlaw.getStrength());
-                    this.setVisible(false);
+                if (sprite instanceof Mob) {
+                    Mob mob = (Mob) sprite;
+                    if (mob.isAlive() && this.intersects(sprite)) {
+                        mob.reduceHealth(outlaw.getStrength());
+                        this.setVisible(false);
+                    }
+                } else if (sprite instanceof Prop
+                        && !Game.FLAG_IGNORE_PROP_COLLISION) {
+                    if (this.intersects(sprite)) {
+                        this.setVisible(false);
+                    }
                 }
             }
         } else {
