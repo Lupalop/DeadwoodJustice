@@ -9,7 +9,6 @@ public class Prop extends Sprite {
         super(xPos, yPos);
 
         this.setImage(new Image(Game.getAsset(assetPath)));
-        this.setScale(2);
     }
 
 }

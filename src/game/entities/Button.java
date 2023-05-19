@@ -27,7 +27,6 @@ public class Button extends Sprite {
 
     public Button(int xPos, int yPos, GameScene scene) {
         super(xPos, yPos);
-        TILESET.setScale(2);
         this.handleMouseEvent(scene.getInner());
         this.isHover = false;
         this.isActive = false;
@@ -86,7 +85,7 @@ public class Button extends Sprite {
             parts = BUTTON_ACTIVE_PARTS;
         }
         for (int i = 0; i < BUTTON_PARTS_COUNT; i++) {
-            TILESET.draw(gc, this.getX() + (Tileset.TILE_SIZE * i), this.getY(), parts[i]);
+            TILESET.draw(gc, this.getX() + (Tileset.TILE_SIZE_MID * i), this.getY(), parts[i]);
         }
     }
 

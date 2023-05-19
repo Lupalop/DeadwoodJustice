@@ -9,8 +9,9 @@ public class Bullet extends Sprite {
             Game.getAsset("bullet.png"),
             Bullet.BULLET_WIDTH, Bullet.BULLET_WIDTH, false, false);
 
-    public static final int BULLET_SPEED = 20;
-    public static final int BULLET_WIDTH = 20;
+    private static final int BULLET_SPEED = 20;
+    private static final int BULLET_WIDTH = 20;
+    private static final int BULLET_SCALE = 1;
 
     private static final int OFFSET_N = -10;
     private static final int OFFSET_NE = -10;
@@ -24,8 +25,9 @@ public class Bullet extends Sprite {
 
     public Bullet(int x, int y, byte activeDirections, boolean isDirectional) {
         super(x, y);
-        this.isDirectional = isDirectional;
         this.setImage(Bullet.BULLET_IMAGE);
+        this.setScale(Bullet.BULLET_SCALE);
+        this.isDirectional = isDirectional;
         this.computeDestination(activeDirections);
     }
 

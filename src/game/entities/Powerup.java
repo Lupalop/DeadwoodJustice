@@ -16,7 +16,6 @@ public abstract class Powerup extends Sprite implements LevelUpdatable {
 
     public Powerup(int xPos, int yPos) {
         super(xPos, yPos);
-        this.setScale(2);
         this.spawnTime = System.nanoTime();
     }
 

@@ -35,8 +35,6 @@ public class StatusHUD extends Sprite implements LevelUpdatable {
         this.isGameEndVisible = false;
         this.playButton = null;
         this.exitButton = null;
-
-        TILESET.setScale(2);
     }
 
     @Override
@@ -74,7 +72,7 @@ public class StatusHUD extends Sprite implements LevelUpdatable {
         String powerupSnakeOilCountText =
                 Integer.toString(powerupSnakeOilCount);
 
-        int tileSize = Tileset.TILE_SIZE;
+        int tileSize = Tileset.TILE_SIZE_MID;
         TILESET.draw(gc, tileSize, 0, 3);
         for (int i = 0; i < 9; i++) {
             TILESET.draw(gc, tileSize * (i + 2), 0, 1);
@@ -151,7 +149,7 @@ public class StatusHUD extends Sprite implements LevelUpdatable {
     private void addGameEndButtons() {
         playButton = new Button(0, 0, level);
         playButton.setText("PLAY");
-        playButton.setX((int) ((Game.WINDOW_MAX_WIDTH / 5) - playButton.getWidth() / 2));
+        playButton.setX((int) ((Game.WINDOW_MAX_WIDTH / 5) - playButton.getBounds().getWidth() / 2));
         playButton.setY((Game.WINDOW_MAX_HEIGHT / 2) + 50);
         playButton.setClickAction(new Runnable() {
             @Override
@@ -162,7 +160,7 @@ public class StatusHUD extends Sprite implements LevelUpdatable {
 
         exitButton = new Button(0, 0, level);
         exitButton.setText("EXIT");
-        exitButton.setX((int) ((Game.WINDOW_MAX_WIDTH) - (Game.WINDOW_MAX_WIDTH / 5) - exitButton.getWidth() / 2));
+        exitButton.setX((int) ((Game.WINDOW_MAX_WIDTH) - (Game.WINDOW_MAX_WIDTH / 5) - exitButton.getBounds().getWidth() / 2));
         exitButton.setY((Game.WINDOW_MAX_HEIGHT / 2) + 50);
         exitButton.setClickAction(new Runnable() {
             @Override
@@ -174,7 +172,7 @@ public class StatusHUD extends Sprite implements LevelUpdatable {
 
     private void drawGameEnd(GraphicsContext gc) {
         int base = 6;
-        int tileSize = Tileset.TILE_SIZE;
+        int tileSize = Tileset.TILE_SIZE_MID;
         for (int i = 0; i < (Game.WINDOW_MAX_WIDTH) / tileSize; i++) {
             TILESET.draw(gc, tileSize * i, tileSize * base, 16);
         }

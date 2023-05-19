@@ -55,7 +55,6 @@ public class Outlaw extends Sprite implements LevelUpdatable {
 
         this.setFrameSet(FRAMESET_W, FRAMESET_ROWS, FRAMESET_COLUMNS);
         this.setMinMaxFrame(0, 5);
-        this.setScale(2);
         this.setBoundsOffset(FRAMESET_OFFSET);
 
         this.name = name;

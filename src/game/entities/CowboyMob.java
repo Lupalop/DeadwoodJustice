@@ -26,6 +26,8 @@ public class CowboyMob extends Mob {
                     16, 21
             };
 
+    private static final int MOB_SCALE = 3;
+
     public CowboyMob(int x, int y) {
         super(x, y, 3000, 50, true);
 
@@ -35,7 +37,7 @@ public class CowboyMob extends Mob {
         this.setFrameRanges(FRAME_RANGES);
 
         super.initialize();
-        this.setScale(3);
+        this.setScale(MOB_SCALE);
 
         if (this.isMovingRight()) {
             this.changeDirection();

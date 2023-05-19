@@ -9,12 +9,13 @@ import javafx.scene.image.Image;
 
 public abstract class Sprite implements Comparable<Sprite> {
 
+    public static final int DEFAULT_SCALE = 2;
+
     protected int dx, dy;
     protected boolean boundsDirty;
 
     private static final long DEFAULT_FRAME_INTERVAL =
             TimeUnit.MILLISECONDS.toNanos(100);
-    private static final int DEFAULT_SCALE = 1;
     private static final int BASE_DIVIDER = 4;
 
     private Image image;
@@ -86,8 +87,8 @@ public abstract class Sprite implements Comparable<Sprite> {
     }
 
     public void draw(GraphicsContext gc) {
-        double flipOffsetX = (flipHorizontal ? (this.getWidth() * this.scale) : 0);
-        double flipOffsetY = (flipVertical ? (this.getHeight() * this.scale) : 0);
+        double flipOffsetX = (flipHorizontal ? (this.getWidth() * this.getScale()) : 0);
+        double flipOffsetY = (flipVertical ? (this.getHeight() * this.getScale()) : 0);
         double flipMultiplierWidth = (flipHorizontal ? -1 : 1);
         double flipMultiplierHeight = (flipVertical ? -1 : 1);
 
@@ -101,15 +102,15 @@ public abstract class Sprite implements Comparable<Sprite> {
                     source.getHeight(),
                     this.getX() + flipOffsetX,
                     this.getY() + flipOffsetY,
-                    this.getWidth() * this.scale * flipMultiplierWidth,
-                    this.getHeight() * this.scale * flipMultiplierHeight);
+                    this.getWidth() * this.getScale() * flipMultiplierWidth,
+                    this.getHeight() * this.getScale() * flipMultiplierHeight);
         } else {
             gc.drawImage(
                     this.getImage(),
                     this.getX() + flipOffsetX,
                     this.getY() + flipOffsetY,
-                    this.getWidth() * this.scale * flipMultiplierWidth,
-                    this.getHeight() * this.scale * flipMultiplierHeight);
+                    this.getWidth() * this.getScale() * flipMultiplierWidth,
+                    this.getHeight() * this.getScale() * flipMultiplierHeight);
         }
 
         if (Game.DEBUG_MODE) {

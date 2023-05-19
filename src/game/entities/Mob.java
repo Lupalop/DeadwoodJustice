@@ -88,7 +88,6 @@ public abstract class Mob extends Sprite implements LevelUpdatable {
     }
 
     protected void initialize() {
-        this.setScale(2);
         this.setMinMaxFrame(frameRanges[0], frameRanges[1]);
     }
 

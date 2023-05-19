@@ -6,15 +6,20 @@ import javafx.scene.image.Image;
 
 public class Tileset extends Sprite {
 
-    public static final int TILE_SIZE = 32;
+    public static final int TILE_SIZE = 16;
+    public static final int TILE_SIZE_MID = TILE_SIZE * 2;
 
-    public Tileset(String assetPath, int rows, int columns) {
+    public Tileset(String assetPath, int rows, int columns, int scale) {
         super(0, 0);
 
         Image tilesetImage = new Image(Game.getAsset(assetPath));
         this.setFrameSet(tilesetImage, rows, columns);
         this.setFrameAutoReset(false);
-        this.setScale(1);
+        this.setScale(scale);
+    }
+
+    public Tileset(String assetPath, int rows, int columns) {
+        this(assetPath, rows, columns, Sprite.DEFAULT_SCALE);
     }
 
     public void draw(GraphicsContext gc, int x, int y, int frameId) {

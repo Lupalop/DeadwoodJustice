@@ -15,7 +15,7 @@ import javafx.scene.canvas.GraphicsContext;
 public class LevelMap {
 
     private static final Tileset TILESET_DESERT =
-            new Tileset("tilemap_desert.png", 3, 4);
+            new Tileset("tilemap_desert.png", 3, 4, 1);
 
     private static final String PROP_HOUSE = "a_house.png";
     private static final String PROP_COVERED_WAGON = "a_coveredwagon.png";
@@ -27,9 +27,9 @@ public class LevelMap {
     private static final int TILEGEN_FREQ_PROPS = 150;
 
     private static final int TILES_VERTICAL =
-            (Game.WINDOW_MAX_HEIGHT + 8) / Tileset.TILE_SIZE;
+            (Game.WINDOW_MAX_HEIGHT + 8) / Tileset.TILE_SIZE_MID;
     private static final int TILES_HORIZONTAL =
-            (Game.WINDOW_MAX_WIDTH) / Tileset.TILE_SIZE;
+            (Game.WINDOW_MAX_WIDTH) / Tileset.TILE_SIZE_MID;
     private static final int TILES_TOTAL =
             TILES_VERTICAL * TILES_HORIZONTAL;
 
@@ -139,9 +139,9 @@ public class LevelMap {
         int tileY = 0;
         int tileId = 0;
         for (int i = 0; i < TILES_VERTICAL; i++) {
-            tileY = Tileset.TILE_SIZE * i;
+            tileY = Tileset.TILE_SIZE_MID * i;
             for (int j = 0; j < TILES_HORIZONTAL; j++) {
-                tileX = Tileset.TILE_SIZE * j;
+                tileX = Tileset.TILE_SIZE_MID * j;
                 // Draw from the desert tileset.
                 gc.save();
                 gc.setGlobalAlpha(TILE_LAYER1_ALPHA);

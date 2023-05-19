@@ -12,7 +12,6 @@ public abstract class Effect extends Sprite {
     public Effect(Sprite spriteTarget) {
         super();
         this.spriteTarget = spriteTarget;
-        this.setScale(2);
         initialize();
     }
 
