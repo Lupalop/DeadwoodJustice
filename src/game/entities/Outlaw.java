@@ -1,6 +1,5 @@
 package game.entities;
 
-import java.util.ArrayList;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
@@ -41,7 +40,6 @@ public class Outlaw extends LevelSprite {
     private boolean immortal;
     private boolean blockedFromShooting;
 
-    private ArrayList<Bullet> bullets;
     private byte activeDirections;
 
     private long immortalityStartTime;
@@ -68,7 +66,6 @@ public class Outlaw extends LevelSprite {
         this.immortal = false;
         this.blockedFromShooting = false;
 
-        this.bullets = new ArrayList<Bullet>();
         this.activeDirections = 0;
 
         this.immortalityStartTime = -1;
@@ -89,19 +86,6 @@ public class Outlaw extends LevelSprite {
         if (powerupEffect != null) {
             powerupEffect.update(now);
         }
-
-        // Keep a list containing bullets to be removed.
-        ArrayList<Bullet> removalList = new ArrayList<Bullet>();
-
-        // Loop through the bullet list and remove used bullets.
-        for (Bullet bullet : this.getBullets()) {
-            bullet.update(now);
-            if (!bullet.getVisible()) {
-                removalList.add(bullet);
-            }
-        }
-
-        this.getBullets().removeAll(removalList);
 
         if (this.dying) {
             if (this.isFrameSequenceDone()) {
@@ -158,12 +142,7 @@ public class Outlaw extends LevelSprite {
         if (immortalityEffect != null) {
             immortalityEffect.draw(gc);
         }
-
         super.draw(gc);
-        for (Bullet bullet : this.getBullets()) {
-            bullet.draw(gc);
-        }
-
         if (powerupEffect != null) {
             powerupEffect.draw(gc);
         }
@@ -175,14 +154,9 @@ public class Outlaw extends LevelSprite {
             return;
         }
 
-        int x = (int) (this.getBounds().getMaxX());
-        int y = (int) (this.getBounds().getMinY()
-            + (this.getBounds().getHeight() / 2)
-            - (Bullet.BULLET_IMAGE.getHeight() / 2));
-
-        // compute for the x and y initial position of the bullet
-        Bullet bullet = new Bullet(x, y, activeDirections, Game.FLAG_DIRECTIONAL_SHOOTING);
-        this.bullets.add(bullet);
+        Bullet bullet = new Bullet(this, getParent(), activeDirections,
+                Game.FLAG_DIRECTIONAL_SHOOTING);
+        this.getParent().getLevelMap().addSpriteOnUpdate(bullet);
     }
 
     public void increaseStrength(int value) {
@@ -376,10 +350,6 @@ public class Outlaw extends LevelSprite {
 
     public boolean isImmortal() {
         return this.immortal;
-    }
-
-    public ArrayList<Bullet> getBullets() {
-        return this.bullets;
     }
 
 }

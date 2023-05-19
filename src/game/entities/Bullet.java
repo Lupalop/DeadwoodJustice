@@ -1,9 +1,10 @@
 package game.entities;
 
 import game.Game;
+import game.LevelScene;
 import javafx.scene.image.Image;
 
-public class Bullet extends Sprite {
+public class Bullet extends LevelSprite {
 
     public static final Image BULLET_IMAGE = new Image(
             Game.getAsset("bullet.png"),
@@ -22,12 +23,36 @@ public class Bullet extends Sprite {
     private static final int OFFSET_W = -35;
 
     private boolean isDirectional;
+    private boolean fromOutlaw;
+    private Mob mobSource;
 
-    public Bullet(int x, int y, byte activeDirections, boolean isDirectional) {
-        super(x, y);
+    public Bullet(Mob source, LevelScene parent,
+            byte activeDirections, boolean isDirectional) {
+        super(0, 0, parent);
+        this.initialize(source, activeDirections, isDirectional, false);
+        this.mobSource = source;
+    }
+
+    public Bullet(Outlaw source, LevelScene parent,
+            byte activeDirections, boolean isDirectional) {
+        super(0, 0, parent);
+        this.initialize(source, activeDirections, isDirectional, true);
+    }
+
+    private void initialize(Sprite source, byte activeDirections,
+            boolean isDirectional, boolean fromOutlaw) {
+        this.setX((int) (source.getBounds().getMaxX()));
+        this.setY((int) (source.getBounds().getMinY()
+            + (source.getBounds().getHeight() / 2)
+            - (this.getBounds().getHeight() / 2)));
+
         this.setImage(Bullet.BULLET_IMAGE);
         this.setScale(Bullet.BULLET_SCALE);
+
         this.isDirectional = isDirectional;
+        this.mobSource = null;
+        this.fromOutlaw = fromOutlaw;
+
         this.computeDestination(activeDirections);
     }
 
@@ -42,6 +67,8 @@ public class Bullet extends Sprite {
         if (this.getX() > Game.WINDOW_MAX_WIDTH) {
             this.setVisible(false);
         }
+
+        this.checkCollisions();
     }
 
     private void computeDestination(byte activeDirections) {
@@ -81,6 +108,31 @@ public class Bullet extends Sprite {
             }
         } else {
             this.dx = Bullet.BULLET_SPEED;
+        }
+    }
+
+    private void checkCollisions() {
+        if (!this.getVisible()) {
+            return;
+        }
+
+        Outlaw outlaw = this.getParent().getOutlaw();
+        if (this.fromOutlaw) {
+            for (Sprite sprite : this.getParent().getLevelMap().getSprites()) {
+                if (!(sprite instanceof Mob)) {
+                    continue;
+                }
+                Mob mob = (Mob) sprite;
+                if (this.intersects(sprite)) {
+                    mob.reduceHealth(outlaw.getStrength());
+                    this.setVisible(false);
+                }
+            }
+        } else {
+            if (outlaw.intersects(this)) {
+                outlaw.reduceStrength(this.mobSource.getDamage());
+                this.setVisible(false);
+            }
         }
     }
 

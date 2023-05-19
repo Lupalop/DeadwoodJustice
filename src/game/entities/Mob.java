@@ -1,6 +1,5 @@
 package game.entities;
 
-import java.util.ArrayList;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
@@ -8,7 +7,7 @@ import game.Game;
 import game.LevelScene;
 import javafx.scene.canvas.GraphicsContext;
 
-public abstract class Mob extends Sprite {
+public abstract class Mob extends LevelSprite {
 
     public static final int TOTAL_MOBS = 3;
 
@@ -39,14 +38,12 @@ public abstract class Mob extends Sprite {
     private boolean passability[];
     private int[] frameRanges;
 
-    private ArrayList<Bullet> bullets;
     private long lastShootTime;
 
     private Effect deathEffect;
-    private LevelScene parent;
 
     public Mob(int x, int y, int health, int damage, boolean isShooter, LevelScene parent) {
-        super(x, y);
+        super(x, y, parent);
 
         Random rand = new Random();
         this.health = health;
@@ -71,7 +68,6 @@ public abstract class Mob extends Sprite {
         this.frameRanges = null;
 
         if (this.shooter) {
-            this.bullets = new ArrayList<Bullet>();
             this.lastShootTime = System.nanoTime();
         }
 
@@ -80,7 +76,6 @@ public abstract class Mob extends Sprite {
         }
 
         this.setFlip(!this.movingRight, false);
-        this.parent = parent;
     }
 
     protected void initialize() {
@@ -101,33 +96,18 @@ public abstract class Mob extends Sprite {
             }
         }
 
-        if (this.shooter) {
-            // Keep a list containing bullets to be removed.
-            ArrayList<Bullet> removalList = new ArrayList<Bullet>();
-
-            // Loop through the bullet list and remove used bullets.
-            for (Bullet bullet : this.getBullets()) {
-                bullet.update(now);
-                if (!bullet.getVisible()) {
-                    removalList.add(bullet);
-                }
-            }
-
-            this.getBullets().removeAll(removalList);
-        }
-
         if (!this.isAlive()) {
             return;
         }
 
-        this.dx = (this.parent.isMaxSpeed() && !this.excludedFromMaxSpeed)
+        this.dx = (this.getParent().isMaxSpeed() && !this.excludedFromMaxSpeed)
                 ? MAX_SPEED
                 : this.speed;
-        if (this.parent.isSlowSpeed()) {
+        if (this.getParent().isSlowSpeed()) {
             this.dx = MIN_SPEED;
         }
         // Zero speed power-up takes precedence over slow speed power-up.
-        if (this.parent.isZeroSpeed()) {
+        if (this.getParent().isZeroSpeed()) {
             this.dx = 0;
         }
 
@@ -171,8 +151,8 @@ public abstract class Mob extends Sprite {
         this.addX(this.movingRight ? this.dx : -this.dx);
         this.addY(dy);
 
-        this.passability = this.parent.getLevelMap().getPassability(this);
-        checkOutlaw(this.parent.getOutlaw());
+        this.passability = this.getParent().getLevelMap().getPassability(this);
+        checkOutlaw(this.getParent().getOutlaw());
 
         if (this.shooter) {
             // Shoot every n seconds.
@@ -187,11 +167,6 @@ public abstract class Mob extends Sprite {
     @Override
     public void draw(GraphicsContext gc) {
         super.draw(gc);
-        if (this.shooter) {
-            for (Bullet bullet : this.getBullets()) {
-                bullet.draw(gc);
-            }
-        }
         if (this.deathEffect != null) {
             this.deathEffect.draw(gc);
         }
@@ -222,28 +197,6 @@ public abstract class Mob extends Sprite {
                 this.playerInMobBounds = false;
             }
         }
-
-        for (Bullet bullet : outlaw.getBullets()) {
-            if (bullet.getVisible() && this.intersects(bullet)) {
-                this.health -= outlaw.getStrength();
-                if (this.health <= 0) {
-                    this.prepareDeath();
-                } else {
-                    this.playFrames(frameRanges[4], frameRanges[5], null, 0);
-                }
-                bullet.setVisible(false);
-                break;
-            }
-        }
-
-        if (this.shooter) {
-            for (Bullet bullet : this.getBullets()) {
-                if (bullet.getVisible() && outlaw.intersects(bullet)) {
-                    outlaw.reduceStrength(this.damage);
-                    bullet.setVisible(false);
-                }
-            }
-        }
     }
 
     private void prepareDeath() {
@@ -271,7 +224,7 @@ public abstract class Mob extends Sprite {
             return;
         }
 
-        if (outlaw.intersects(this, true, false) || this.parent.isZeroSpeed()) {
+        if (outlaw.intersects(this, true, false) || this.getParent().isZeroSpeed()) {
             this.dy = 0;
         } else if (outlaw.getBounds().getMinY() > this.getBounds().getMinY()) {
             this.dy = this.speed;
@@ -295,22 +248,16 @@ public abstract class Mob extends Sprite {
             return;
         }
 
-        int x = (int) (this.getBounds().getMaxX());
-        int y = (int) (this.getBounds().getMinY()
-            + (this.getBounds().getHeight() / 2)
-            - (Bullet.BULLET_IMAGE.getHeight() / 2));
-
-        // compute for the x and y initial position of the bullet
         byte activeDirections = this.movingRight
                 ? Game.DIR_RIGHT
                 : Game.DIR_LEFT;
-        Bullet bullet = new Bullet(x, y, activeDirections, true);
-        this.bullets.add(bullet);
+        Bullet bullet = new Bullet(this, getParent(), activeDirections, true);
+        this.getParent().getLevelMap().addSpriteOnUpdate(bullet);
         this.playFrames(frameRanges[8], frameRanges[9], null, 50);
     }
 
-    public ArrayList<Bullet> getBullets() {
-        return this.bullets;
+    public int getDamage() {
+        return this.damage;
     }
 
     public boolean isAlive() {
@@ -323,6 +270,19 @@ public abstract class Mob extends Sprite {
 
     public boolean isMovingRight() {
         return this.movingRight;
+    }
+
+    public void reduceHealth(int value) {
+        // This must be a positive integer.
+        if (value < 0) {
+            return;
+        }
+        this.health -= value;
+        if (this.health <= 0) {
+            this.prepareDeath();
+        } else {
+            this.playFrames(frameRanges[4], frameRanges[5], null, 0);
+        }
     }
 
     protected void setDeadOnPlayerImpact(boolean value) {

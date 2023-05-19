@@ -3,6 +3,7 @@ package game;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
+import game.entities.Bullet;
 import game.entities.CactusMob;
 import game.entities.CoffinMob;
 import game.entities.CowboyMob;
@@ -217,8 +218,13 @@ public class LevelScene implements GameScene {
                     this.levelMap.removeSpriteOnUpdate(mob);
                     this.mobKillCount++;
                 }
+            } else if (sprite instanceof Bullet) {
+                Bullet bullet = (Bullet) sprite;
+                if (!bullet.getVisible()) {
+                    this.levelMap.removeSpriteOnUpdate(bullet);
+                    continue;
+                }
             }
-
             sprite.update(now);
         }
     }
