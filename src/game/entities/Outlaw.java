@@ -42,9 +42,6 @@ public class Outlaw extends LevelSprite {
 
     private byte activeDirections;
 
-    private long immortalityStartTime;
-    private long immortalityEndTime;
-
     private Effect powerupEffect;
     private Effect immortalityEffect;
 
@@ -67,9 +64,6 @@ public class Outlaw extends LevelSprite {
         this.blockedFromShooting = false;
 
         this.activeDirections = 0;
-
-        this.immortalityStartTime = -1;
-        this.immortalityEndTime = -1;
 
         this.powerupEffect = null;
         this.immortalityEffect = null;
@@ -127,14 +121,6 @@ public class Outlaw extends LevelSprite {
 
         this.addX(this.dx);
         this.addY(this.dy);
-
-        long deltaTime = (now - this.immortalityStartTime);
-        if (deltaTime >= this.immortalityEndTime) {
-            this.immortalityEffect = null;
-            this.immortalityStartTime = -1;
-            this.immortalityEndTime = -1;
-            this.immortal = false;
-        }
     }
 
     @Override
@@ -323,8 +309,13 @@ public class Outlaw extends LevelSprite {
     public void applyImmortality(long endTime) {
         this.immortalityEffect = new ImmortalityEffect(this);
         this.immortal = true;
-        this.immortalityStartTime = System.nanoTime();
-        this.immortalityEndTime = endTime;
+        this.getParent().getActions().add(endTime, false, new Runnable() {
+            @Override
+            public void run() {
+                immortalityEffect = null;
+                immortal = false;
+            }
+        });
     }
 
     // TODO: move to effects manager
