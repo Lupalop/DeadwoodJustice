@@ -1,5 +1,6 @@
 package game.entities;
 
+import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
 import game.Game;
@@ -65,13 +66,13 @@ public abstract class Mob extends LevelSprite {
 
         if (this.shooter) {
             // Shoot every n seconds.
-            this.getParent().getActions().add(MOB_SHOOT_INTERVAL, true, new Runnable() {
+            this.getParent().getActions().add(MOB_SHOOT_INTERVAL, true, new Callable<Boolean>() {
                 @Override
-                public void run() {
-                    if (!isAlive()) {
-                        return;
+                public Boolean call() {
+                    if (isAlive()) {
+                        shoot();
                     }
-                    shoot();
+                    return true;
                 }
             });
         }

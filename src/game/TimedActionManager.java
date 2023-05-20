@@ -1,26 +1,28 @@
 package game;
 
 import java.util.ArrayList;
+import java.util.concurrent.Callable;
 
 public class TimedActionManager {
 
     private ArrayList<TimedAction> actions;
     private ArrayList<TimedAction> pendingAdds;
     private ArrayList<TimedAction> pendingRemoves;
-    
+
     public TimedActionManager() {
         this.actions = new ArrayList<TimedAction>();
         this.pendingAdds = new ArrayList<TimedAction>();
         this.pendingRemoves = new ArrayList<TimedAction>();
     }
 
-    public synchronized void add(long startTime, long endTime, boolean autoReset,
-            Runnable callback) {
+    public synchronized void add(long startTime, long endTime,
+            boolean autoReset, Callable<Boolean> callback) {
         TimedAction action = new TimedAction(startTime, endTime, autoReset, callback, this);
         this.pendingAdds.add(action);
     }
-    
-    public synchronized void add(long endTime, boolean autoReset, Runnable callback) {
+
+    public synchronized void add(long endTime, boolean autoReset,
+            Callable<Boolean> callback) {
         this.add(System.nanoTime(), endTime, autoReset, callback);
     }
 

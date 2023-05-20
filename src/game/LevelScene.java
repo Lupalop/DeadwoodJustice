@@ -1,5 +1,6 @@
 package game;
 
+import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
 import game.entities.Bullet;
@@ -127,60 +128,64 @@ public class LevelScene implements GameScene {
 
     private void initializeActions() {
         // Action: mark level done if time's up.
-        actions.add(LEVEL_END_TIME, false, new Runnable() {
+        actions.add(LEVEL_END_TIME, false, new Callable<Boolean>() {
             @Override
-            public void run() {
-                if (!Game.FLAG_DELAY_IF_BOSS_IS_ALIVE
-                        || (bossMob != null
-                        && !bossMob.isAlive()
-                        && !bossMob.isDying())) {
+            public Boolean call() {
+                if (!Game.FLAG_DELAY_IF_BOSS_IS_ALIVE || (bossMob != null
+                        && !bossMob.isAlive() && !bossMob.isDying())) {
                     markLevelDone();
+                    return true;
                 }
+                return false;
             }
         });
         // Action: spawn boss.
-        actions.add(LEVEL_BOSS_TIME, false, new Runnable() {
+        actions.add(LEVEL_BOSS_TIME, false, new Callable<Boolean>() {
             @Override
-            public void run() {
-                if (bossMob != null) {
-                    return;
+            public Boolean call() {
+                if (bossMob == null) {
+                    bossMob = new CowboyMob(
+                            Game.WINDOW_MAX_WIDTH,
+                            Game.WINDOW_MAX_HEIGHT / 2,
+                            LevelScene.this);
+                    bossMob.addY((int) -bossMob.getBounds().getHeight() / 2);
+                    bossMob.addX((int) -bossMob.getBounds().getWidth());
+                    levelMap.getSprites().add(bossMob);
                 }
-                bossMob = new CowboyMob(
-                        Game.WINDOW_MAX_WIDTH,
-                        Game.WINDOW_MAX_HEIGHT / 2,
-                        LevelScene.this);
-                bossMob.addY((int) -bossMob.getBounds().getHeight() / 2);
-                bossMob.addX((int) -bossMob.getBounds().getWidth());
-                levelMap.getSprites().add(bossMob);
+                return true;
             }
         });
         // Action: spawn mobs every 3 seconds.
-        actions.add(MOB_SPAWN_INTERVAL, true, new Runnable() {
+        actions.add(MOB_SPAWN_INTERVAL, true, new Callable<Boolean>() {
             @Override
-            public void run() {
+            public Boolean call() {
                 spawnMobs(MOB_COUNT_PER_INTERVAL);
+                return true;
             }
         });
         // Speed up mob movement every 15 seconds.
-        actions.add(MOB_MAX_SPEED_INTERVAL, true, new Runnable() {
+        actions.add(MOB_MAX_SPEED_INTERVAL, true, new Callable<Boolean>() {
             @Override
-            public void run() {
+            public Boolean call() {
                 maxSpeed = true;
                 // Reset back to normal speed after 3 seconds if we've
                 // sped up mob movement.
-                actions.add(MOB_MAX_SPEED_END_INTERVAL, false, new Runnable() {
+                actions.add(MOB_MAX_SPEED_END_INTERVAL, false, new Callable<Boolean>() {
                     @Override
-                    public void run() {
+                    public Boolean call() {
                         maxSpeed = false;
+                        return true;
                     }
                 });
+                return true;
             }
         });
         // Spawn power-ups every 10 seconds.
-        actions.add(POWERUP_SPAWN_INTERVAL, true, new Runnable() {
+        actions.add(POWERUP_SPAWN_INTERVAL, true, new Callable<Boolean>() {
             @Override
-            public void run() {
+            public Boolean call() {
                 spawnPowerups();
+                return true;
             }
         });
     }
@@ -293,20 +298,22 @@ public class LevelScene implements GameScene {
 
     public void applySlowMobSpeed(long powerupTimeout) {
         this.slowSpeed = true;
-        actions.add(powerupTimeout, false, new Runnable() {
+        actions.add(powerupTimeout, false, new Callable<Boolean>() {
             @Override
-            public void run() {
+            public Boolean call() {
                 slowSpeed = false;
+                return true;
             }
         });
     }
 
     public void applyZeroMobSpeed(long powerupTimeout) {
         this.zeroSpeed = true;
-        actions.add(powerupTimeout, false, new Runnable() {
+        actions.add(powerupTimeout, false, new Callable<Boolean>() {
             @Override
-            public void run() {
+            public Boolean call() {
                 zeroSpeed = false;
+                return true;
             }
         });
     }
