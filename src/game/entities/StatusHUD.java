@@ -14,44 +14,44 @@ public class StatusHUD extends Sprite {
     private static final Tile TILE =
             new Tile("tilemap_ui.png", 4, 8);
 
-    private static final Image UI_GAME_END_BAD =
+    private static final Image GAME_END_BAD =
             new Image(Game.getAsset("ui_game_end_bad.png"));
-    private static final Image UI_GAME_END_GOOD =
+    private static final Image GAME_END_GOOD =
             new Image(Game.getAsset("ui_game_end_good.png"));
-    private static final Image UI_STANDEE_PLAY =
+    private static final Image STANDEE_PLAY =
             new Image(Game.getAsset("ui_game_end_standee_play.png"));
-    private static final Image UI_STANDEE_EXIT =
+    private static final Image STANDEE_EXIT =
             new Image(Game.getAsset("ui_game_end_standee_exit.png"));
 
-    private static final int UI_HUD_BASE_SIZE = 9;
-    private static final int UI_HUD_BASE_POS = 1;
-    private static final int UI_HUD_BASE_POS_HP = 2;
-    private static final int UI_HUD_BASE_POS_MOB = 5;
-    private static final int UI_HUD_BASE_POS_TIME = 8;
-    private static final int UI_HUD_POWERUP_POS = 12;
+    private static final int HUD_BASE_SIZE = 9;
+    private static final int HUD_BASE_POS = 1;
+    private static final int HUD_BASE_POS_HP = 2;
+    private static final int HUD_BASE_POS_MOB = 5;
+    private static final int HUD_BASE_POS_TIME = 8;
+    private static final int HUD_POWERUP_POS = 12;
 
-    private static final Paint UI_HUD_TEXT_COLOR = Paint.valueOf("EECA84");
-    private static final int UI_HUD_TEXT_OFFSET_Y = (Tile.SIZE_MID / 2) + 3;
-    private static final int UI_HUD_MAX_NUM = 9999;
+    private static final Paint HUD_TEXT_COLOR = Paint.valueOf("EECA84");
+    private static final int HUD_TEXT_OFFSET_Y = (Tile.SIZE_MID / 2) + 3;
+    private static final int HUD_MAX_NUM = 9999;
 
-    private static final int UI_TX_BASE_START = 3;
-    private static final int UI_TX_BASE_MID = 1;
-    private static final int UI_TX_BASE_END = 4;
-    private static final int UI_TX_OUTLAW = 13;
-    private static final int UI_TX_INFINITY = 14;
-    private static final int UI_TX_MOB = 12;
-    private static final int UI_TX_TIME = 8;
+    private static final int TX_BASE_START = 3;
+    private static final int TX_BASE_MID = 1;
+    private static final int TX_BASE_END = 4;
+    private static final int TX_OUTLAW = 13;
+    private static final int TX_INFINITY = 14;
+    private static final int TX_MOB = 12;
+    private static final int TX_TIME = 8;
 
-    private static final int UI_TX_POWERUP_START = 5;
-    private static final int UI_TX_POWERUP_END = 7;
-    private static final int UI_TX_POWERUP_LAMP = 9;
-    private static final int UI_TX_POWERUP_HAY = 10;
-    private static final int UI_TX_POWERUP_WHEEL = 11;
-    private static final int UI_TX_POWERUP_SNAKEOIL = 15;
+    private static final int TX_POWERUP_START = 5;
+    private static final int TX_POWERUP_END = 7;
+    private static final int TX_POWERUP_LAMP = 9;
+    private static final int TX_POWERUP_HAY = 10;
+    private static final int TX_POWERUP_WHEEL = 11;
+    private static final int TX_POWERUP_SNAKEOIL = 15;
 
-    private static final int UI_TX_POP_START = 16;
-    private static final int UI_TX_POP_MID = 18;
-    private static final int UI_TX_POP_END = 17;
+    private static final int TX_POP_START = 16;
+    private static final int TX_POP_MID = 18;
+    private static final int TX_POP_END = 17;
 
     private static final long UI_SLIDE_INTERVAL =
             TimeUnit.MILLISECONDS.toNanos(100);
@@ -98,7 +98,7 @@ public class StatusHUD extends Sprite {
     public void draw(GraphicsContext gc) {
         gc.save();
         gc.setFont(Game.FONT_32);
-        gc.setFill(UI_HUD_TEXT_COLOR);
+        gc.setFill(HUD_TEXT_COLOR);
 
         drawHUD(gc);
         if (isGameEndVisible) {
@@ -116,18 +116,18 @@ public class StatusHUD extends Sprite {
         int powerupWheelCount = level.getPowerupCount(WheelPowerup.ID);
         int powerupSnakeOilCount = level.getPowerupCount(SnakeOilPowerup.ID);
 
-        int tileOffset = UI_HUD_POWERUP_POS;
+        int tileOffset = HUD_POWERUP_POS;
         tileOffset = this.drawHUDPowerup(gc, tileOffset,
-                UI_TX_POWERUP_LAMP, powerupLampCount,
+                TX_POWERUP_LAMP, powerupLampCount,
                 (powerupLampCount == 0) ? 0.5 : 1);
         tileOffset = this.drawHUDPowerup(gc, tileOffset,
-                UI_TX_POWERUP_HAY, powerupHayCount,
+                TX_POWERUP_HAY, powerupHayCount,
                 (!level.getOutlaw().isImmortal()) ? 0.5 : 1);
         tileOffset = this.drawHUDPowerup(gc, tileOffset,
-                UI_TX_POWERUP_WHEEL, powerupWheelCount,
+                TX_POWERUP_WHEEL, powerupWheelCount,
                 (!level.isSlowSpeed()) ? 0.5 : 1);
         tileOffset = this.drawHUDPowerup(gc, tileOffset,
-                UI_TX_POWERUP_SNAKEOIL, powerupSnakeOilCount,
+                TX_POWERUP_SNAKEOIL, powerupSnakeOilCount,
                 (!level.isZeroSpeed()) ? 0.5 : 1);
     }
 
@@ -138,41 +138,41 @@ public class StatusHUD extends Sprite {
         String mobKillCountText = Integer.toString(mobKillCount);
         String timeLeftText = this.getLevelTimeLeftText();
         // Draw base HUD background.
-        int tileOffset = UI_HUD_BASE_POS;
+        int tileOffset = HUD_BASE_POS;
         TILE.draw(gc, Tile.SIZE_MID,
-                hudOffsetY, UI_TX_BASE_START);
-        for (int i = 0; i < UI_HUD_BASE_SIZE; i++) {
+                hudOffsetY, TX_BASE_START);
+        for (int i = 0; i < HUD_BASE_SIZE; i++) {
             TILE.draw(gc, Tile.SIZE_MID * ++tileOffset,
-                    hudOffsetY, UI_TX_BASE_MID);
+                    hudOffsetY, TX_BASE_MID);
         }
         TILE.draw(gc, Tile.SIZE_MID * ++tileOffset,
-                hudOffsetY, UI_TX_BASE_END);
+                hudOffsetY, TX_BASE_END);
         // Base HUD: player strength.
-        TILE.draw(gc, Tile.SIZE_MID * UI_HUD_BASE_POS_HP,
-                hudOffsetY, UI_TX_OUTLAW);
-        if (level.getOutlaw().isImmortal() || strength > UI_HUD_MAX_NUM) {
+        TILE.draw(gc, Tile.SIZE_MID * HUD_BASE_POS_HP,
+                hudOffsetY, TX_OUTLAW);
+        if (level.getOutlaw().isImmortal() || strength > HUD_MAX_NUM) {
             TILE.draw(gc,
-                    Tile.SIZE_MID * (UI_HUD_BASE_POS_HP + 1),
-                    hudOffsetY, UI_TX_INFINITY);
+                    Tile.SIZE_MID * (HUD_BASE_POS_HP + 1),
+                    hudOffsetY, TX_INFINITY);
         } else {
             gc.fillText(strengthText,
-                    Tile.SIZE_MID * (UI_HUD_BASE_POS_HP + 1),
-                    hudOffsetY + UI_HUD_TEXT_OFFSET_Y);
+                    Tile.SIZE_MID * (HUD_BASE_POS_HP + 1),
+                    hudOffsetY + HUD_TEXT_OFFSET_Y);
         }
         // Base HUD: mob kill count.
         TILE.draw(gc,
-                Tile.SIZE_MID * UI_HUD_BASE_POS_MOB,
-                hudOffsetY, UI_TX_MOB);
+                Tile.SIZE_MID * HUD_BASE_POS_MOB,
+                hudOffsetY, TX_MOB);
         gc.fillText(mobKillCountText,
-                Tile.SIZE_MID * (UI_HUD_BASE_POS_MOB + 1),
-                hudOffsetY + UI_HUD_TEXT_OFFSET_Y);
+                Tile.SIZE_MID * (HUD_BASE_POS_MOB + 1),
+                hudOffsetY + HUD_TEXT_OFFSET_Y);
         // Base HUD: time left.
         TILE.draw(gc,
-                Tile.SIZE_MID * UI_HUD_BASE_POS_TIME,
-                hudOffsetY, UI_TX_TIME);
+                Tile.SIZE_MID * HUD_BASE_POS_TIME,
+                hudOffsetY, TX_TIME);
         gc.fillText(timeLeftText,
-                Tile.SIZE_MID * (UI_HUD_BASE_POS_TIME + 1),
-                hudOffsetY + UI_HUD_TEXT_OFFSET_Y);
+                Tile.SIZE_MID * (HUD_BASE_POS_TIME + 1),
+                hudOffsetY + HUD_TEXT_OFFSET_Y);
     }
 
     private int drawHUDPowerup(GraphicsContext gc,
@@ -181,13 +181,13 @@ public class StatusHUD extends Sprite {
         gc.save();
         gc.setGlobalAlpha(alpha);
         TILE.draw(gc, Tile.SIZE_MID * tileOffset,
-                hudOffsetY, UI_TX_POWERUP_START);
+                hudOffsetY, TX_POWERUP_START);
         TILE.draw(gc, Tile.SIZE_MID * tileOffset,
                 hudOffsetY, iconIndex);
         TILE.draw(gc, Tile.SIZE_MID * ++tileOffset,
-                hudOffsetY, UI_TX_POWERUP_END);
+                hudOffsetY, TX_POWERUP_END);
         gc.fillText(valueText, Tile.SIZE_MID * tileOffset,
-                hudOffsetY + UI_HUD_TEXT_OFFSET_Y);
+                hudOffsetY + HUD_TEXT_OFFSET_Y);
         gc.restore();
         return tileOffset += 2;
     }
@@ -196,41 +196,41 @@ public class StatusHUD extends Sprite {
         int base = Tile.ALL_VERTICAL / 3;
         for (int i = 0; i < (Game.WINDOW_MAX_WIDTH) / Tile.SIZE_MID; i++) {
             TILE.draw(gc, Tile.SIZE_MID * i,
-                    Tile.SIZE_MID * base, UI_TX_POP_START);
+                    Tile.SIZE_MID * base, TX_POP_START);
         }
 
         for (int i = 0; i < 5; i++) {
             base++;
             for (int j = 0; j < (Game.WINDOW_MAX_WIDTH) / Tile.SIZE_MID; j++) {
                 TILE.draw(gc, Tile.SIZE_MID * j,
-                        Tile.SIZE_MID * base, UI_TX_POP_MID);
+                        Tile.SIZE_MID * base, TX_POP_MID);
             }
         }
 
         base++;
         for (int i = 0; i < (Game.WINDOW_MAX_WIDTH) / Tile.SIZE_MID; i++) {
             TILE.draw(gc, Tile.SIZE_MID * i,
-                    Tile.SIZE_MID * base, UI_TX_POP_END);
+                    Tile.SIZE_MID * base, TX_POP_END);
         }
 
         Image gameEndCenterImage = null;
         if (!level.getOutlaw().isAlive()) {
-            gameEndCenterImage = UI_GAME_END_BAD;
+            gameEndCenterImage = GAME_END_BAD;
         } else {
-            gameEndCenterImage = UI_GAME_END_GOOD;
+            gameEndCenterImage = GAME_END_GOOD;
         }
         gc.drawImage(
                 gameEndCenterImage,
                 (Game.WINDOW_MAX_WIDTH / 2) - gameEndCenterImage.getWidth() / 2,
                 (Game.WINDOW_MAX_HEIGHT / 2) - gameEndCenterImage.getHeight() / 2);
 
-        Image standeePlayImage = UI_STANDEE_PLAY;
+        Image standeePlayImage = STANDEE_PLAY;
         gc.drawImage(
                 standeePlayImage,
                 (Game.WINDOW_MAX_WIDTH / 5) - standeePlayImage.getWidth() / 2,
                 (Game.WINDOW_MAX_HEIGHT / 2) - standeePlayImage.getHeight() / 2);
 
-        Image standeeExitImage = UI_STANDEE_EXIT;
+        Image standeeExitImage = STANDEE_EXIT;
         gc.drawImage(
                 standeeExitImage,
                 (Game.WINDOW_MAX_WIDTH) - (Game.WINDOW_MAX_WIDTH / 5) - standeeExitImage.getWidth() / 2,
