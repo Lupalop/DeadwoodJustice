@@ -57,7 +57,7 @@ public class MainMenuScene implements GameScene {
             //"DIFFICULTY: EASY",
             //"HIGH SCORES",
             "HELP",
-            "ABOUT",
+            "CREDITS",
             "EXIT",
     };
     private Runnable[] menuActions = {
@@ -88,7 +88,7 @@ public class MainMenuScene implements GameScene {
             new Runnable() {
                 @Override
                 public void run() {
-                    actionButton.setText("TODO");
+                    Game.setGameScene(new CreditsScene());
                 }
             },
             new Runnable() {

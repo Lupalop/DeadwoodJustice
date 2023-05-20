@@ -1,0 +1,53 @@
+Deadwood Justice
+
+
++Programming
+
++Lead Developer
+Francis Dominic Fajardo
+
++Base Code
+UPLB/CMSC 22
+Maquina Game Engine
+
++Art
+
++Generic Old West Pack
+Created by:
+@bakudas,  @_DeuTilt,
+@_sofarama and @itsarfo
+
+Published by:
+Vaca Roxa
+https://bakudas.itch.io/generic-oldwest-pack
+
++Simple Desert - Tileset
+Elisha Ramos
+https://wrlck.itch.io/simple-desert
+http://elisharamos.art/
+
++Cowboy (Animated Pixel Art)
+Samuel Lee
+https://samuellee.itch.io/cow-boy-animated-pixel-art
+
++Wild West - Props/Icons
+Eternal Pixel
+https://eternalpixel.itch.io/wild-west-props-16x16
+https://itch.io/profile/eternalpixel
+
++Pixel Magic Effects
+FoozleCC
+https://foozlecc.itch.io/pixel-magic-sprite-effects
+
++Pixel Art Effect - FX062
+NYKNCK
+https://nyknck.itch.io/fx062
+
++Humble Fonts
+Eeve Somepx
+https://somepx.itch.io/humble-fonts-free
+
++Pixel Western Font
+Michelle Lehmann
+https://www.dafont.com/pixel-western.font
+https://www.dafont.com/mirz123.d2603
