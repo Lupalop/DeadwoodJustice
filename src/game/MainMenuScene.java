@@ -7,10 +7,13 @@ import game.entities.Button;
 import game.entities.Prop;
 import game.entities.Sprite;
 import game.entities.Tile;
+import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 
 public class MainMenuScene implements GameScene {
 
@@ -43,6 +46,8 @@ public class MainMenuScene implements GameScene {
         this.levelMap = new LevelMap();
         this.levelMap.generate();
         this.levelMap.generateProps();
+
+        this.handleKeyPressEvent();
     }
 
     private Prop titleProp;
@@ -176,6 +181,29 @@ public class MainMenuScene implements GameScene {
         previousButton.draw(gc);
         actionButton.draw(gc);
         nextButton.draw(gc);
+    }
+
+    private void handleKeyPressEvent() {
+        this.scene.addEventHandler(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent e) {
+                KeyCode code = e.getCode();
+                switch (code) {
+                case LEFT:
+                    updateButton(false);
+                    break;
+                case RIGHT:
+                    updateButton(true);
+                    break;
+                case ENTER:
+                case SPACE:
+                    menuActions[menuIndex].run();
+                    break;
+                default:
+                    break;
+                }
+            }
+        });
     }
 
     @Override
