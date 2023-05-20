@@ -53,6 +53,9 @@ public class StatusHUD extends Sprite {
     private static final int UI_TX_POP_MID = 18;
     private static final int UI_TX_POP_END = 17;
 
+    private static final long UI_SLIDE_INTERVAL =
+            TimeUnit.MILLISECONDS.toNanos(100);
+
     private LevelScene level;
     private boolean isGameEndVisible;
     private int hudOffsetY;
@@ -68,7 +71,7 @@ public class StatusHUD extends Sprite {
         this.playButton = null;
         this.exitButton = null;
 
-        scene.getActions().add(TimeUnit.MILLISECONDS.toNanos(100), false, new Callable<Boolean>() {
+        scene.getActions().add(UI_SLIDE_INTERVAL, false, new Callable<Boolean>() {
             @Override
             public Boolean call() {
                 if (hudOffsetY == 0) {
