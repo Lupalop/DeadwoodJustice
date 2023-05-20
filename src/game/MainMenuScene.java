@@ -105,7 +105,7 @@ public class MainMenuScene implements GameScene {
         titleProp.setY((int) ((Game.WINDOW_MAX_HEIGHT / 2) - (titleProp.getHeight() / 2)) - (Tile.SIZE_MID));
 
         previousButton = new Button(Tile.SIZE_MID * 4, MENU_Y, 0, this);
-        previousButton.setText("<-");
+        previousButton.setText(Button.TEXT_BACK);
         previousButton.setClickAction(new Runnable() {
             @Override
             public void run() {
@@ -117,7 +117,7 @@ public class MainMenuScene implements GameScene {
         updateButton(true);
 
         nextButton = new Button(Game.WINDOW_MAX_WIDTH - (Tile.SIZE_MID * 6), MENU_Y, 0, this);
-        nextButton.setText("->");
+        nextButton.setText(Button.TEXT_FORWARD);
         nextButton.setClickAction(new Runnable() {
             @Override
             public void run() {

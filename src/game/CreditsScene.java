@@ -56,7 +56,7 @@ public class CreditsScene implements GameScene {
 
     private void addMenuControls() {
         backButton = new Button(Tile.SIZE_MID, Tile.SIZE_MID, 0, this);
-        backButton.setText("<-");
+        backButton.setText(Button.TEXT_BACK);
         backButton.setClickAction(new Runnable() {
             @Override
             public void run() {
