@@ -190,7 +190,7 @@ public class StatusHUD extends Sprite {
     }
 
     private void drawGameEnd(GraphicsContext gc) {
-        int base = ((Game.WINDOW_MAX_HEIGHT + 8) / Tile.SIZE_MID) / 3;
+        int base = Tile.ALL_VERTICAL / 3;
         for (int i = 0; i < (Game.WINDOW_MAX_WIDTH) / Tile.SIZE_MID; i++) {
             TILE.draw(gc, Tile.SIZE_MID * i,
                     Tile.SIZE_MID * base, UI_TX_POP_START);
