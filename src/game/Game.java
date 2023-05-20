@@ -60,7 +60,7 @@ public final class Game {
         Game.primaryStage = primaryStage;
         Game.primaryStage.setResizable(false);
         Game.primaryStage.setTitle(GAME_NAME);
-        Game.setGameScene(new LevelScene());
+        Game.setGameScene(new MainMenuScene());
         Game.gameTimer.start();
         Game.primaryStage.show();
         Game.initialized = true;

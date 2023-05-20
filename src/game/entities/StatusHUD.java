@@ -5,6 +5,7 @@ import java.util.concurrent.TimeUnit;
 
 import game.Game;
 import game.LevelScene;
+import game.MainMenuScene;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Paint;
@@ -241,7 +242,7 @@ public class StatusHUD extends Sprite {
     }
 
     private void addGameEndButtons() {
-        playButton = new Button(0, 0, level);
+        playButton = new Button(0, 0, 2, level);
         playButton.setText("PLAY");
         playButton.setX((int) ((Game.WINDOW_MAX_WIDTH / 5) - playButton.getBounds().getWidth() / 2));
         playButton.setY((Game.WINDOW_MAX_HEIGHT / 2) + 50);
@@ -252,14 +253,14 @@ public class StatusHUD extends Sprite {
             }
         });
 
-        exitButton = new Button(0, 0, level);
+        exitButton = new Button(0, 0, 2, level);
         exitButton.setText("EXIT");
         exitButton.setX((int) ((Game.WINDOW_MAX_WIDTH) - (Game.WINDOW_MAX_WIDTH / 5) - exitButton.getBounds().getWidth() / 2));
         exitButton.setY((Game.WINDOW_MAX_HEIGHT / 2) + 50);
         exitButton.setClickAction(new Runnable() {
             @Override
             public void run() {
-                System.exit(0);
+                Game.setGameScene(new MainMenuScene());
             }
         });
     }
