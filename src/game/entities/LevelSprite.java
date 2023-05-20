@@ -2,7 +2,7 @@ package game.entities;
 
 import game.scenes.LevelScene;
 
-public class LevelSprite extends Sprite {
+public abstract class LevelSprite extends Sprite {
 
     private LevelScene parent;
 
