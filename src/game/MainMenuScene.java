@@ -81,7 +81,7 @@ public class MainMenuScene implements GameScene {
             new Runnable() {
                 @Override
                 public void run() {
-                    actionButton.setText("TODO");
+                    Game.setGameScene(new HelpScene());
                 }
             },
             new Runnable() {
