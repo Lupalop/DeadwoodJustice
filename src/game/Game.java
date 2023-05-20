@@ -2,7 +2,6 @@ package game;
 
 import java.net.URISyntaxException;
 import java.nio.file.Path;
-import java.util.HashMap;
 import java.util.Random;
 
 import game.scenes.GameScene;
@@ -58,7 +57,6 @@ public final class Game {
 
     public static final Random RNG = new Random();
 
-    private static HashMap<String, String> cachedAssetUrls;
     private static Stage primaryStage;
     private static GameScene gameScene;
     private static GameTimer gameTimer = new GameTimer();
@@ -91,24 +89,15 @@ public final class Game {
         Game.primaryStage.setScene(Game.gameScene.getInner());
     }
 
-    public synchronized static String getAsset(String path) {
-        if (cachedAssetUrls == null) {
-            cachedAssetUrls = new HashMap<String, String>();
-        }
-
-        String finalPath = cachedAssetUrls.get(path);
-        if (finalPath == null) {
-            finalPath = Game.class.getResource(
-                    GAME_ASSETS_PATH + path).toExternalForm();
-            cachedAssetUrls.put(path, finalPath);
-        }
-
-        return finalPath;
+    public static String getAsset(String path) {
+        return Game.class.getResource(
+                GAME_ASSETS_PATH + path).toExternalForm();
     }
 
     public static Path getAssetAsPath(String path) {
         try {
-            return Path.of(Game.class.getResource(GAME_ASSETS_PATH + path).toURI());
+            return Path.of(Game.class.getResource(
+                    GAME_ASSETS_PATH + path).toURI());
         } catch (URISyntaxException e) {
             return null;
         }
