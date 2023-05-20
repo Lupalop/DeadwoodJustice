@@ -19,12 +19,16 @@ public final class Game {
             Game.getAsset("MATCHUPPRO.ttf");
 
     public static final int FONT_SIZE_32 = 32;
+    public static final int FONT_SIZE_48 = 48;
+    public static final int FONT_SIZE_BTN = 21;
+
     public static final Font FONT_32 =
             Font.loadFont(FONT_PATH, FONT_SIZE_32);
 
-    public static final int FONT_SIZE_BTN = 21;
-    public static final Font FONT_BTN =
-            Font.loadFont(FONT_MUP_PATH, 16 * 3);
+    public static final Font FONT_ALT_48 =
+            Font.loadFont(FONT_MUP_PATH, FONT_SIZE_48);
+    public static final Font FONT_ALT_32 =
+            Font.loadFont(FONT_MUP_PATH, FONT_SIZE_32);
 
     public static final int WINDOW_MIN_WIDTH = 0;
     public static final int WINDOW_MAX_WIDTH = 800;

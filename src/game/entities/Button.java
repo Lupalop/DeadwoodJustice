@@ -34,7 +34,7 @@ public class Button extends Sprite {
         this.setWidth(Tile.SIZE * (2 + size));
         this.setHeight(Tile.SIZE);
         text = new Text();
-        text.setFont(Game.FONT_BTN);
+        text.setFont(Game.FONT_ALT_48);
         text.setFill(Paint.valueOf("49276d"));
         scene.getRoot().getChildren().add(text);
         updateTextX();
