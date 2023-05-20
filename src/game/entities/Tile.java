@@ -9,6 +9,13 @@ public class Tile extends Sprite {
     public static final int SIZE = 16;
     public static final int SIZE_MID = SIZE * 2;
 
+    public static final int ALL_VERTICAL =
+            (Game.WINDOW_MAX_HEIGHT + 8) / Tile.SIZE_MID;
+    public static final int ALL_HORIZONTAL =
+            (Game.WINDOW_MAX_WIDTH) / Tile.SIZE_MID;
+    public static final int ALL =
+            ALL_VERTICAL * ALL_HORIZONTAL;
+
     public Tile(String tilesetPath, int rows, int columns, int scale) {
         super(0, 0);
 

@@ -25,13 +25,6 @@ public class LevelMap {
     private static final int TILEGEN_FREQ_CACTUS = 50;
     private static final int TILEGEN_FREQ_PROPS = 150;
 
-    private static final int TILES_VERTICAL =
-            (Game.WINDOW_MAX_HEIGHT + 8) / Tile.SIZE_MID;
-    private static final int TILES_HORIZONTAL =
-            (Game.WINDOW_MAX_WIDTH) / Tile.SIZE_MID;
-    private static final int TILES_TOTAL =
-            TILES_VERTICAL * TILES_HORIZONTAL;
-
     private static final double TILE_LAYER1_ALPHA = 0.5;
 
     private int[] tileLayer1;
@@ -56,14 +49,14 @@ public class LevelMap {
             return;
         }
 
-        tileLayer1 = new int[TILES_TOTAL];
-        tileLayer2 = new int[TILES_TOTAL];
+        tileLayer1 = new int[Tile.ALL];
+        tileLayer2 = new int[Tile.ALL];
 
         // Holds the current tile ID.
         int tileId = 0;
         // Iterate through each tile.
-        for (int i = 0; i < TILES_VERTICAL; i++) {
-            for (int j = 0; j < TILES_HORIZONTAL; j++) {
+        for (int i = 0; i < Tile.ALL_VERTICAL; i++) {
+            for (int j = 0; j < Tile.ALL_HORIZONTAL; j++) {
                 // Generate: land tile.
                 tileLayer1[tileId] = Game.RNG.nextInt(0, 4);
                 // Generate: grass.
@@ -134,9 +127,9 @@ public class LevelMap {
         int tileX = 0;
         int tileY = 0;
         int tileId = 0;
-        for (int i = 0; i < TILES_VERTICAL; i++) {
+        for (int i = 0; i < Tile.ALL_VERTICAL; i++) {
             tileY = Tile.SIZE_MID * i;
-            for (int j = 0; j < TILES_HORIZONTAL; j++) {
+            for (int j = 0; j < Tile.ALL_HORIZONTAL; j++) {
                 tileX = Tile.SIZE_MID * j;
                 // Draw from the desert tileset.
                 gc.save();
