@@ -1,53 +1,76 @@
 Deadwood Justice
 
 
+
 +Programming
 
-+Lead Developer
+-Lead Programmer
 Francis Dominic Fajardo
 
-+Base Code
-UPLB/CMSC 22
+-Base Code
+University of the Philippines - Los Baños
+Institute of Computer Science
+CMSC 22
+
+-Supplemental Reference
 Maquina Game Engine
+Francis Dominic Fajardo/Lupálop Games
+
+https://github.com/Lupalop/Maquina
+
+
 
 +Art
 
-+Generic Old West Pack
+-Generic Old West Pack
 Created by:
 @bakudas,  @_DeuTilt,
-@_sofarama and @itsarfo
+@_sofarama, and @itsarfo
 
 Published by:
 Vaca Roxa
-https://bakudas.itch.io/generic-oldwest-pack
 
-+Simple Desert - Tileset
+https://bakudas.itch.io/generic-oldwest-pack
+https://itch.io/profile/bakudas
+
+-Simple Desert - Tileset
 Elisha Ramos
+
 https://wrlck.itch.io/simple-desert
 http://elisharamos.art/
 
-+Cowboy (Animated Pixel Art)
+-Cowboy (Animated Pixel Art)
 Samuel Lee
 https://samuellee.itch.io/cow-boy-animated-pixel-art
+https://itch.io/profile/samuellee
 
-+Wild West - Props/Icons
+-Wild West - Props/Icons
 Eternal Pixel
 https://eternalpixel.itch.io/wild-west-props-16x16
 https://itch.io/profile/eternalpixel
 
-+Pixel Magic Effects
+-Pixel Magic Effects
 FoozleCC
 https://foozlecc.itch.io/pixel-magic-sprite-effects
+https://itch.io/profile/foozlecc
 
-+Pixel Art Effect - FX062
-NYKNCK
+-Pixel Art Effect - FX062
+@nyk_nck (NYKNCK)
 https://nyknck.itch.io/fx062
+https://itch.io/profile/nyknck
 
-+Humble Fonts
+-Humble Fonts
 Eeve Somepx
 https://somepx.itch.io/humble-fonts-free
+https://itch.io/profile/somepx
 
-+Pixel Western Font
+-Pixel Western Font
 Michelle Lehmann
 https://www.dafont.com/pixel-western.font
 https://www.dafont.com/mirz123.d2603
+
+
+
+Thanks for playing!
+
+
