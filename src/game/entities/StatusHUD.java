@@ -4,8 +4,8 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
 import game.Game;
-import game.LevelScene;
-import game.MainMenuScene;
+import game.scenes.LevelScene;
+import game.scenes.MainMenuScene;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 

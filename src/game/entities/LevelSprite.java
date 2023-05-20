@@ -1,6 +1,6 @@
 package game.entities;
 
-import game.LevelScene;
+import game.scenes.LevelScene;
 
 public class LevelSprite extends Sprite {
 

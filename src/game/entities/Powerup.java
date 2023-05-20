@@ -3,7 +3,7 @@ package game.entities;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
-import game.LevelScene;
+import game.scenes.LevelScene;
 import javafx.scene.canvas.GraphicsContext;
 
 public abstract class Powerup extends LevelSprite {

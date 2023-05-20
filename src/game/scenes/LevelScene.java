@@ -1,8 +1,11 @@
-package game;
+package game.scenes;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
+import game.Game;
+import game.LevelMap;
+import game.TimedActionManager;
 import game.entities.Bullet;
 import game.entities.CactusMob;
 import game.entities.CoffinMob;

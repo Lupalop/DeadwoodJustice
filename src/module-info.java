@@ -7,5 +7,6 @@ module FajardoProject {
 
     exports game;
     exports game.entities;
+    exports game.scenes;
 
 }

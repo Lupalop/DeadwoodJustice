@@ -4,7 +4,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
 import game.Game;
-import game.LevelScene;
+import game.scenes.LevelScene;
 import javafx.scene.canvas.GraphicsContext;
 
 public abstract class Mob extends LevelSprite {

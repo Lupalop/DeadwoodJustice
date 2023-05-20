@@ -1,10 +1,13 @@
-package game;
+package game.scenes;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 
+import game.Game;
+import game.LevelMap;
+import game.TimedActionManager;
 import game.entities.Button;
 import game.entities.Sprite;
 import game.entities.Tile;

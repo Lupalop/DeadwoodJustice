@@ -5,6 +5,8 @@ import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Random;
 
+import game.scenes.GameScene;
+import game.scenes.MainMenuScene;
 import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;

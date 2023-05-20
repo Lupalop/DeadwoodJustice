@@ -1,7 +1,7 @@
 package game.entities;
 
 import game.Game;
-import game.LevelScene;
+import game.scenes.LevelScene;
 import javafx.scene.image.Image;
 
 public class LampPowerup extends Powerup {
