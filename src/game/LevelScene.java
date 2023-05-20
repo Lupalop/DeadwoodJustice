@@ -53,11 +53,11 @@ public class LevelScene implements GameScene {
     private Canvas canvas;
     private GraphicsContext gc;
 
+    private TimedActionManager actions;
+
     private Outlaw outlaw;
     private Mob bossMob;
     private StatusHUD statusHud;
-
-    private TimedActionManager actions;
 
     private int mobKillCount;
     private int powerupsCount[];
@@ -82,6 +82,9 @@ public class LevelScene implements GameScene {
         this.gc = canvas.getGraphicsContext2D();
         this.gc.setImageSmoothing(false);
 
+        this.actions = new TimedActionManager();
+        this.initializeActions();
+
         this.outlaw = new Outlaw(
                 "Going merry",
                 OUTLAW_INITIAL_X, 0, this);
@@ -91,9 +94,6 @@ public class LevelScene implements GameScene {
         this.getOutlaw().handleKeyPressEvent(this);
         this.bossMob = null;
         this.statusHud = new StatusHUD(this);
-
-        this.actions = new TimedActionManager();
-        this.initializeActions();
 
         this.levelTimeLeft = 0;
         this.levelStartTime = System.nanoTime();
