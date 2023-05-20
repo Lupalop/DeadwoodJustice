@@ -14,28 +14,31 @@ public class Button extends Sprite {
     private static final Tile TILE =
             new Tile("tilemap_ui.png", 4, 8);
 
-    private static final int BUTTON_PARTS_COUNT = 4;
-    private static final int BUTTON_NORMAL_PARTS[] = {19, 20, 20, 21};
-    private static final int BUTTON_HOVER_PARTS[] = {27, 28, 28, 29};
-    private static final int BUTTON_ACTIVE_PARTS[] = {24, 25, 25, 26};
+    private static final int BUTTON_NORMAL_PARTS[] = {19, 20, 21};
+    private static final int BUTTON_HOVER_PARTS[] = {27, 28, 29};
+    private static final int BUTTON_ACTIVE_PARTS[] = {24, 25, 26};
 
     private boolean isHover;
     private boolean isActive;
+    private int size;
 
     private Text text;
     private Runnable clickAction;
 
-    public Button(int xPos, int yPos, GameScene scene) {
-        super(xPos, yPos);
+    public Button(int x, int y, int size, GameScene scene) {
+        super(x, y);
         this.handleMouseEvent(scene.getInner());
         this.isHover = false;
         this.isActive = false;
-        this.setWidth(Tile.SIZE * BUTTON_PARTS_COUNT);
+        this.size = size;
+        this.setWidth(Tile.SIZE * (2 + size));
         this.setHeight(Tile.SIZE);
         text = new Text();
         text.setFont(Game.FONT_BTN);
         text.setFill(Paint.valueOf("49276d"));
         scene.getRoot().getChildren().add(text);
+        updateTextX();
+        updateTextY();
     }
 
     @Override
@@ -47,9 +50,11 @@ public class Button extends Sprite {
         if (this.isActive) {
             parts = BUTTON_ACTIVE_PARTS;
         }
-        for (int i = 0; i < BUTTON_PARTS_COUNT; i++) {
-            TILE.draw(gc, this.getX() + (Tile.SIZE_MID * i), this.getY(), parts[i]);
+        TILE.draw(gc, this.getX() + (Tile.SIZE_MID * 0), this.getY(), parts[0]);
+        for (int i = 1; i <= size; i++) {
+            TILE.draw(gc, this.getX() + (Tile.SIZE_MID * i), this.getY(), parts[1]);
         }
+        TILE.draw(gc, this.getX() + (Tile.SIZE_MID * (size + 1)), this.getY(), parts[2]);
     }
 
 
@@ -93,14 +98,22 @@ public class Button extends Sprite {
     @Override
     public void setX(int x) {
         super.setX(x);
-        this.text.setX(this.getBounds().getMinX()
-                + (this.getBounds().getWidth() / 2)
-                - (this.text.getBoundsInLocal().getWidth() / 2));
+        updateTextX();
     }
 
     @Override
     public void setY(int y) {
         super.setY(y);
+        updateTextY();
+    }
+
+    private void updateTextX() {
+        this.text.setX(this.getBounds().getMinX()
+                + (this.getBounds().getWidth() / 2)
+                - (this.text.getBoundsInLocal().getWidth() / 2));
+    }
+
+    private void updateTextY() {
         this.text.setY(this.getBounds().getMaxY()
                 - ((this.getBounds().getHeight() - Game.FONT_SIZE_BTN) / 2));
     }
@@ -111,6 +124,8 @@ public class Button extends Sprite {
 
     public void setText(String text) {
         this.text.setText(text);
+        updateTextX();
+        updateTextY();
     }
 
     public void setClickAction(Runnable clickAction) {
