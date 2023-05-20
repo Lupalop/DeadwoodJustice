@@ -1,6 +1,5 @@
 package game.entities;
 
-import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 import game.Game;
@@ -43,14 +42,13 @@ public abstract class Mob extends LevelSprite {
     public Mob(int x, int y, int health, int damage, boolean isShooter, LevelScene parent) {
         super(x, y, parent);
 
-        Random rand = new Random();
         this.health = health;
         if (damage <= -1) {
-            this.damage = rand.nextInt(MIN_DAMAGE, MAX_DAMAGE + 1);
+            this.damage = Game.RNG.nextInt(MIN_DAMAGE, MAX_DAMAGE + 1);
         } else {
             this.damage = damage;
         }
-        this.speed = rand.nextInt(MIN_SPEED, MAX_SPEED);
+        this.speed = Game.RNG.nextInt(MIN_SPEED, MAX_SPEED);
 
         this.alive = true;
         this.dying = false;
@@ -59,7 +57,7 @@ public abstract class Mob extends LevelSprite {
         this.chasingPlayer = false;
         this.playerInMobBounds = false;
         this.movingStuck = false;
-        this.movingRight = rand.nextBoolean();
+        this.movingRight = Game.RNG.nextBoolean();
         this.shooter = isShooter;
 
         this.passability = new boolean[4];
@@ -79,7 +77,7 @@ public abstract class Mob extends LevelSprite {
         }
 
         if (Game.FLAG_SMARTER_MOBS) {
-            this.chasingPlayer = rand.nextBoolean();
+            this.chasingPlayer = Game.RNG.nextBoolean();
         }
 
         this.setFlip(!this.movingRight, false);

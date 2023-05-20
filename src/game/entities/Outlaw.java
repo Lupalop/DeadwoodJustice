@@ -1,6 +1,5 @@
 package game.entities;
 
-import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 import game.Game;
@@ -53,10 +52,9 @@ public class Outlaw extends LevelSprite {
         this.setBoundsOffset(FRAMESET_OFFSET);
 
         this.name = name;
-        Random r = new Random();
         this.strength = Game.DEBUG_MODE
                 ? 1
-                : r.nextInt(151) + 100;
+                : Game.RNG.nextInt(151) + 100;
 
         this.alive = true;
         this.dying = false;

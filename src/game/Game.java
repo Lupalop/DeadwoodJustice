@@ -1,6 +1,7 @@
 package game;
 
 import java.util.HashMap;
+import java.util.Random;
 
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
@@ -41,6 +42,8 @@ public final class Game {
     public static final boolean FLAG_MOBS_CHECK_PASSABILITY = true;
     public static final boolean FLAG_IGNORE_PROP_COLLISION = true;
     public static final boolean FLAG_MOBS_CAN_SHOOT = false;
+
+    public static final Random RNG = new Random();
 
     private static HashMap<String, String> cachedAssetUrls;
     private static Stage primaryStage;

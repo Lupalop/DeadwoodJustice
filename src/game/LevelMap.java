@@ -2,7 +2,6 @@ package game;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Random;
 
 import game.entities.Mob;
 import game.entities.Outlaw;
@@ -65,24 +64,22 @@ public class LevelMap {
         // Iterate through each tile.
         for (int i = 0; i < TILES_VERTICAL; i++) {
             for (int j = 0; j < TILES_HORIZONTAL; j++) {
-                // The tile generator.
-                Random rand = new Random();
                 // Generate: land tile.
-                tileLayer1[tileId] = rand.nextInt(0, 4);
+                tileLayer1[tileId] = Game.RNG.nextInt(0, 4);
                 // Generate: grass.
-                if (rand.nextInt(TILEGEN_FREQ_GRASS_OR_ROCK) == TILEGEN_MATCH) {
-                    tileLayer2[tileId] = rand.nextInt(6, 8);
+                if (Game.RNG.nextInt(TILEGEN_FREQ_GRASS_OR_ROCK) == TILEGEN_MATCH) {
+                    tileLayer2[tileId] = Game.RNG.nextInt(6, 8);
                 // Generate: rocks.
-                } else if (rand.nextInt(TILEGEN_FREQ_GRASS_OR_ROCK) == TILEGEN_MATCH) {
-                    tileLayer2[tileId] = rand.nextInt(8, 10);
+                } else if (Game.RNG.nextInt(TILEGEN_FREQ_GRASS_OR_ROCK) == TILEGEN_MATCH) {
+                    tileLayer2[tileId] = Game.RNG.nextInt(8, 10);
                 // Generate: cactus.
-                } else if (rand.nextInt(TILEGEN_FREQ_CACTUS) == TILEGEN_MATCH) {
-                    tileLayer2[tileId] = rand.nextInt(4, 6);
+                } else if (Game.RNG.nextInt(TILEGEN_FREQ_CACTUS) == TILEGEN_MATCH) {
+                    tileLayer2[tileId] = Game.RNG.nextInt(4, 6);
                 // Generate: sign.
-                } else if (rand.nextInt(TILEGEN_FREQ_PROPS) == TILEGEN_MATCH) {
+                } else if (Game.RNG.nextInt(TILEGEN_FREQ_PROPS) == TILEGEN_MATCH) {
                     tileLayer2[tileId] = 10;
                 // Generate: fossil.
-                } else if (rand.nextInt(TILEGEN_FREQ_PROPS) == TILEGEN_MATCH) {
+                } else if (Game.RNG.nextInt(TILEGEN_FREQ_PROPS) == TILEGEN_MATCH) {
                     tileLayer2[tileId] = 11;
                 }
                 tileId++;
@@ -97,21 +94,20 @@ public class LevelMap {
     }
 
     public void generateProps() {
-        Random rand = new Random();
         for (int i = 0; i < 3; i++) {
             Prop tree = new Prop(
-                    rand.nextInt(1, 8) * rand.nextInt(1, 3) * 60,
-                    rand.nextInt(2, 6) * rand.nextInt(1, 3) * 60,
+                    Game.RNG.nextInt(1, 8) * Game.RNG.nextInt(1, 3) * 60,
+                    Game.RNG.nextInt(2, 6) * Game.RNG.nextInt(1, 3) * 60,
                     PROP_TREE);
             this.sprites.add(tree);
         }
 
         Prop wagon = new Prop(
-                rand.nextInt(50, Game.WINDOW_MAX_WIDTH / 2),
-                rand.nextInt(3, 6) * 100,
+                Game.RNG.nextInt(50, Game.WINDOW_MAX_WIDTH / 2),
+                Game.RNG.nextInt(3, 6) * 100,
                 PROP_COVERED_WAGON);
         Prop house = new Prop(
-                rand.nextInt(Game.WINDOW_MAX_WIDTH / 2, Game.WINDOW_MAX_WIDTH),
+                Game.RNG.nextInt(Game.WINDOW_MAX_WIDTH / 2, Game.WINDOW_MAX_WIDTH),
                 -100,
                 PROP_HOUSE);
 
