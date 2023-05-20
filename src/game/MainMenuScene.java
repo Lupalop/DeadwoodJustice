@@ -206,6 +206,23 @@ public class MainMenuScene implements GameScene {
         });
     }
 
+    public static void handleReturnKeyPressEvent(GameScene scene) {
+        scene.getInner().addEventHandler(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent e) {
+                KeyCode code = e.getCode();
+                switch (code) {
+                case BACK_SPACE:
+                case ESCAPE:
+                    Game.setGameScene(new MainMenuScene());
+                    break;
+                default:
+                    break;
+                }
+            }
+        });
+    }
+
     @Override
     public Scene getInner() {
         return this.scene;

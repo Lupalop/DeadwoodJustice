@@ -35,6 +35,8 @@ public class HelpScene implements GameScene {
         this.levelMap = new LevelMap();
         this.levelMap.generate();
         this.levelMap.generateProps();
+
+        MainMenuScene.handleReturnKeyPressEvent(this);
     }
 
     private Button backButton;

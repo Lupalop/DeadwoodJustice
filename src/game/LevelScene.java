@@ -123,6 +123,8 @@ public class LevelScene implements GameScene {
         }
 
         this.spawnMobs(MOB_COUNT_AT_SPAWN);
+
+        MainMenuScene.handleReturnKeyPressEvent(this);
     }
 
     private void initializeActions() {
