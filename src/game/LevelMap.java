@@ -33,19 +33,23 @@ public class LevelMap {
     private ArrayList<Sprite> sprites;
     private ArrayList<Sprite> pendingSpriteAdds;
     private ArrayList<Sprite> pendingSpriteRemoves;
+    private ArrayList<Sprite> generatedProps;
 
-    private boolean doneGenerating;
+    private boolean tilesGenerated;
+    private boolean propsGenerated;
 
     public LevelMap() {
-        this.doneGenerating = false;
+        this.tilesGenerated = false;
+        this.propsGenerated = false;
 
         this.sprites = new ArrayList<Sprite>();
         this.pendingSpriteAdds = new ArrayList<Sprite>();
         this.pendingSpriteRemoves = new ArrayList<Sprite>();
+        this.generatedProps = new ArrayList<Sprite>();
     }
 
     public void generate(boolean regenerate) {
-        if (this.doneGenerating && !regenerate) {
+        if (this.tilesGenerated && !regenerate) {
             return;
         }
 
@@ -79,33 +83,49 @@ public class LevelMap {
             }
         }
 
-        this.doneGenerating = true;
+        this.tilesGenerated = true;
     }
 
     public void generate() {
         generate(false);
     }
 
-    public void generateProps() {
+    public void generateProps(boolean regenerate) {
+        if (this.propsGenerated && !regenerate) {
+            return;
+        }
+
+        if (regenerate) {
+            this.pendingSpriteRemoves.addAll(generatedProps);
+            generatedProps.clear();
+        }
+
         for (int i = 0; i < 3; i++) {
             Prop tree = new Prop(
                     Game.RNG.nextInt(1, 8) * Game.RNG.nextInt(1, 3) * 60,
                     Game.RNG.nextInt(2, 6) * Game.RNG.nextInt(1, 3) * 60,
                     PROP_TREE);
-            this.sprites.add(tree);
+            this.generatedProps.add(tree);
         }
 
         Prop wagon = new Prop(
                 Game.RNG.nextInt(50, Game.WINDOW_MAX_WIDTH / 2),
                 Game.RNG.nextInt(3, 6) * 100,
                 PROP_COVERED_WAGON);
+        this.generatedProps.add(wagon);
+
         Prop house = new Prop(
                 Game.RNG.nextInt(Game.WINDOW_MAX_WIDTH / 2, Game.WINDOW_MAX_WIDTH),
                 -100,
                 PROP_HOUSE);
+        this.generatedProps.add(house);
 
-        this.sprites.add(wagon);
-        this.sprites.add(house);
+        this.pendingSpriteAdds.addAll(generatedProps);
+        this.propsGenerated = true;
+    }
+
+    public void generateProps() {
+        generateProps(false);
     }
 
     public void draw(GraphicsContext gc) {
@@ -120,7 +140,7 @@ public class LevelMap {
     }
 
     private void drawTiles(GraphicsContext gc) {
-        if (!this.doneGenerating) {
+        if (!this.tilesGenerated) {
             return;
         }
 
@@ -195,7 +215,7 @@ public class LevelMap {
     }
 
     public boolean isDoneGenerating() {
-        return doneGenerating;
+        return tilesGenerated;
     }
 
     public ArrayList<Sprite> getSprites() {
