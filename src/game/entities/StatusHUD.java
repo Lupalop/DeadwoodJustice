@@ -8,7 +8,6 @@ import game.LevelScene;
 import game.MainMenuScene;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
-import javafx.scene.paint.Paint;
 
 public class StatusHUD extends Sprite {
 
@@ -31,7 +30,6 @@ public class StatusHUD extends Sprite {
     private static final int HUD_BASE_POS_TIME = 8;
     private static final int HUD_POWERUP_POS = 12;
 
-    private static final Paint HUD_TEXT_COLOR = Paint.valueOf("EECA84");
     private static final int HUD_TEXT_OFFSET_Y = (Tile.SIZE_MID / 2) + 3;
     private static final int HUD_MAX_NUM = 9999;
 
@@ -99,7 +97,7 @@ public class StatusHUD extends Sprite {
     public void draw(GraphicsContext gc) {
         gc.save();
         gc.setFont(Game.FONT_32);
-        gc.setFill(HUD_TEXT_COLOR);
+        gc.setFill(Game.COLOR_MAIN);
 
         drawHUD(gc);
         if (isGameEndVisible) {

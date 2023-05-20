@@ -24,7 +24,6 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.paint.Color;
 
 public class LevelScene implements GameScene {
 
@@ -75,7 +74,7 @@ public class LevelScene implements GameScene {
     public LevelScene() {
         this.root = new Group();
         this.scene = new Scene(root, Game.WINDOW_MAX_WIDTH,
-                Game.WINDOW_MAX_HEIGHT, Color.valueOf("eeca84"));
+                Game.WINDOW_MAX_HEIGHT, Game.COLOR_MAIN);
         this.canvas = new Canvas(Game.WINDOW_MAX_WIDTH,
                 Game.WINDOW_MAX_HEIGHT);
         this.root.getChildren().add(canvas);

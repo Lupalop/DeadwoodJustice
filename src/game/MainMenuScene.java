@@ -11,7 +11,6 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.paint.Color;
 
 public class MainMenuScene implements GameScene {
 
@@ -31,7 +30,7 @@ public class MainMenuScene implements GameScene {
     public MainMenuScene() {
         this.root = new Group();
         this.scene = new Scene(root, Game.WINDOW_MAX_WIDTH,
-                Game.WINDOW_MAX_HEIGHT, Color.valueOf("eeca84"));
+                Game.WINDOW_MAX_HEIGHT, Game.COLOR_MAIN);
         this.canvas = new Canvas(Game.WINDOW_MAX_WIDTH,
                 Game.WINDOW_MAX_HEIGHT);
         this.root.getChildren().add(canvas);

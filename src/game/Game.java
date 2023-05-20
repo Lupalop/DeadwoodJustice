@@ -5,6 +5,7 @@ import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Random;
 
+import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
@@ -39,6 +40,9 @@ public final class Game {
     public static final byte DIR_DOWN = 0x2;
     public static final byte DIR_LEFT = 0x4;
     public static final byte DIR_RIGHT = 0x8;
+
+    public static final Paint COLOR_MAIN = Paint.valueOf("eeca84");
+    public static final Paint COLOR_ACCENT = Paint.valueOf("49276d");
 
     public static final boolean DEBUG_MODE = false;
     public static final boolean FLAG_DIRECTIONAL_SHOOTING = false;

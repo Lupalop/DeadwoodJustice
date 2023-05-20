@@ -6,7 +6,6 @@ import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.paint.Paint;
 import javafx.scene.text.Text;
 
 public class Button extends Sprite {
@@ -35,7 +34,7 @@ public class Button extends Sprite {
         this.setHeight(Tile.SIZE);
         text = new Text();
         text.setFont(Game.FONT_ALT_48);
-        text.setFill(Paint.valueOf("49276d"));
+        text.setFill(Game.COLOR_ACCENT);
         scene.getRoot().getChildren().add(text);
         updateTextX();
         updateTextY();
