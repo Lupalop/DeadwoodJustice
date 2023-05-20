@@ -359,22 +359,22 @@ public abstract class Sprite implements Comparable<Sprite> {
         }
     }
 
-    protected void setWidth(double val) {
+    public void setWidth(double val) {
         this.width = val;
         this.boundsDirty = true;
     }
 
-    protected void setHeight(double val) {
+    public void setHeight(double val) {
         this.height = val;
         this.boundsDirty = true;
     }
 
-    protected void setScale(int scale) {
+    public void setScale(int scale) {
         this.scale = scale;
         this.boundsDirty = true;
     }
 
-    protected void setVisible(boolean value) {
+    public void setVisible(boolean value) {
         this.visible = value;
     }
 
