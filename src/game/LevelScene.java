@@ -109,7 +109,7 @@ public class LevelScene implements GameScene {
         this.levelMap = new LevelMap();
         this.levelMap.generate();
         this.levelMap.generateProps();
-        this.levelMap.getSprites().add(getOutlaw());
+        this.levelMap.addSpriteOnUpdate(getOutlaw());
 
         if (Game.DEBUG_MODE) {
             scene.addEventHandler(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>() {
@@ -150,7 +150,7 @@ public class LevelScene implements GameScene {
                             LevelScene.this);
                     bossMob.addY((int) -bossMob.getBounds().getHeight() / 2);
                     bossMob.addX((int) -bossMob.getBounds().getWidth());
-                    levelMap.getSprites().add(bossMob);
+                    levelMap.addSpriteOnUpdate(bossMob);
                 }
                 return true;
             }

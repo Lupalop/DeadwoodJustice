@@ -2,6 +2,7 @@ package game;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 import game.entities.Mob;
 import game.entities.Outlaw;
@@ -172,12 +173,12 @@ public class LevelMap {
         }
 
         if (this.pendingSpriteAdds.size() > 0) {
-            this.getSprites().addAll(this.pendingSpriteAdds);
+            this.sprites.addAll(this.pendingSpriteAdds);
             this.pendingSpriteAdds.clear();
         }
 
         if (this.pendingSpriteRemoves.size() > 0) {
-            this.getSprites().removeAll(this.pendingSpriteRemoves);
+            this.sprites.removeAll(this.pendingSpriteRemoves);
             this.pendingSpriteRemoves.clear();
         }
     }
@@ -189,7 +190,7 @@ public class LevelMap {
         passability[2] = source.getBounds().getMinY() >= Game.WINDOW_MIN_HEIGHT;
         passability[3] = source.getBounds().getMaxY() <= Game.WINDOW_MAX_HEIGHT;
 
-        for (Sprite sprite : this.getSprites()) {
+        for (Sprite sprite : this.sprites) {
             if (!Game.FLAG_MOBS_CHECK_PASSABILITY
                     || (Game.FLAG_IGNORE_PROP_COLLISION && sprite instanceof Prop)
                     || (sprite instanceof Mob && !((Mob)sprite).isAlive())
@@ -218,8 +219,8 @@ public class LevelMap {
         return tilesGenerated;
     }
 
-    public ArrayList<Sprite> getSprites() {
-        return this.sprites;
+    public List<Sprite> getSprites() {
+        return Collections.unmodifiableList(this.sprites);
     }
 
     public void addSpriteOnUpdate(Sprite sprite) {
