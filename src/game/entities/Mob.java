@@ -279,10 +279,18 @@ public abstract class Mob extends LevelSprite {
             return;
         }
         this.health -= value;
+
+        byte moteType = Mote.TYPE_NEUTRAL;
         if (this.health <= 0) {
             this.prepareDeath();
+            moteType = Mote.TYPE_BAD;
         } else {
             this.playFrames(frameRanges[4], frameRanges[5], null, 0);
+        }
+
+        if (Game.FLAG_SHOW_MOTES) {
+            this.getParent().getLevelMap().addSpriteOnUpdate(
+                    new Mote(this, value, moteType, getParent()));
         }
     }
 

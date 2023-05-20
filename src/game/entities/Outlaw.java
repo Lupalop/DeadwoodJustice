@@ -150,6 +150,10 @@ public class Outlaw extends LevelSprite {
             return;
         }
         this.strength += value;
+        if (Game.FLAG_SHOW_MOTES) {
+            this.getParent().getLevelMap().addSpriteOnUpdate(
+                    new Mote(this, value, Mote.TYPE_GOOD, getParent()));
+        }
     }
 
     public void reduceStrength(int value) {
@@ -163,13 +167,21 @@ public class Outlaw extends LevelSprite {
         } else {
             this.strength -= value;
         }
+
+        byte moteType = Mote.TYPE_NEUTRAL;
         if (this.strength == 0) {
             this.alive = false;
             this.dying = true;
             this.setFrameAutoReset(false);
             this.setMinMaxFrame(56, 69);
+            moteType = Mote.TYPE_BAD;
         } else {
             this.playFrames(56, 58, null, TimeUnit.MILLISECONDS.toNanos(200));
+        }
+
+        if (Game.FLAG_SHOW_MOTES) {
+            this.getParent().getLevelMap().addSpriteOnUpdate(
+                    new Mote(this, value, moteType, getParent()));
         }
     }
 
