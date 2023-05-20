@@ -1,5 +1,7 @@
 package game;
 
+import java.net.URISyntaxException;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Random;
 
@@ -92,6 +94,14 @@ public final class Game {
         }
 
         return finalPath;
+    }
+
+    public static Path getAssetAsPath(String path) {
+        try {
+            return Path.of(Game.class.getResource(GAME_ASSETS_PATH + path).toURI());
+        } catch (URISyntaxException e) {
+            return null;
+        }
     }
 
     public static boolean isDirectionActive(byte activeDirections, byte directionFlag) {
