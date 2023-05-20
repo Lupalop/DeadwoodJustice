@@ -11,8 +11,8 @@ import javafx.scene.paint.Paint;
 
 public class StatusHUD extends Sprite {
 
-    private static final Tileset TILESET =
-            new Tileset("tilemap_ui.png", 4, 8);
+    private static final Tile TILE =
+            new Tile("tilemap_ui.png", 4, 8);
 
     private static final Image UI_GAME_END_BAD =
             new Image(Game.getAsset("ui_game_end_bad.png"));
@@ -31,7 +31,7 @@ public class StatusHUD extends Sprite {
     private static final int UI_HUD_POWERUP_POS = 12;
 
     private static final Paint UI_HUD_TEXT_COLOR = Paint.valueOf("EECA84");
-    private static final int UI_HUD_TEXT_OFFSET_Y = (Tileset.TILE_SIZE_MID / 2) + 3;
+    private static final int UI_HUD_TEXT_OFFSET_Y = (Tile.SIZE_MID / 2) + 3;
     private static final int UI_HUD_MAX_NUM = 9999;
 
     private static final int UI_TX_BASE_START = 3;
@@ -136,39 +136,39 @@ public class StatusHUD extends Sprite {
         String timeLeftText = this.getLevelTimeLeftText();
         // Draw base HUD background.
         int tileOffset = UI_HUD_BASE_POS;
-        TILESET.draw(gc, Tileset.TILE_SIZE_MID,
+        TILE.draw(gc, Tile.SIZE_MID,
                 hudOffsetY, UI_TX_BASE_START);
         for (int i = 0; i < UI_HUD_BASE_SIZE; i++) {
-            TILESET.draw(gc, Tileset.TILE_SIZE_MID * ++tileOffset,
+            TILE.draw(gc, Tile.SIZE_MID * ++tileOffset,
                     hudOffsetY, UI_TX_BASE_MID);
         }
-        TILESET.draw(gc, Tileset.TILE_SIZE_MID * ++tileOffset,
+        TILE.draw(gc, Tile.SIZE_MID * ++tileOffset,
                 hudOffsetY, UI_TX_BASE_END);
         // Base HUD: player strength.
-        TILESET.draw(gc, Tileset.TILE_SIZE_MID * UI_HUD_BASE_POS_HP,
+        TILE.draw(gc, Tile.SIZE_MID * UI_HUD_BASE_POS_HP,
                 hudOffsetY, UI_TX_OUTLAW);
         if (level.getOutlaw().isImmortal() || strength > UI_HUD_MAX_NUM) {
-            TILESET.draw(gc,
-                    Tileset.TILE_SIZE_MID * (UI_HUD_BASE_POS_HP + 1),
+            TILE.draw(gc,
+                    Tile.SIZE_MID * (UI_HUD_BASE_POS_HP + 1),
                     hudOffsetY, UI_TX_INFINITY);
         } else {
             gc.fillText(strengthText,
-                    Tileset.TILE_SIZE_MID * (UI_HUD_BASE_POS_HP + 1),
+                    Tile.SIZE_MID * (UI_HUD_BASE_POS_HP + 1),
                     hudOffsetY + UI_HUD_TEXT_OFFSET_Y);
         }
         // Base HUD: mob kill count.
-        TILESET.draw(gc,
-                Tileset.TILE_SIZE_MID * UI_HUD_BASE_POS_MOB,
+        TILE.draw(gc,
+                Tile.SIZE_MID * UI_HUD_BASE_POS_MOB,
                 hudOffsetY, UI_TX_MOB);
         gc.fillText(mobKillCountText,
-                Tileset.TILE_SIZE_MID * (UI_HUD_BASE_POS_MOB + 1),
+                Tile.SIZE_MID * (UI_HUD_BASE_POS_MOB + 1),
                 hudOffsetY + UI_HUD_TEXT_OFFSET_Y);
         // Base HUD: time left.
-        TILESET.draw(gc,
-                Tileset.TILE_SIZE_MID * UI_HUD_BASE_POS_TIME,
+        TILE.draw(gc,
+                Tile.SIZE_MID * UI_HUD_BASE_POS_TIME,
                 hudOffsetY, UI_TX_TIME);
         gc.fillText(timeLeftText,
-                Tileset.TILE_SIZE_MID * (UI_HUD_BASE_POS_TIME + 1),
+                Tile.SIZE_MID * (UI_HUD_BASE_POS_TIME + 1),
                 hudOffsetY + UI_HUD_TEXT_OFFSET_Y);
     }
 
@@ -177,37 +177,37 @@ public class StatusHUD extends Sprite {
         String valueText = Integer.toString(value);
         gc.save();
         gc.setGlobalAlpha(alpha);
-        TILESET.draw(gc, Tileset.TILE_SIZE_MID * tileOffset,
+        TILE.draw(gc, Tile.SIZE_MID * tileOffset,
                 hudOffsetY, UI_TX_POWERUP_START);
-        TILESET.draw(gc, Tileset.TILE_SIZE_MID * tileOffset,
+        TILE.draw(gc, Tile.SIZE_MID * tileOffset,
                 hudOffsetY, iconIndex);
-        TILESET.draw(gc, Tileset.TILE_SIZE_MID * ++tileOffset,
+        TILE.draw(gc, Tile.SIZE_MID * ++tileOffset,
                 hudOffsetY, UI_TX_POWERUP_END);
-        gc.fillText(valueText, Tileset.TILE_SIZE_MID * tileOffset,
+        gc.fillText(valueText, Tile.SIZE_MID * tileOffset,
                 hudOffsetY + UI_HUD_TEXT_OFFSET_Y);
         gc.restore();
         return tileOffset += 2;
     }
 
     private void drawGameEnd(GraphicsContext gc) {
-        int base = ((Game.WINDOW_MAX_HEIGHT + 8) / Tileset.TILE_SIZE_MID) / 3;
-        for (int i = 0; i < (Game.WINDOW_MAX_WIDTH) / Tileset.TILE_SIZE_MID; i++) {
-            TILESET.draw(gc, Tileset.TILE_SIZE_MID * i,
-                    Tileset.TILE_SIZE_MID * base, UI_TX_POP_START);
+        int base = ((Game.WINDOW_MAX_HEIGHT + 8) / Tile.SIZE_MID) / 3;
+        for (int i = 0; i < (Game.WINDOW_MAX_WIDTH) / Tile.SIZE_MID; i++) {
+            TILE.draw(gc, Tile.SIZE_MID * i,
+                    Tile.SIZE_MID * base, UI_TX_POP_START);
         }
 
         for (int i = 0; i < 5; i++) {
             base++;
-            for (int j = 0; j < (Game.WINDOW_MAX_WIDTH) / Tileset.TILE_SIZE_MID; j++) {
-                TILESET.draw(gc, Tileset.TILE_SIZE_MID * j,
-                        Tileset.TILE_SIZE_MID * base, UI_TX_POP_MID);
+            for (int j = 0; j < (Game.WINDOW_MAX_WIDTH) / Tile.SIZE_MID; j++) {
+                TILE.draw(gc, Tile.SIZE_MID * j,
+                        Tile.SIZE_MID * base, UI_TX_POP_MID);
             }
         }
 
         base++;
-        for (int i = 0; i < (Game.WINDOW_MAX_WIDTH) / Tileset.TILE_SIZE_MID; i++) {
-            TILESET.draw(gc, Tileset.TILE_SIZE_MID * i,
-                    Tileset.TILE_SIZE_MID * base, UI_TX_POP_END);
+        for (int i = 0; i < (Game.WINDOW_MAX_WIDTH) / Tile.SIZE_MID; i++) {
+            TILE.draw(gc, Tile.SIZE_MID * i,
+                    Tile.SIZE_MID * base, UI_TX_POP_END);
         }
 
         Image gameEndCenterImage = null;

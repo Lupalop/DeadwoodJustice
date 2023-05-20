@@ -4,21 +4,21 @@ import game.Game;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 
-public class Tileset extends Sprite {
+public class Tile extends Sprite {
 
-    public static final int TILE_SIZE = 16;
-    public static final int TILE_SIZE_MID = TILE_SIZE * 2;
+    public static final int SIZE = 16;
+    public static final int SIZE_MID = SIZE * 2;
 
-    public Tileset(String assetPath, int rows, int columns, int scale) {
+    public Tile(String tilesetPath, int rows, int columns, int scale) {
         super(0, 0);
 
-        Image tilesetImage = new Image(Game.getAsset(assetPath));
+        Image tilesetImage = new Image(Game.getAsset(tilesetPath));
         this.setFrameSet(tilesetImage, rows, columns);
         this.setFrameAutoReset(false);
         this.setScale(scale);
     }
 
-    public Tileset(String assetPath, int rows, int columns) {
+    public Tile(String assetPath, int rows, int columns) {
         this(assetPath, rows, columns, Sprite.DEFAULT_SCALE);
     }
 

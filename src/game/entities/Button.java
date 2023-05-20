@@ -11,8 +11,8 @@ import javafx.scene.text.Text;
 
 public class Button extends Sprite {
 
-    private static final Tileset TILESET =
-            new Tileset("tilemap_ui.png", 4, 8);
+    private static final Tile TILE =
+            new Tile("tilemap_ui.png", 4, 8);
 
     private static final int BUTTON_PARTS_COUNT = 4;
     private static final int BUTTON_NORMAL_PARTS[] = {19, 20, 20, 21};
@@ -30,8 +30,8 @@ public class Button extends Sprite {
         this.handleMouseEvent(scene.getInner());
         this.isHover = false;
         this.isActive = false;
-        this.setWidth(Tileset.TILE_SIZE * BUTTON_PARTS_COUNT);
-        this.setHeight(Tileset.TILE_SIZE);
+        this.setWidth(Tile.SIZE * BUTTON_PARTS_COUNT);
+        this.setHeight(Tile.SIZE);
         text = new Text();
         text.setFont(Game.FONT_BTN);
         text.setFill(Paint.valueOf("49276d"));
@@ -48,7 +48,7 @@ public class Button extends Sprite {
             parts = BUTTON_ACTIVE_PARTS;
         }
         for (int i = 0; i < BUTTON_PARTS_COUNT; i++) {
-            TILESET.draw(gc, this.getX() + (Tileset.TILE_SIZE_MID * i), this.getY(), parts[i]);
+            TILE.draw(gc, this.getX() + (Tile.SIZE_MID * i), this.getY(), parts[i]);
         }
     }
 
