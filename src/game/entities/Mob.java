@@ -212,6 +212,10 @@ public abstract class Mob extends LevelSprite {
         this.addX((int) this.getBounds().getWidth() / 2 * multiplier);
     }
 
+    protected static boolean guessShooterAbility() {
+        return Game.FLAG_MOBS_CAN_SHOOT && Game.RNG.nextBoolean();
+    }
+
     protected void chasePlayer(Outlaw outlaw) {
         if (!outlaw.isAlive()) {
             return;
