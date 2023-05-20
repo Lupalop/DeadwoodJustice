@@ -13,13 +13,15 @@ import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
 import javafx.scene.shape.StrokeType;
 import javafx.scene.text.Text;
 
 public class CreditsScene implements GameScene {
 
-    private static final double SCROLL_SPEED = 0.2f;
+    private static final String PREFIX_SUBHEADING = "-";
+    private static final String PREFIX_HEADING = "+";
+
+    private static final double SCROLL_SPEED = 0.02f;
 
     private Group root;
     private Scene scene;
@@ -32,7 +34,7 @@ public class CreditsScene implements GameScene {
     public CreditsScene() {
         this.root = new Group();
         this.scene = new Scene(root, Game.WINDOW_MAX_WIDTH,
-                Game.WINDOW_MAX_HEIGHT, Color.valueOf("eeca84"));
+                Game.WINDOW_MAX_HEIGHT, Game.COLOR_MAIN);
         this.canvas = new Canvas(Game.WINDOW_MAX_WIDTH,
                 Game.WINDOW_MAX_HEIGHT);
         this.root.getChildren().add(canvas);
@@ -76,13 +78,23 @@ public class CreditsScene implements GameScene {
         textNodes = new ArrayList<Text>();
         for (String textString : creditsText) {
             Text node = new Text(textString);
-            if (textString.startsWith("+")) {
-                node.setFont(Game.FONT_BTN);
+            // Case 1: heading
+            if (textString.startsWith(PREFIX_HEADING)) {
+                node.setFont(Game.FONT_ALT_48);
                 node.setText(textString.substring(1));
-                node.setFill(Paint.valueOf("eeca84"));
-                node.setStroke(Paint.valueOf("49276d"));
-            } else {
+                node.setFill(Game.COLOR_MAIN);
+                node.setStroke(Game.COLOR_ACCENT);
+                node.setId(PREFIX_HEADING);
+            // Case 2: subheading
+            } else if (textString.startsWith(PREFIX_SUBHEADING)) {
                 node.setFont(Game.FONT_32);
+                node.setText(textString.substring(1));
+                node.setFill(Game.COLOR_MAIN);
+                node.setStroke(Game.COLOR_ACCENT);
+                node.setId(PREFIX_SUBHEADING);
+            // Case 3: regular text.
+            } else {
+                node.setFont(Game.FONT_ALT_32);
                 node.setFill(Color.WHITE);
                 node.setStroke(Color.BLACK);
             }
@@ -91,18 +103,34 @@ public class CreditsScene implements GameScene {
 
             textNodes.add(node);
             textNodesHeight += node.getBoundsInLocal().getHeight();
-            this.root.getChildren().add(node);
         }
     }
 
-    private void updateScrollingNodes() {
+    private void drawScrollingNodes(GraphicsContext gc) {
         double distanceFromTop = Game.WINDOW_MAX_HEIGHT;
 
         for (Text node : textNodes) {
             scrollPosition -= SCROLL_SPEED;
-            node.setX((Game.WINDOW_MAX_WIDTH / 2)
-                    - (node.getBoundsInLocal().getWidth() / 2));
-            node.setY(distanceFromTop + scrollPosition);
+            double x = (Game.WINDOW_MAX_WIDTH / 2)
+                    - (node.getBoundsInLocal().getWidth() / 2);
+            double y = (distanceFromTop + scrollPosition);
+            // XXX: Setting the x/y coordinates of text nodes repeatedly
+            // seems to cause performance issues, even with a fairly
+            // capable PC. To workaround that, we'll just draw the text
+            // and its stroke via GraphicsContext and reuse the
+            // information that we have from the text nodes.
+            gc.setFont(node.getFont());
+            gc.setFill(node.getFill());
+            gc.setStroke(node.getStroke());
+            gc.setLineWidth(node.getStrokeWidth() * 2);
+            gc.strokeText(node.getText(), x, y);
+            gc.fillText(node.getText(), x, y);
+            // Draw a line below headings.
+            if (node.getId() != null && node.getId().equals(PREFIX_HEADING)) {
+                gc.strokeLine(
+                        x, y + 10,
+                        x + node.getBoundsInLocal().getWidth(), y + 10);
+            }
             distanceFromTop += node.getBoundsInLocal().getHeight();
         }
 
@@ -120,7 +148,6 @@ public class CreditsScene implements GameScene {
         this.actions.update(now);
 
         backButton.update(now);
-        updateScrollingNodes();
     }
 
     @Override
@@ -128,6 +155,8 @@ public class CreditsScene implements GameScene {
         this.gc.clearRect(0, 0, Game.WINDOW_MAX_WIDTH,
                 Game.WINDOW_MAX_HEIGHT);
         this.levelMap.draw(gc);
+
+        drawScrollingNodes(gc);
 
         backButton.draw(gc);
     }
