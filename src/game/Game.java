@@ -1,6 +1,12 @@
 package game;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URISyntaxException;
+import java.nio.file.FileSystemNotFoundException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Random;
 
@@ -99,6 +105,26 @@ public final class Game {
             return Path.of(Game.class.getResource(
                     GAME_ASSETS_PATH + path).toURI());
         } catch (URISyntaxException e) {
+            return null;
+        } catch (FileSystemNotFoundException e) {
+            // Try to extract the asset from the JAR file and
+            // return the path to the extracted temporary file.
+            return Game.getAssetFromTemporaryPath(path);
+        }
+    }
+
+    private static Path getAssetFromTemporaryPath(String path) {
+        try {
+            InputStream in = Game.class.getResourceAsStream(
+                    GAME_ASSETS_PATH + path);
+            Path tempPath = Files.createTempFile("", "");
+            byte[] buffer = in.readAllBytes();
+            File tempFile = new File(tempPath.toString());
+            OutputStream out = new FileOutputStream(tempFile);
+            out.write(buffer);
+            out.close();
+            return tempPath;
+        } catch (Exception e) {
             return null;
         }
     }
