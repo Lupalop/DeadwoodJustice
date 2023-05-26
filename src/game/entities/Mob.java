@@ -149,7 +149,7 @@ public abstract class Mob extends LevelSprite {
                     this.movingStuck = true;
                 }
             // Stop marking as stuck if one side is now passable.
-            } else if (passability[0] || passability[1]) {
+            } else if (passability[0] && passability[1]) {
                 this.movingStuck = false;
             }
         }
