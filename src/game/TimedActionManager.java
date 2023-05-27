@@ -18,11 +18,12 @@ public class TimedActionManager {
         this.lastUpdateTime = 0;
     }
 
-    public synchronized void add(long interval, boolean autoReset,
+    public synchronized TimedAction add(long interval, boolean autoReset,
             Callable<Boolean> elapsed) {
         TimedAction action = new TimedAction(
                 interval, autoReset, elapsed, this);
         this.pendingAdds.add(action);
+        return action;
     }
 
     public synchronized void addAll(Collection<TimedAction> actions) {
