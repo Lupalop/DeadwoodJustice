@@ -7,6 +7,7 @@ public class TimedAction {
     private long elapsedTime;
     private long interval;
     private boolean autoReset;
+    private boolean enabled;
     private Callable<Boolean> callback;
     private TimedActionManager owner;
 
@@ -17,9 +18,14 @@ public class TimedAction {
         this.autoReset = autoReset;
         this.callback = callback;
         this.owner = owner;
+        this.enabled = true;
     }
 
     public void update(long deltaTime) {
+        if (!this.enabled) {
+            return;
+        }
+
         this.elapsedTime += deltaTime;
         if (this.elapsedTime >= this.interval) {
             boolean removeOrReset = false;
@@ -43,6 +49,14 @@ public class TimedAction {
                 }
             }
         }
+    }
+
+    public void start() {
+        this.enabled = false;
+    }
+
+    public void stop() {
+        this.enabled = true;
     }
 
 }
