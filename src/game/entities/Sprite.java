@@ -168,22 +168,33 @@ public abstract class Sprite implements Comparable<Sprite> {
         }
     }
 
-    public boolean intersects(Sprite rect2, boolean xIgnore, boolean yIgnore) {
-        Rectangle2D rectangle1 = this.getBounds();
-        Rectangle2D rectangle2 = rect2.getBounds();
+    private boolean intersects(Rectangle2D r1, Rectangle2D r2,
+            boolean xIgnore, boolean yIgnore) {
         if (xIgnore || yIgnore) {
-            rectangle2 = new Rectangle2D(
-                    xIgnore ? rectangle1.getMinX() : rectangle2.getMinX(),
-                    yIgnore ? rectangle1.getMinY() : rectangle2.getMinY(),
-                    rectangle2.getWidth(),
-                    rectangle2.getHeight());
+            r2 = new Rectangle2D(
+                    xIgnore ? r1.getMinX() : r2.getMinX(),
+                    yIgnore ? r1.getMinY() : r2.getMinY(),
+                    r2.getWidth(),
+                    r2.getHeight());
         }
 
-        return rectangle1.intersects(rectangle2);
+        return r1.intersects(r2);
     }
 
-    public boolean intersects(Sprite rect2) {
-        return intersects(rect2, false, false);
+    public boolean intersects(Sprite target,
+            boolean xIgnore, boolean yIgnore) {
+        return intersects(this.getBounds(), target.getBounds(),
+                xIgnore, yIgnore);
+    }
+
+    public boolean intersects(Sprite target) {
+        return intersects(target, false, false);
+    }
+
+    public boolean intersectsBase(Sprite target,
+            boolean xIgnore, boolean yIgnore) {
+        return intersects(this.getBaseBounds(), target.getBaseBounds(),
+                xIgnore, yIgnore);
     }
 
     private int intersectsSide(Rectangle2D r1, Rectangle2D r2) {
