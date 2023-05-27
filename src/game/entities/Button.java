@@ -64,7 +64,7 @@ public class Button extends Sprite {
                     isActive = false;
                     updateState(event.getSceneX(), event.getSceneY(), true);
                     if (isHover && clickAction != null) {
-                        clickAction.run();
+                        click();
                     }
                 }
             }
@@ -156,6 +156,10 @@ public class Button extends Sprite {
 
     public void setClickAction(Runnable clickAction) {
         this.clickAction = clickAction;
+    }
+
+    public void click() {
+        this.clickAction.run();
     }
 
 }
