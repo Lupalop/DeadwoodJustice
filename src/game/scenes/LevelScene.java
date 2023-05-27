@@ -5,6 +5,7 @@ import java.util.concurrent.TimeUnit;
 
 import game.Game;
 import game.LevelMap;
+import game.TimedAction;
 import game.TimedActionManager;
 import game.entities.Bullet;
 import game.entities.CactusMob;
@@ -64,8 +65,7 @@ public class LevelScene implements GameScene {
     private int mobKillCount;
     private int powerupsCount[];
 
-    private long levelTimeLeft;
-    private long levelStartTime;
+    private TimedAction levelTimer;
 
     private boolean maxSpeed;
     private boolean slowSpeed;
@@ -97,9 +97,6 @@ public class LevelScene implements GameScene {
         this.getOutlaw().handleKeyPressEvent(this);
         this.bossMob = null;
         this.statusHud = new StatusHUD(this);
-
-        this.levelTimeLeft = 0;
-        this.levelStartTime = System.nanoTime();
 
         this.mobKillCount = 0;
         this.powerupsCount = new int[Powerup.TOTAL_POWERUPS];
@@ -133,7 +130,7 @@ public class LevelScene implements GameScene {
 
     private void initializeActions() {
         // Action: mark level done if time's up.
-        actions.add(LEVEL_END_TIME, false, new Callable<Boolean>() {
+        this.levelTimer = actions.add(LEVEL_END_TIME, false, new Callable<Boolean>() {
             @Override
             public Boolean call() {
                 if (!Game.FLAG_DELAY_IF_BOSS_IS_ALIVE || (bossMob != null
@@ -204,8 +201,6 @@ public class LevelScene implements GameScene {
         }
         this.updateSprites(now);
         this.levelMap.update(now);
-        this.levelTimeLeft = TimeUnit.NANOSECONDS.toSeconds(
-                LEVEL_END_TIME - (now - this.levelStartTime));
     }
 
     @Override
@@ -396,7 +391,7 @@ public class LevelScene implements GameScene {
     }
 
     public long getLevelTimeLeft() {
-        return this.levelTimeLeft;
+        return (LevelScene.LEVEL_END_TIME - this.levelTimer.getElapsedTime());
     }
 
     public boolean isMaxSpeed() {

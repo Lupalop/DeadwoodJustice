@@ -265,13 +265,14 @@ public class StatusHUD extends Sprite {
 
     private String getLevelTimeLeftText() {
         String formatString = "%s:%s";
-        if (level.getLevelTimeLeft() < 0) {
+        if (level.getLevelTimeLeft() <= 0) {
             return String.format(formatString, "0", "00");
         }
         long levelTimeLeftMinutes =
-                TimeUnit.SECONDS.toMinutes(level.getLevelTimeLeft());
+                TimeUnit.NANOSECONDS.toMinutes(level.getLevelTimeLeft());
         long levelTimeLeftSeconds =
-                level.getLevelTimeLeft() - (60 * levelTimeLeftMinutes);
+                TimeUnit.NANOSECONDS.toSeconds(level.getLevelTimeLeft())
+                - (60 * levelTimeLeftMinutes);
 
         if (levelTimeLeftSeconds <= 9) {
             formatString = "%s:0%s";
