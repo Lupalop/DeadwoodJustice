@@ -204,14 +204,13 @@ public class StatusOverlay {
         return tileOffset += 2;
     }
 
-    private void drawGameEnd(GraphicsContext gc) {
-        int base = Tile.ALL_VERTICAL / 3;
+    private void drawMenuBackground(GraphicsContext gc, int base, int innerHeight) {
         for (int i = 0; i < (Game.WINDOW_MAX_WIDTH) / Tile.SIZE_MID; i++) {
             TILE.draw(gc, Tile.SIZE_MID * i,
                     Tile.SIZE_MID * base, TX_POP_START);
         }
 
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < innerHeight; i++) {
             base++;
             for (int j = 0; j < (Game.WINDOW_MAX_WIDTH) / Tile.SIZE_MID; j++) {
                 TILE.draw(gc, Tile.SIZE_MID * j,
@@ -224,6 +223,10 @@ public class StatusOverlay {
             TILE.draw(gc, Tile.SIZE_MID * i,
                     Tile.SIZE_MID * base, TX_POP_END);
         }
+    }
+
+    private void drawGameEnd(GraphicsContext gc) {
+        this.drawMenuBackground(gc, Tile.ALL_VERTICAL / 3, 5);
 
         Image gameEndCenterImage = null;
         if (!level.getOutlaw().isAlive()) {
@@ -259,23 +262,7 @@ public class StatusOverlay {
         gc.fillRect(0, 0, Game.WINDOW_MAX_WIDTH, Game.WINDOW_MAX_HEIGHT);
         gc.restore();
 
-        int base = Tile.ALL_VERTICAL - 4;
-        for (int i = 0; i < (Game.WINDOW_MAX_WIDTH) / Tile.SIZE_MID; i++) {
-            TILE.draw(gc, Tile.SIZE_MID * i,
-                    Tile.SIZE_MID * base, TX_POP_START);
-        }
-
-        base++;
-        for (int j = 0; j < (Game.WINDOW_MAX_WIDTH) / Tile.SIZE_MID; j++) {
-            TILE.draw(gc, Tile.SIZE_MID * j,
-                    Tile.SIZE_MID * base, TX_POP_MID);
-        }
-
-        base++;
-        for (int i = 0; i < (Game.WINDOW_MAX_WIDTH) / Tile.SIZE_MID; i++) {
-            TILE.draw(gc, Tile.SIZE_MID * i,
-                    Tile.SIZE_MID * base, TX_POP_END);
-        }
+        this.drawMenuBackground(gc, Tile.ALL_VERTICAL - 4, 1);
 
         gc.drawImage(
                 GAME_PAUSED,
