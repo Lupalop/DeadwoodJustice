@@ -25,8 +25,8 @@ public abstract class Mob extends LevelSprite {
 
     private static final long FRAME_DEATH_INTERVAL =
             TimeUnit.MILLISECONDS.toNanos(300);
-    private static final long MOB_SHOOT_INTERVAL =
-            TimeUnit.SECONDS.toNanos(1);
+    private static final int MOB_SHOOT_INTERVAL_MIN = 1;
+    private static final int MOB_SHOOT_INTERVAL_MAX = 3;
 
     private int health;
     private int damage;
@@ -73,7 +73,9 @@ public abstract class Mob extends LevelSprite {
 
         if (this.shooter) {
             // Shoot every n seconds.
-            this.getParent().getActions().add(MOB_SHOOT_INTERVAL, true, new Callable<Boolean>() {
+            long shootInterval = TimeUnit.SECONDS.toNanos(Game.RNG.nextInt(
+                    MOB_SHOOT_INTERVAL_MIN, MOB_SHOOT_INTERVAL_MAX + 1));
+            this.getParent().getActions().add(shootInterval, true, new Callable<Boolean>() {
                 @Override
                 public Boolean call() {
                     if (isAlive()) {
