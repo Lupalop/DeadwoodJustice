@@ -78,7 +78,7 @@ public abstract class Mob extends LevelSprite {
             this.getParent().getActions().add(shootInterval, true, new Callable<Boolean>() {
                 @Override
                 public Boolean call() {
-                    if (isAlive()) {
+                    if (isAlive() && !getParent().isZeroSpeed()) {
                         shoot();
                     }
                     return true;
