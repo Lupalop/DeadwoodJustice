@@ -1,7 +1,6 @@
 package game;
 
 import java.util.ArrayList;
-import java.util.Collection;
 
 import javafx.animation.AnimationTimer;
 
@@ -34,28 +33,8 @@ public final class GameTimer extends AnimationTimer {
         this.pendingAdds.add(action);
     }
 
-    void addAll(Collection<TimedAction> actions) {
-        this.pendingAdds.addAll(actions);
-    }
-
     void remove(TimedAction action) {
         this.pendingRemoves.add(action);
-    }
-
-    void removeAll(Collection<TimedAction> actions) {
-        this.pendingRemoves.addAll(actions);
-    }
-
-    void stopAll(Collection<TimedAction> actions) {
-        for (TimedAction action : actions) {
-            action.stop();
-        }
-    }
-
-    void startAll(Collection<TimedAction> actions) {
-        for (TimedAction action : actions) {
-            action.start();
-        }
     }
 
     void clear() {
