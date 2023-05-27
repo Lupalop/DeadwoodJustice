@@ -20,6 +20,9 @@ public class Button extends Sprite {
     private static final int BUTTON_HOVER_PARTS[] = {27, 28, 29};
     private static final int BUTTON_ACTIVE_PARTS[] = {24, 25, 26};
 
+    private static final int SELECTOR_STROKE_WIDTH = 5;
+    private static final int SELECTOR_STROKE_RADIUS = 12;
+
     private boolean isHover;
     private boolean isActive;
     private boolean isAttached;
@@ -111,6 +114,17 @@ public class Button extends Sprite {
         TILE.draw(gc, this.getX() + (Tile.SIZE_MID * (size + 1)), this.getY(), parts[2]);
     }
 
+    public void drawSelector(GraphicsContext gc) {
+        gc.setStroke(Game.COLOR_ACCENT);
+        gc.setLineWidth(SELECTOR_STROKE_WIDTH);
+        gc.strokeRoundRect(
+                this.getBounds().getMinX(),
+                this.getBounds().getMinY(),
+                this.getBounds().getWidth(),
+                this.getBounds().getHeight(),
+                SELECTOR_STROKE_RADIUS,
+                SELECTOR_STROKE_RADIUS);
+    }
 
     private void updateState(double x, double y, boolean hover) {
         boolean newState = getBounds().contains(x, y);
