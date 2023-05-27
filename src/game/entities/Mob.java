@@ -4,7 +4,6 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
 import game.Game;
-import game.TimedAction;
 import game.scenes.LevelScene;
 import javafx.scene.canvas.GraphicsContext;
 
@@ -67,7 +66,7 @@ public abstract class Mob extends LevelSprite {
 
         if (this.shooter) {
             // Shoot every n seconds.
-            new TimedAction(MOB_SHOOT_INTERVAL, true, new Callable<Boolean>() {
+            this.getParent().getActions().add(MOB_SHOOT_INTERVAL, true, new Callable<Boolean>() {
                 @Override
                 public Boolean call() {
                     if (isAlive()) {

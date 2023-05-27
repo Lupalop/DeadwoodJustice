@@ -4,7 +4,6 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
 import game.Game;
-import game.TimedAction;
 import game.scenes.LevelScene;
 import game.scenes.MainMenuScene;
 import javafx.scene.canvas.GraphicsContext;
@@ -71,7 +70,7 @@ public class StatusHUD extends Sprite {
         this.playButton = null;
         this.exitButton = null;
 
-        new TimedAction(UI_SLIDE_INTERVAL, false, new Callable<Boolean>() {
+        scene.getActions().add(UI_SLIDE_INTERVAL, false, new Callable<Boolean>() {
             @Override
             public Boolean call() {
                 if (hudOffsetY == 0) {

@@ -9,20 +9,16 @@ public class TimedAction {
     private boolean autoReset;
     private boolean enabled;
     private Callable<Boolean> callback;
+    private TimedActionManager owner;
 
     public TimedAction(long interval, boolean autoReset,
-            Callable<Boolean> callback, boolean enabled) {
+            Callable<Boolean> callback, TimedActionManager owner) {
         this.elapsedTime = 0;
         this.interval = interval;
         this.autoReset = autoReset;
         this.callback = callback;
-        this.enabled = enabled;
-        Game.getActionManager().add(this);
-    }
-
-    public TimedAction(long interval, boolean autoReset,
-            Callable<Boolean> callback) {
-        this(interval, autoReset, callback, true);
+        this.owner = owner;
+        this.enabled = true;
     }
 
     public void update(long deltaTime) {
@@ -49,7 +45,7 @@ public class TimedAction {
                 if (autoReset) {
                     this.elapsedTime = 0;
                 } else {
-                    Game.getActionManager().remove(this);
+                    owner.remove(this);
                 }
             }
         }
@@ -61,10 +57,6 @@ public class TimedAction {
 
     public void stop() {
         this.enabled = true;
-    }
-
-    public void close() {
-        Game.getActionManager().remove(this);
     }
 
 }

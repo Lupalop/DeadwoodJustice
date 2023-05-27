@@ -5,7 +5,7 @@ import java.util.concurrent.TimeUnit;
 
 import game.Game;
 import game.LevelMap;
-import game.TimedAction;
+import game.TimedActionManager;
 import game.entities.Bullet;
 import game.entities.CactusMob;
 import game.entities.CoffinMob;
@@ -55,6 +55,8 @@ public class LevelScene implements GameScene {
     private Canvas canvas;
     private GraphicsContext gc;
 
+    private TimedActionManager actions;
+
     private Outlaw outlaw;
     private Mob bossMob;
     private StatusHUD statusHud;
@@ -82,6 +84,7 @@ public class LevelScene implements GameScene {
         this.gc = canvas.getGraphicsContext2D();
         this.gc.setImageSmoothing(false);
 
+        this.actions = new TimedActionManager();
         this.initializeActions();
 
         this.outlaw = new Outlaw(
@@ -129,7 +132,7 @@ public class LevelScene implements GameScene {
 
     private void initializeActions() {
         // Action: mark level done if time's up.
-        new TimedAction(LEVEL_END_TIME, false, new Callable<Boolean>() {
+        actions.add(LEVEL_END_TIME, false, new Callable<Boolean>() {
             @Override
             public Boolean call() {
                 if (!Game.FLAG_DELAY_IF_BOSS_IS_ALIVE || (bossMob != null
@@ -141,7 +144,7 @@ public class LevelScene implements GameScene {
             }
         });
         // Action: spawn boss.
-        new TimedAction(LEVEL_BOSS_TIME, false, new Callable<Boolean>() {
+        actions.add(LEVEL_BOSS_TIME, false, new Callable<Boolean>() {
             @Override
             public Boolean call() {
                 if (bossMob == null) {
@@ -157,7 +160,7 @@ public class LevelScene implements GameScene {
             }
         });
         // Action: spawn mobs every 3 seconds.
-        new TimedAction(MOB_SPAWN_INTERVAL, true, new Callable<Boolean>() {
+        actions.add(MOB_SPAWN_INTERVAL, true, new Callable<Boolean>() {
             @Override
             public Boolean call() {
                 spawnMobs(MOB_COUNT_PER_INTERVAL);
@@ -165,13 +168,13 @@ public class LevelScene implements GameScene {
             }
         });
         // Speed up mob movement every 15 seconds.
-        new TimedAction(MOB_MAX_SPEED_INTERVAL, true, new Callable<Boolean>() {
+        actions.add(MOB_MAX_SPEED_INTERVAL, true, new Callable<Boolean>() {
             @Override
             public Boolean call() {
                 maxSpeed = true;
                 // Reset back to normal speed after 3 seconds if we've
                 // sped up mob movement.
-                new TimedAction(MOB_MAX_SPEED_END_INTERVAL, false, new Callable<Boolean>() {
+                actions.add(MOB_MAX_SPEED_END_INTERVAL, false, new Callable<Boolean>() {
                     @Override
                     public Boolean call() {
                         maxSpeed = false;
@@ -182,7 +185,7 @@ public class LevelScene implements GameScene {
             }
         });
         // Spawn power-ups every 10 seconds.
-        new TimedAction(POWERUP_SPAWN_INTERVAL, true, new Callable<Boolean>() {
+        actions.add(POWERUP_SPAWN_INTERVAL, true, new Callable<Boolean>() {
             @Override
             public Boolean call() {
                 spawnPowerups();
@@ -199,6 +202,7 @@ public class LevelScene implements GameScene {
         }
         this.updateSprites(now);
         this.levelMap.update(now);
+        this.actions.update(now);
         this.levelTimeLeft = TimeUnit.NANOSECONDS.toSeconds(
                 LEVEL_END_TIME - (now - this.levelStartTime));
     }
@@ -298,7 +302,7 @@ public class LevelScene implements GameScene {
 
     public void applySlowMobSpeed(long powerupTimeout) {
         this.slowSpeed = true;
-        new TimedAction(powerupTimeout, false, new Callable<Boolean>() {
+        actions.add(powerupTimeout, false, new Callable<Boolean>() {
             @Override
             public Boolean call() {
                 slowSpeed = false;
@@ -309,7 +313,7 @@ public class LevelScene implements GameScene {
 
     public void applyZeroMobSpeed(long powerupTimeout) {
         this.zeroSpeed = true;
-        new TimedAction(powerupTimeout, false, new Callable<Boolean>() {
+        actions.add(powerupTimeout, false, new Callable<Boolean>() {
             @Override
             public Boolean call() {
                 zeroSpeed = false;
@@ -338,6 +342,10 @@ public class LevelScene implements GameScene {
 
     public Outlaw getOutlaw() {
         return outlaw;
+    }
+
+    public TimedActionManager getActions() {
+        return this.actions;
     }
 
     public int getMobKillCount() {

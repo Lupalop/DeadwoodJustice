@@ -4,7 +4,6 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
 import game.Game;
-import game.TimedAction;
 import game.scenes.LevelScene;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
@@ -321,7 +320,7 @@ public class Outlaw extends LevelSprite {
     public void applyImmortality(long endTime) {
         this.immortalityEffect = new ImmortalityEffect(this);
         this.immortal = true;
-        new TimedAction(endTime, false, new Callable<Boolean>() {
+        this.getParent().getActions().add(endTime, false, new Callable<Boolean>() {
             @Override
             public Boolean call() {
                 immortalityEffect = null;

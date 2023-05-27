@@ -66,7 +66,6 @@ public final class Game {
     private static Stage primaryStage;
     private static GameScene gameScene;
     private static GameTimer gameTimer = new GameTimer();
-    private static TimedActionManager actionManager = new TimedActionManager();
     private static boolean initialized;
 
     public static void run(Stage primaryStage) {
@@ -92,14 +91,8 @@ public final class Game {
     }
 
     public static void setGameScene(GameScene gameScene) {
-        // Clean up timed actions when switching game scenes.
-        Game.getActionManager().clear();
         Game.gameScene = gameScene;
         Game.primaryStage.setScene(Game.gameScene.getInner());
-    }
-
-    static TimedActionManager getActionManager() {
-        return Game.actionManager;
     }
 
     public static String getAsset(String path) {

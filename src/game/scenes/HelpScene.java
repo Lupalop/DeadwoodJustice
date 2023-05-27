@@ -2,6 +2,7 @@ package game.scenes;
 
 import game.Game;
 import game.LevelMap;
+import game.TimedActionManager;
 import game.entities.Button;
 import game.entities.Prop;
 import game.entities.Sprite;
@@ -18,6 +19,7 @@ public class HelpScene implements GameScene {
     private Canvas canvas;
     private GraphicsContext gc;
 
+    private TimedActionManager actions;
     private LevelMap levelMap;
 
     public HelpScene() {
@@ -30,6 +32,7 @@ public class HelpScene implements GameScene {
         this.gc = canvas.getGraphicsContext2D();
         this.gc.setImageSmoothing(false);
 
+        this.actions = new TimedActionManager();
         this.addMenuControls();
 
         this.levelMap = new LevelMap();
@@ -62,6 +65,7 @@ public class HelpScene implements GameScene {
             sprite.update(now);
         }
         this.levelMap.update(now);
+        this.actions.update(now);
 
         backButton.update(now);
         helpImage.update(now);
@@ -85,6 +89,10 @@ public class HelpScene implements GameScene {
     @Override
     public Group getRoot() {
         return root;
+    }
+
+    public TimedActionManager getActions() {
+        return this.actions;
     }
 
     public LevelMap getLevelMap() {
