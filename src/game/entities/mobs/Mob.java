@@ -140,8 +140,8 @@ public abstract class Mob extends LevelSprite {
             if (!passability[sideX]) {
                 this.dx = 0;
             }
-            if (!passability[Sprite.SIDE_TOP] && this.dy >= 0
-                    || !passability[Sprite.SIDE_BOTTOM] && this.dy <= 0) {
+            if (!passability[Sprite.SIDE_TOP] && this.dy <= 0
+                    || !passability[Sprite.SIDE_BOTTOM] && this.dy >= 0) {
                 this.dy = 0;
             }
         } else {
