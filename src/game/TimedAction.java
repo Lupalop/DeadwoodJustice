@@ -56,11 +56,11 @@ public class TimedAction {
     }
 
     public void start() {
-        this.enabled = false;
+        this.enabled = true;
     }
 
     public void stop() {
-        this.enabled = true;
+        this.enabled = false;
     }
 
     public long getElapsedTime() {
