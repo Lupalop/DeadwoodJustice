@@ -17,7 +17,7 @@ public class TimedAction {
         this.autoReset = autoReset;
         this.callback = callback;
         this.enabled = enabled;
-        Game.getActionManager().add(this);
+        Game.getTimer().add(this);
     }
 
     public TimedAction(long interval, boolean autoReset,
@@ -49,7 +49,7 @@ public class TimedAction {
                 if (autoReset) {
                     this.elapsedTime = 0;
                 } else {
-                    Game.getActionManager().remove(this);
+                    Game.getTimer().remove(this);
                 }
             }
         }
@@ -64,7 +64,7 @@ public class TimedAction {
     }
 
     public void close() {
-        Game.getActionManager().remove(this);
+        Game.getTimer().remove(this);
     }
 
 }
