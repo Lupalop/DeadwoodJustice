@@ -60,7 +60,8 @@ public class CreditsScene implements GameScene {
     private double scrollPosition;
 
     private void addMenuControls() {
-        backButton = new Button(Tile.SIZE_MID, Tile.SIZE_MID, 0, this);
+        backButton = new Button(Tile.SIZE_MID, Tile.SIZE_MID, 0);
+        backButton.attach(this);
         backButton.setText(Button.TEXT_BACK);
         backButton.setClickAction(new Runnable() {
             @Override
@@ -176,6 +177,7 @@ public class CreditsScene implements GameScene {
         return root;
     }
 
+    @Override
     public TimedActionManager getActions() {
         return this.actions;
     }

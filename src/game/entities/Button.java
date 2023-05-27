@@ -22,14 +22,18 @@ public class Button extends Sprite {
 
     private boolean isHover;
     private boolean isActive;
+    private boolean isAttached;
     private int size;
 
     private Text text;
     private Runnable clickAction;
 
-    public Button(int x, int y, int size, GameScene scene) {
+    private EventHandler<MouseEvent> mouseMoveEventHandler;
+    private EventHandler<MouseEvent> mousePressedEventHandler;
+    private EventHandler<MouseEvent> mouseReleasedEventHandler;
+
+    public Button(int x, int y, int size) {
         super(x, y);
-        this.handleMouseEvent(scene.getInner());
         this.isHover = false;
         this.isActive = false;
         this.size = size;
@@ -38,9 +42,57 @@ public class Button extends Sprite {
         text = new Text();
         text.setFont(Game.FONT_ALT_48);
         text.setFill(Game.COLOR_ACCENT);
-        scene.getRoot().getChildren().add(text);
         updateTextX();
         updateTextY();
+
+        this.mouseMoveEventHandler = new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                updateState(event.getSceneX(), event.getSceneY(), true);
+            }
+        };
+        this.mousePressedEventHandler = new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                updateState(event.getSceneX(), event.getSceneY(), false);
+            }
+        };
+        this.mouseReleasedEventHandler = new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                if (isActive) {
+                    isActive = false;
+                    updateState(event.getSceneX(), event.getSceneY(), true);
+                    if (isHover && clickAction != null) {
+                        clickAction.run();
+                    }
+                }
+            }
+        };
+    }
+
+    public void attach(GameScene scene) {
+        if (this.isAttached) {
+            return;
+        }
+        scene.getRoot().getChildren().add(text);
+        Scene innerScene = scene.getInner();
+        innerScene.addEventHandler(MouseEvent.MOUSE_MOVED, this.mouseMoveEventHandler);
+        innerScene.addEventHandler(MouseEvent.MOUSE_PRESSED, this.mousePressedEventHandler);
+        innerScene.addEventHandler(MouseEvent.MOUSE_RELEASED, this.mouseReleasedEventHandler);
+        this.isAttached = true;
+    }
+
+    public void detach(GameScene scene) {
+        if (!this.isAttached) {
+            return;
+        }
+        scene.getRoot().getChildren().remove(text);
+        Scene innerScene = scene.getInner();
+        innerScene.removeEventHandler(MouseEvent.MOUSE_MOVED, this.mouseMoveEventHandler);
+        innerScene.removeEventHandler(MouseEvent.MOUSE_PRESSED, this.mousePressedEventHandler);
+        innerScene.removeEventHandler(MouseEvent.MOUSE_RELEASED, this.mouseReleasedEventHandler);
+        this.isAttached = false;
     }
 
     @Override
@@ -67,34 +119,6 @@ public class Button extends Sprite {
         } else {
             this.isActive = newState;
         }
-    }
-
-    private void handleMouseEvent(Scene scene) {
-        scene.addEventHandler(MouseEvent.MOUSE_MOVED, new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                updateState(event.getSceneX(), event.getSceneY(), true);
-            }
-        });
-
-        scene.addEventHandler(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                updateState(event.getSceneX(), event.getSceneY(), false);
-            }
-        });
-        scene.addEventHandler(MouseEvent.MOUSE_RELEASED, new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                if (isActive) {
-                    isActive = false;
-                    updateState(event.getSceneX(), event.getSceneY(), true);
-                    if (isHover && clickAction != null) {
-                        clickAction.run();
-                    }
-                }
-            }
-        });
     }
 
     @Override

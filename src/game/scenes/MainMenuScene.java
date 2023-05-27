@@ -112,7 +112,8 @@ public class MainMenuScene implements GameScene {
         titleProp.setX((int) ((Game.WINDOW_MAX_WIDTH / 2) - (titleProp.getWidth() / 2)));
         titleProp.setY((int) ((Game.WINDOW_MAX_HEIGHT / 2) - (titleProp.getHeight() / 2)) - (Tile.SIZE_MID));
 
-        previousButton = new Button(Tile.SIZE_MID * 4, MENU_Y, 0, this);
+        previousButton = new Button(Tile.SIZE_MID * 4, MENU_Y, 0);
+        previousButton.attach(this);
         previousButton.setText(Button.TEXT_BACK);
         previousButton.setClickAction(new Runnable() {
             @Override
@@ -121,10 +122,12 @@ public class MainMenuScene implements GameScene {
             }
         });
 
-        actionButton = new Button(Tile.SIZE_MID * 7, MENU_Y, 9, this);
+        actionButton = new Button(Tile.SIZE_MID * 7, MENU_Y, 9);
+        actionButton.attach(this);
         updateButton(true);
 
-        nextButton = new Button(Game.WINDOW_MAX_WIDTH - (Tile.SIZE_MID * 6), MENU_Y, 0, this);
+        nextButton = new Button(Game.WINDOW_MAX_WIDTH - (Tile.SIZE_MID * 6), MENU_Y, 0);
+        nextButton.attach(this);
         nextButton.setText(Button.TEXT_FORWARD);
         nextButton.setClickAction(new Runnable() {
             @Override
@@ -236,6 +239,7 @@ public class MainMenuScene implements GameScene {
         return root;
     }
 
+    @Override
     public TimedActionManager getActions() {
         return this.actions;
     }

@@ -240,7 +240,8 @@ public class StatusOverlay {
     }
 
     private void addGameEndButtons() {
-        playButton = new Button(0, 0, 2, level);
+        playButton = new Button(0, 0, 2);
+        playButton.attach(level);
         playButton.setText("PLAY");
         playButton.setX((int) ((Game.WINDOW_MAX_WIDTH / 5) - playButton.getBounds().getWidth() / 2));
         playButton.setY((Game.WINDOW_MAX_HEIGHT / 2) + 50);
@@ -251,7 +252,8 @@ public class StatusOverlay {
             }
         });
 
-        exitButton = new Button(0, 0, 2, level);
+        exitButton = new Button(0, 0, 2);
+        exitButton.attach(level);
         exitButton.setText("EXIT");
         exitButton.setX((int) ((Game.WINDOW_MAX_WIDTH) - (Game.WINDOW_MAX_WIDTH / 5) - exitButton.getBounds().getWidth() / 2));
         exitButton.setY((Game.WINDOW_MAX_HEIGHT / 2) + 50);
