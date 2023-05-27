@@ -30,7 +30,7 @@ public class CowboyMob extends Mob {
     private static final int MOB_SCALE = 3;
 
     public CowboyMob(int x, int y, LevelScene parent) {
-        super(x, y, 3000, 50, true, parent);
+        super(x, y, 3000, 50, parent);
 
         this.setDeadOnPlayerImpact(false);
         this.setFrameSet(FRAMESET_W, FRAMESET_ROWS, FRAMESET_COLUMNS);
@@ -48,6 +48,11 @@ public class CowboyMob extends Mob {
         if (Game.FLAG_SMARTER_MOBS) {
             this.setChasingPlayer(true);
         }
+    }
+
+    @Override
+    protected boolean guessShooterAbility() {
+        return true;
     }
 
 }

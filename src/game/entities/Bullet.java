@@ -117,30 +117,33 @@ public class Bullet extends LevelSprite {
             return;
         }
 
+        // Props can consume bullets if either mobs don't ignore prop collision
+        // or if we're in a higher difficulty.
+        boolean propsConsumeBullets = (!Game.FLAG_IGNORE_PROP_COLLISION
+                || getParent().getDifficulty() >= LevelScene.DIFFICULTY_MEDIUM);
         boolean bulletCaught = false;
         Outlaw outlaw = this.getParent().getOutlaw();
-        if (this.fromOutlaw) {
-            for (Sprite sprite : this.getParent().getLevelMap().getSprites()) {
-                if (sprite instanceof Mob) {
-                    Mob mob = (Mob) sprite;
-                    if (mob.isAlive() && this.intersects(sprite)) {
-                        mob.reduceHealth(outlaw.getStrength());
-                        bulletCaught = true;
-                        break;
-                    }
-                } else if (sprite instanceof Prop
-                        && !Game.FLAG_IGNORE_PROP_COLLISION) {
-                    if (this.intersects(sprite)) {
-                        bulletCaught = true;
-                        break;
-                    }
+
+        for (Sprite sprite : this.getParent().getLevelMap().getSprites()) {
+            if (this.fromOutlaw && sprite instanceof Mob) {
+                Mob mob = (Mob) sprite;
+                if (mob.isAlive() && this.intersects(sprite)) {
+                    mob.reduceHealth(outlaw.getStrength());
+                    bulletCaught = true;
+                    break;
                 }
             }
-        } else {
-            if (outlaw.intersects(this)) {
-                outlaw.reduceStrength(this.mobSource.getDamage());
-                bulletCaught = true;
+            if (sprite instanceof Prop && propsConsumeBullets) {
+                if (this.intersects(sprite)) {
+                    bulletCaught = true;
+                    break;
+                }
             }
+        }
+
+        if (!bulletCaught && !this.fromOutlaw && outlaw.intersects(this)) {
+            outlaw.reduceStrength(this.mobSource.getDamage());
+            bulletCaught = true;
         }
 
         if (bulletCaught) {

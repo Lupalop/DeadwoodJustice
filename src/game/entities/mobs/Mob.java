@@ -47,7 +47,7 @@ public abstract class Mob extends LevelSprite {
 
     private Effect deathEffect;
 
-    public Mob(int x, int y, int health, int damage, boolean isShooter, LevelScene parent) {
+    public Mob(int x, int y, int health, int damage, LevelScene parent) {
         super(x, y, parent);
 
         this.health = health;
@@ -66,7 +66,7 @@ public abstract class Mob extends LevelSprite {
         this.playerInMobBounds = false;
         this.movingStuck = false;
         this.movingRight = Game.RNG.nextBoolean();
-        this.shooter = isShooter;
+        this.shooter = this.guessShooterAbility();
 
         this.passability = new boolean[4];
         this.frameRanges = null;
@@ -223,8 +223,12 @@ public abstract class Mob extends LevelSprite {
         this.addX((int) this.getBounds().getWidth() / 2 * multiplier);
     }
 
-    protected static boolean guessShooterAbility() {
-        return Game.FLAG_MOBS_CAN_SHOOT && Game.RNG.nextBoolean();
+    protected boolean guessShooterAbility() {
+        // On higher difficulty or if the mobs can shoot flag is enabled,
+        // their ability to shoot is decided by the RNG.
+        boolean shootCondition = (Game.FLAG_MOBS_CAN_SHOOT
+                || getParent().getDifficulty() >= LevelScene.DIFFICULTY_MEDIUM);
+        return (shootCondition && Game.RNG.nextBoolean());
     }
 
     protected void chasePlayer(Outlaw outlaw) {

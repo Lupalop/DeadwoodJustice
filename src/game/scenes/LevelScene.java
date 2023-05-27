@@ -30,8 +30,12 @@ import javafx.scene.input.KeyEvent;
 
 public class LevelScene implements GameScene {
 
-    public static final int MOB_COUNT_AT_SPAWN = 7;
-    public static final int MOB_COUNT_PER_INTERVAL = 3;
+    public static final int DIFFICULTY_EASY = 0;
+    public static final int DIFFICULTY_MEDIUM = 1;
+    public static final int DIFFICULTY_HARD = 2;
+
+    private static final int MOB_COUNT_AT_START = 7;
+    private static final int MOB_COUNT_PER_INTERVAL = 3;
 
     private static final long MOB_SPAWN_INTERVAL =
             TimeUnit.SECONDS.toNanos(5);
@@ -61,6 +65,11 @@ public class LevelScene implements GameScene {
     private Mob bossMob;
     private StatusOverlay statusOverlay;
 
+    private int difficulty;
+    private int mobCountAtStart;
+    private int mobCountPerInterval;
+    private long levelEndTime;
+
     private int mobKillCount;
     private int powerupsCount[];
 
@@ -74,7 +83,31 @@ public class LevelScene implements GameScene {
 
     private LevelMap levelMap;
 
-    public LevelScene() {
+    public LevelScene(int difficulty) {
+        this.difficulty = difficulty;
+        int speedFromDifficulty;
+        switch (this.difficulty) {
+        default:
+        case DIFFICULTY_EASY:
+            this.levelEndTime = LEVEL_END_TIME;
+            this.mobCountAtStart = MOB_COUNT_AT_START;
+            this.mobCountPerInterval = MOB_COUNT_PER_INTERVAL;
+            speedFromDifficulty = Outlaw.OUTLAW_SPEED;
+            break;
+        case DIFFICULTY_MEDIUM:
+            this.levelEndTime = LEVEL_END_TIME * 2;
+            this.mobCountAtStart = MOB_COUNT_AT_START * 2;
+            this.mobCountPerInterval = MOB_COUNT_PER_INTERVAL * 2;
+            speedFromDifficulty = (int) (Outlaw.OUTLAW_SPEED / 1.5);
+            break;
+        case DIFFICULTY_HARD:
+            this.levelEndTime = LEVEL_END_TIME * 3;
+            this.mobCountAtStart = MOB_COUNT_AT_START * 4;
+            this.mobCountPerInterval = MOB_COUNT_PER_INTERVAL * 3;
+            speedFromDifficulty = (int) (Outlaw.OUTLAW_SPEED / 1.5);
+            break;
+        }
+
         this.root = new Group();
         this.scene = new Scene(root, Game.WINDOW_MAX_WIDTH,
                 Game.WINDOW_MAX_HEIGHT, Game.COLOR_MAIN);
@@ -88,8 +121,8 @@ public class LevelScene implements GameScene {
         this.initializeActions();
 
         this.outlaw = new Outlaw(
-                "Going merry",
-                OUTLAW_INITIAL_X, 0, this);
+                "Going merry", OUTLAW_INITIAL_X, 0,
+                speedFromDifficulty, this);
         this.getOutlaw().setY(Game.RNG.nextInt(
                 (int) getOutlaw().getBounds().getHeight(),
                 Game.WINDOW_MAX_HEIGHT - (int) getOutlaw().getBounds().getHeight()));
@@ -123,13 +156,13 @@ public class LevelScene implements GameScene {
             });
         }
 
-        this.spawnMobs(MOB_COUNT_AT_SPAWN);
+        this.spawnMobs(this.mobCountAtStart);
         this.addPauseHandler();
     }
 
     private void initializeActions() {
         // Action: mark level done if time's up.
-        this.levelTimer = actions.add(LEVEL_END_TIME, false, new Callable<Boolean>() {
+        this.levelTimer = actions.add(this.levelEndTime, false, new Callable<Boolean>() {
             @Override
             public Boolean call() {
                 if (!Game.FLAG_DELAY_IF_BOSS_IS_ALIVE || (bossMob != null
@@ -160,7 +193,7 @@ public class LevelScene implements GameScene {
         actions.add(MOB_SPAWN_INTERVAL, true, new Callable<Boolean>() {
             @Override
             public Boolean call() {
-                spawnMobs(MOB_COUNT_PER_INTERVAL);
+                spawnMobs(mobCountPerInterval);
                 return true;
             }
         });
@@ -380,6 +413,10 @@ public class LevelScene implements GameScene {
         return this.actions;
     }
 
+    public int getDifficulty() {
+        return this.difficulty;
+    }
+
     public int getMobKillCount() {
         return this.mobKillCount;
     }
@@ -393,7 +430,7 @@ public class LevelScene implements GameScene {
     }
 
     public long getLevelTimeLeft() {
-        return (LevelScene.LEVEL_END_TIME - this.levelTimer.getElapsedTime());
+        return (this.levelEndTime - this.levelTimer.getElapsedTime());
     }
 
     public boolean isMaxSpeed() {

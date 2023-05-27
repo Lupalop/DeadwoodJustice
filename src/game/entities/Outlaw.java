@@ -37,6 +37,7 @@ public class Outlaw extends LevelSprite {
 
     private String name;
     private int strength;
+    private int speed;
 
     private boolean alive;
     private boolean dying;
@@ -48,7 +49,7 @@ public class Outlaw extends LevelSprite {
     private Effect powerupEffect;
     private Effect immortalityEffect;
 
-    public Outlaw(String name, int x, int y, LevelScene parent) {
+    public Outlaw(String name, int x, int y, int speed, LevelScene parent) {
         super(x, y, parent);
 
         this.setFrameSet(FRAMESET_W, FRAMESET_ROWS, FRAMESET_COLUMNS);
@@ -59,6 +60,7 @@ public class Outlaw extends LevelSprite {
         this.strength = Game.DEBUG_MODE
                 ? 1
                 : Game.RNG.nextInt(151) + 100;
+        this.speed = speed;
 
         this.alive = true;
         this.dying = false;
@@ -97,20 +99,20 @@ public class Outlaw extends LevelSprite {
 
         if (this.getBounds().getMinX() + dx >= 0 &&
                 Game.isDirectionActive(this.activeDirections, Game.DIR_LEFT)) {
-            this.dx = -OUTLAW_SPEED;
+            this.dx = -this.speed;
         } else if (this.getBounds().getMinX() + this.dx <= Game.WINDOW_MAX_WIDTH - this.getBounds().getWidth()
                 && Game.isDirectionActive(this.activeDirections, Game.DIR_RIGHT)) {
-            this.dx = OUTLAW_SPEED;
+            this.dx = this.speed;
         } else {
             this.dx = 0;
         }
 
         if (this.getBounds().getMinY() + dy >= 0 &&
                 Game.isDirectionActive(this.activeDirections, Game.DIR_UP)) {
-            this.dy = -OUTLAW_SPEED;
+            this.dy = -this.speed;
         } else if (this.getBounds().getMinY() + dy <= Game.WINDOW_MAX_HEIGHT - this.getBounds().getHeight()
                 && Game.isDirectionActive(this.activeDirections, Game.DIR_DOWN)) {
-            this.dy = OUTLAW_SPEED;
+            this.dy = this.speed;
         } else {
             this.dy = 0;
         }

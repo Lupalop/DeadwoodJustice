@@ -60,8 +60,9 @@ public class MainMenuScene implements GameScene {
 
     private int menuIndex = -1;
     private String[] menuLabels = {
-            "NEW GAME",
-            //"DIFFICULTY: EASY",
+            "P: BABY MODE",
+            "P: HURT ME PLENTY",
+            "P: NIGHTMARE",
             //"HIGH SCORES",
             "HELP",
             "CREDITS",
@@ -71,7 +72,22 @@ public class MainMenuScene implements GameScene {
             new Runnable() {
                 @Override
                 public void run() {
-                    Game.setGameScene(new LevelScene());
+                    Game.setGameScene(new LevelScene(
+                            LevelScene.DIFFICULTY_EASY));
+                }
+            },
+            new Runnable() {
+                @Override
+                public void run() {
+                    Game.setGameScene(new LevelScene(
+                            LevelScene.DIFFICULTY_MEDIUM));
+                }
+            },
+            new Runnable() {
+                @Override
+                public void run() {
+                    Game.setGameScene(new LevelScene(
+                            LevelScene.DIFFICULTY_HARD));
                 }
             },
             /*new Runnable() {

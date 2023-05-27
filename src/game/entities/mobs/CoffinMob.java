@@ -28,7 +28,7 @@ public class CoffinMob extends Mob {
             };
 
     public CoffinMob(int x, int y, LevelScene parent) {
-        super(x, y, 1, -1, guessShooterAbility(), parent);
+        super(x, y, 1, -1, parent);
 
         this.setFrameSet(FRAMESET_W, FRAMESET_ROWS, FRAMESET_COLUMNS);
         this.setBoundsOffset(FRAMESET_OFFSET);
