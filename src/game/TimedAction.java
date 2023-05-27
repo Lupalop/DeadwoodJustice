@@ -63,4 +63,8 @@ public class TimedAction {
         this.enabled = true;
     }
 
+    public long getElapsedTime() {
+        return this.elapsedTime;
+    }
+
 }
