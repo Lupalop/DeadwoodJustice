@@ -110,6 +110,10 @@ public class StatusOverlay {
         gc.setFont(Game.FONT_32);
         gc.setFill(Game.COLOR_MAIN);
 
+        if (isGameEndVisible || isPausedVisible) {
+            this.drawShade(gc);
+        }
+
         drawHUD(gc);
         if (isGameEndVisible) {
             drawGameEnd(gc);
@@ -204,6 +208,14 @@ public class StatusOverlay {
         return tileOffset += 2;
     }
 
+    private void drawShade(GraphicsContext gc) {
+        gc.save();
+        gc.setGlobalAlpha(0.5);
+        gc.setFill(Game.COLOR_ACCENT);
+        gc.fillRect(0, 0, Game.WINDOW_MAX_WIDTH, Game.WINDOW_MAX_HEIGHT);
+        gc.restore();
+    }
+
     private void drawMenuBackground(GraphicsContext gc, int base, int innerHeight) {
         for (int i = 0; i < (Game.WINDOW_MAX_WIDTH) / Tile.SIZE_MID; i++) {
             TILE.draw(gc, Tile.SIZE_MID * i,
@@ -256,12 +268,6 @@ public class StatusOverlay {
     }
 
     private void drawPaused(GraphicsContext gc) {
-        gc.save();
-        gc.setGlobalAlpha(0.5);
-        gc.setFill(Game.COLOR_ACCENT);
-        gc.fillRect(0, 0, Game.WINDOW_MAX_WIDTH, Game.WINDOW_MAX_HEIGHT);
-        gc.restore();
-
         this.drawMenuBackground(gc, Tile.ALL_VERTICAL - 4, 1);
 
         gc.drawImage(
