@@ -69,6 +69,7 @@ public class LevelScene implements GameScene {
     private int mobCountAtStart;
     private int mobCountPerInterval;
     private long levelEndTime;
+    private long powerupSpawnInterval;
 
     private int mobKillCount;
     private int powerupsCount[];
@@ -91,16 +92,19 @@ public class LevelScene implements GameScene {
             this.levelEndTime = LEVEL_END_TIME;
             this.mobCountAtStart = MOB_COUNT_AT_START;
             this.mobCountPerInterval = MOB_COUNT_PER_INTERVAL;
+            this.powerupSpawnInterval = POWERUP_SPAWN_INTERVAL;
             break;
         case DIFFICULTY_MEDIUM:
             this.levelEndTime = LEVEL_END_TIME * 2;
             this.mobCountAtStart = MOB_COUNT_AT_START * 2;
             this.mobCountPerInterval = MOB_COUNT_PER_INTERVAL * 2;
+            this.powerupSpawnInterval = (long) (POWERUP_SPAWN_INTERVAL / 1.5);
             break;
         case DIFFICULTY_HARD:
             this.levelEndTime = LEVEL_END_TIME * 3;
             this.mobCountAtStart = MOB_COUNT_AT_START * 4;
             this.mobCountPerInterval = MOB_COUNT_PER_INTERVAL * 3;
+            this.powerupSpawnInterval = POWERUP_SPAWN_INTERVAL / 2;
             break;
         }
 
@@ -210,7 +214,7 @@ public class LevelScene implements GameScene {
             }
         });
         // Spawn power-ups every 10 seconds.
-        actions.add(POWERUP_SPAWN_INTERVAL, true, new Callable<Boolean>() {
+        actions.add(this.powerupSpawnInterval, true, new Callable<Boolean>() {
             @Override
             public Boolean call() {
                 spawnPowerups();
