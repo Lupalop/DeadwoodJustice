@@ -9,33 +9,21 @@ public class TimedAction {
     private boolean autoReset;
     private boolean enabled;
     private Callable<Boolean> callback;
-    private Runnable tick;
     private TimedActionManager owner;
 
     public TimedAction(long interval, boolean autoReset,
-            Callable<Boolean> callback, Runnable tick,
-            TimedActionManager owner) {
+            Callable<Boolean> callback, TimedActionManager owner) {
         this.elapsedTime = 0;
         this.interval = interval;
         this.autoReset = autoReset;
         this.callback = callback;
-        this.tick = tick;
         this.owner = owner;
         this.enabled = true;
-    }
-
-    public TimedAction(long interval, boolean autoReset,
-            Callable<Boolean> callback, TimedActionManager owner) {
-        this(interval, autoReset, callback, null, owner);
     }
 
     public void update(long deltaTime) {
         if (!this.enabled) {
             return;
-        }
-
-        if (tick != null) {
-            this.tick.run();
         }
 
         this.elapsedTime += deltaTime;
