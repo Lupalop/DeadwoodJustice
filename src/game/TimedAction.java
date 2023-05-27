@@ -44,7 +44,11 @@ public class TimedAction {
             try {
                 // The callback return value determines if we should
                 // remove or reset this timer.
-                removeOrReset = callback.call();
+                if (callback != null) {
+                    removeOrReset = callback.call();
+                } else {
+                    removeOrReset = true;
+                }
             } catch (Exception e) {
                 if (Game.DEBUG_MODE) {
                     e.printStackTrace();
