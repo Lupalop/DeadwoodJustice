@@ -1,6 +1,7 @@
 package game;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.concurrent.Callable;
 
 public class TimedActionManager {
@@ -24,8 +25,40 @@ public class TimedActionManager {
         this.pendingAdds.add(action);
     }
 
+    public synchronized void addAll(Collection<TimedAction> actions) {
+        this.pendingAdds.addAll(actions);
+    }
+
     public synchronized void remove(TimedAction action) {
         this.pendingRemoves.add(action);
+    }
+
+    public synchronized void removeAll(Collection<TimedAction> actions) {
+        this.pendingRemoves.addAll(actions);
+    }
+
+    public synchronized void removeAll() {
+        this.removeAll(this.actions);
+    }
+
+    public synchronized void stopAll(Collection<TimedAction> actions) {
+        for (TimedAction action : actions) {
+            action.stop();
+        }
+    }
+
+    public synchronized void stopAll() {
+        this.stopAll(this.actions);
+    }
+
+    public synchronized void startAll(Collection<TimedAction> actions) {
+        for (TimedAction action : actions) {
+            action.start();
+        }
+    }
+
+    public synchronized void startAll() {
+        this.startAll(this.actions);
     }
 
     public synchronized void update(long now) {
