@@ -102,7 +102,7 @@ public class LevelScene implements GameScene {
             break;
         case DIFFICULTY_HARD:
             this.levelEndTime = LEVEL_END_TIME * 3;
-            this.mobCountAtStart = MOB_COUNT_AT_START * 4;
+            this.mobCountAtStart = MOB_COUNT_AT_START * 3;
             this.mobCountPerInterval = MOB_COUNT_PER_INTERVAL * 3;
             this.powerupSpawnInterval = POWERUP_SPAWN_INTERVAL / 2;
             break;
