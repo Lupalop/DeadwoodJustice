@@ -23,6 +23,8 @@ public class Bullet extends LevelSprite {
     private static final int OFFSET_SW = -20;
     private static final int OFFSET_W = -35;
 
+    private static final int OUTLAW_OFFSET_Y = -10;
+
     private boolean isDirectional;
     private boolean fromOutlaw;
     private Mob mobSource;
@@ -53,6 +55,10 @@ public class Bullet extends LevelSprite {
         this.isDirectional = isDirectional;
         this.mobSource = null;
         this.fromOutlaw = fromOutlaw;
+
+        if (this.fromOutlaw) {
+            this.addY(OUTLAW_OFFSET_Y);
+        }
 
         this.computeDestination(activeDirections);
     }
