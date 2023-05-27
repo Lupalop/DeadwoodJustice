@@ -4,7 +4,6 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
 import game.entities.LevelSprite;
-import game.entities.Sprite;
 import game.scenes.LevelScene;
 import javafx.scene.canvas.GraphicsContext;
 
@@ -59,11 +58,6 @@ public abstract class Powerup extends LevelSprite {
 
     public boolean getConsumed() {
         return this.consumed;
-    }
-
-    @Override
-    public int compareTo(Sprite o) {
-        return Integer.MAX_VALUE;
     }
 
 }

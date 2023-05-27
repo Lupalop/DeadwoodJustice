@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import game.entities.Mote;
 import game.entities.Outlaw;
 import game.entities.Prop;
 import game.entities.Sprite;
@@ -32,6 +33,8 @@ public class LevelMap {
     private int[] tileLayer2;
 
     private ArrayList<Sprite> sprites;
+    private ArrayList<Sprite> spritesLayer1;
+    private ArrayList<Sprite> spritesLayer2;
     private ArrayList<Sprite> pendingSpriteAdds;
     private ArrayList<Sprite> pendingSpriteRemoves;
     private ArrayList<Sprite> generatedProps;
@@ -44,6 +47,8 @@ public class LevelMap {
         this.propsGenerated = false;
 
         this.sprites = new ArrayList<Sprite>();
+        this.spritesLayer1 = new ArrayList<Sprite>();
+        this.spritesLayer2 = new ArrayList<Sprite>();
         this.pendingSpriteAdds = new ArrayList<Sprite>();
         this.pendingSpriteRemoves = new ArrayList<Sprite>();
         this.generatedProps = new ArrayList<Sprite>();
@@ -122,6 +127,7 @@ public class LevelMap {
         this.generatedProps.add(house);
 
         this.pendingSpriteAdds.addAll(generatedProps);
+        this.spritesLayer1.addAll(generatedProps);
         this.propsGenerated = true;
     }
 
@@ -135,7 +141,11 @@ public class LevelMap {
     }
 
     private void drawSprites(GraphicsContext gc) {
-        for (Sprite sprite : this.sprites) {
+        for (Sprite sprite : this.spritesLayer1) {
+            sprite.draw(gc);
+        }
+
+        for (Sprite sprite : this.spritesLayer2) {
             sprite.draw(gc);
         }
     }
@@ -169,7 +179,7 @@ public class LevelMap {
 
     public void update(long now) {
         if (Game.FLAG_FIX_DRAW_ORDER) {
-            Collections.sort(this.sprites);
+            Collections.sort(this.spritesLayer1);
         }
 
         if (this.pendingSpriteAdds.size() > 0) {
@@ -179,6 +189,8 @@ public class LevelMap {
 
         if (this.pendingSpriteRemoves.size() > 0) {
             this.sprites.removeAll(this.pendingSpriteRemoves);
+            this.spritesLayer1.removeAll(this.pendingSpriteRemoves);
+            this.spritesLayer2.removeAll(this.pendingSpriteRemoves);
             this.pendingSpriteRemoves.clear();
         }
     }
@@ -232,6 +244,13 @@ public class LevelMap {
     }
 
     public void addSpriteOnUpdate(Sprite sprite) {
+        if (sprite instanceof Powerup) {
+            this.spritesLayer2.add(0, sprite);
+        } else if (sprite instanceof Mote) {
+            this.spritesLayer2.add(sprite);
+        } else {
+            this.spritesLayer1.add(sprite);
+        }
         this.pendingSpriteAdds.add(sprite);
     }
 

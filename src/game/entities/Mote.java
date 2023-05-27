@@ -114,9 +114,4 @@ public class Mote extends LevelSprite {
         });
     }
 
-    @Override
-    public int compareTo(Sprite o) {
-        return Integer.MAX_VALUE;
-    }
-
 }
