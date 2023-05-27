@@ -4,24 +4,24 @@ import java.util.concurrent.Callable;
 
 public class TimedAction {
 
-    private long startTime;
-    private long endTime;
+    private long elapsedTime;
+    private long interval;
     private boolean autoReset;
     private Callable<Boolean> callback;
     private TimedActionManager owner;
 
-    public TimedAction(long startTime, long endTime, boolean autoReset,
+    public TimedAction(long interval, boolean autoReset,
             Callable<Boolean> callback, TimedActionManager owner) {
-        this.startTime = startTime;
-        this.endTime = endTime;
+        this.elapsedTime = 0;
+        this.interval = interval;
         this.autoReset = autoReset;
         this.callback = callback;
         this.owner = owner;
     }
 
-    public void update(long now) {
-        long deltaTime = (now - this.startTime);
-        if (deltaTime >= this.endTime) {
+    public void update(long deltaTime) {
+        this.elapsedTime += deltaTime;
+        if (this.elapsedTime >= this.interval) {
             boolean removeOrReset = false;
             try {
                 // The callback return value determines if we should
@@ -37,7 +37,7 @@ public class TimedAction {
 
             if (removeOrReset) {
                 if (autoReset) {
-                    this.startTime = now;
+                    this.elapsedTime = 0;
                 } else {
                     owner.remove(this);
                 }

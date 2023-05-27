@@ -8,22 +8,20 @@ public class TimedActionManager {
     private ArrayList<TimedAction> actions;
     private ArrayList<TimedAction> pendingAdds;
     private ArrayList<TimedAction> pendingRemoves;
+    private long lastUpdateTime;
 
     public TimedActionManager() {
         this.actions = new ArrayList<TimedAction>();
         this.pendingAdds = new ArrayList<TimedAction>();
         this.pendingRemoves = new ArrayList<TimedAction>();
+        this.lastUpdateTime = 0;
     }
 
-    public synchronized void add(long startTime, long endTime,
-            boolean autoReset, Callable<Boolean> callback) {
-        TimedAction action = new TimedAction(startTime, endTime, autoReset, callback, this);
-        this.pendingAdds.add(action);
-    }
-
-    public synchronized void add(long endTime, boolean autoReset,
+    public synchronized void add(long interval, boolean autoReset,
             Callable<Boolean> callback) {
-        this.add(System.nanoTime(), endTime, autoReset, callback);
+        TimedAction action = new TimedAction(
+                interval, autoReset, callback, this);
+        this.pendingAdds.add(action);
     }
 
     public synchronized void remove(TimedAction action) {
@@ -31,9 +29,11 @@ public class TimedActionManager {
     }
 
     public synchronized void update(long now) {
+        long deltaTime = (now - this.lastUpdateTime);
         for (TimedAction action : this.actions) {
-            action.update(now);
+            action.update(deltaTime);
         }
+        this.lastUpdateTime = now;
 
         if (this.pendingAdds.size() > 0) {
             this.actions.addAll(this.pendingAdds);
