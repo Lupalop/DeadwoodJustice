@@ -368,6 +368,7 @@ public class StatusOverlay {
         if (this.selectorEventHandler != null) {
             return;
         }
+        this.selectedButton = null;
         this.selectorEventHandler = new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent event) {
@@ -382,7 +383,11 @@ public class StatusOverlay {
                     break;
                 case ENTER:
                 case SPACE:
-                    selectedButton.click();
+                    if (selectedButton == null) {
+                        selectedButton = leftButton;
+                    } else {
+                        selectedButton.click();
+                    }
                     break;
                 default:
                     break;
@@ -391,7 +396,6 @@ public class StatusOverlay {
         };
         level.getInner().addEventHandler(KeyEvent.KEY_PRESSED,
                 this.selectorEventHandler);
-        this.selectedButton = leftButton;
     }
 
     private void detachButtonSelector(Button a, Button b) {
