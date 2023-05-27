@@ -79,6 +79,7 @@ public class HelpScene implements GameScene {
         this.levelMap.draw(gc);
 
         backButton.draw(gc);
+        backButton.drawSelector(gc);
         helpImage.draw(gc);
     }
 

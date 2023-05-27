@@ -186,6 +186,7 @@ public class MainMenuScene implements GameScene {
         this.titleProp.draw(gc);
         previousButton.draw(gc);
         actionButton.draw(gc);
+        actionButton.drawSelector(gc);
         nextButton.draw(gc);
     }
 
