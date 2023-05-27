@@ -126,8 +126,6 @@ public class LevelScene implements GameScene {
         }
 
         this.spawnMobs(MOB_COUNT_AT_SPAWN);
-
-        MainMenuScene.handleReturnKeyPressEvent(this);
     }
 
     private void initializeActions() {
@@ -344,6 +342,7 @@ public class LevelScene implements GameScene {
         return outlaw;
     }
 
+    @Override
     public TimedActionManager getActions() {
         return this.actions;
     }
@@ -381,6 +380,10 @@ public class LevelScene implements GameScene {
     }
 
     public void markLevelDone() {
+        if (this.levelDone) {
+            return;
+        }
+        MainMenuScene.handleReturnKeyPressEvent(this);
         this.levelDone = true;
     }
 
