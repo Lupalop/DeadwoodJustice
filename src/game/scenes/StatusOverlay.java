@@ -18,6 +18,8 @@ public class StatusOverlay {
     private static final Tile TILE =
             new Tile("tilemap_ui.png", 4, 8);
 
+    private static final Image GAME_PAUSED =
+            new Image(Game.getAsset("ui_paused.png"));
     private static final Image GAME_END_BAD =
             new Image(Game.getAsset("ui_game_end_bad.png"));
     private static final Image GAME_END_GOOD =
@@ -34,6 +36,7 @@ public class StatusOverlay {
     private static final int HUD_BASE_POS_TIME = 8;
     private static final int HUD_POWERUP_POS = 12;
 
+    private static final int HUD_OFFSET_Y = -Tile.SIZE_MID;
     private static final int HUD_TEXT_OFFSET_Y = (Tile.SIZE_MID / 2) + 3;
     private static final int HUD_MAX_NUM = 9999;
 
@@ -60,18 +63,25 @@ public class StatusOverlay {
             TimeUnit.MILLISECONDS.toNanos(100);
 
     private LevelScene level;
+
+    private boolean isPausedVisible;
     private boolean isGameEndVisible;
-    private int hudOffsetY;
     private Button playButton;
     private Button exitButton;
+    private Button resumeButton;
+
+    private int hudOffsetY;
 
     public StatusOverlay(LevelScene scene) {
         this.level = scene;
+
+        this.isPausedVisible = false;
         this.isGameEndVisible = false;
-        this.hudOffsetY = -32;
         this.playButton = null;
         this.exitButton = null;
+        this.resumeButton = null;
 
+        this.hudOffsetY = HUD_OFFSET_Y;
         scene.getActions().add(UI_SLIDE_INTERVAL, false, new Callable<Boolean>() {
             @Override
             public Boolean call() {
@@ -82,15 +92,16 @@ public class StatusOverlay {
                 return false;
             }
         });
+
+        initializeButtons();
     }
 
     public void update(long now) {
         if (this.isGameEndVisible) {
             exitButton.update(now);
             playButton.update(now);
-        } else if (level.isLevelDone()) {
-            this.isGameEndVisible = true;
-            this.addGameEndButtons();
+        } else if (this.isPausedVisible) {
+            resumeButton.update(now);
         }
     }
 
@@ -102,6 +113,8 @@ public class StatusOverlay {
         drawHUD(gc);
         if (isGameEndVisible) {
             drawGameEnd(gc);
+        } else if (isPausedVisible) {
+            drawPaused(gc);
         }
 
         gc.restore();
@@ -239,30 +252,106 @@ public class StatusOverlay {
         exitButton.draw(gc);
     }
 
-    private void addGameEndButtons() {
-        playButton = new Button(0, 0, 2);
-        playButton.attach(level);
+    private void drawPaused(GraphicsContext gc) {
+        gc.save();
+        gc.setGlobalAlpha(0.5);
+        gc.setFill(Game.COLOR_ACCENT);
+        gc.fillRect(0, 0, Game.WINDOW_MAX_WIDTH, Game.WINDOW_MAX_HEIGHT);
+        gc.restore();
+
+        int base = Tile.ALL_VERTICAL - 4;
+        for (int i = 0; i < (Game.WINDOW_MAX_WIDTH) / Tile.SIZE_MID; i++) {
+            TILE.draw(gc, Tile.SIZE_MID * i,
+                    Tile.SIZE_MID * base, TX_POP_START);
+        }
+
+        base++;
+        for (int j = 0; j < (Game.WINDOW_MAX_WIDTH) / Tile.SIZE_MID; j++) {
+            TILE.draw(gc, Tile.SIZE_MID * j,
+                    Tile.SIZE_MID * base, TX_POP_MID);
+        }
+
+        base++;
+        for (int i = 0; i < (Game.WINDOW_MAX_WIDTH) / Tile.SIZE_MID; i++) {
+            TILE.draw(gc, Tile.SIZE_MID * i,
+                    Tile.SIZE_MID * base, TX_POP_END);
+        }
+
+        gc.drawImage(
+                GAME_PAUSED,
+                Tile.SIZE_MID,
+                Game.WINDOW_MAX_HEIGHT
+                - GAME_PAUSED.getHeight()
+                - (Tile.SIZE_MID * 2));
+
+        resumeButton.draw(gc);
+        exitButton.draw(gc);
+    }
+
+    private void initializeButtons() {
+        playButton = new Button(0, 0, 3);
         playButton.setText("PLAY");
-        playButton.setX((int) ((Game.WINDOW_MAX_WIDTH / 5) - playButton.getBounds().getWidth() / 2));
-        playButton.setY((Game.WINDOW_MAX_HEIGHT / 2) + 50);
         playButton.setClickAction(new Runnable() {
             @Override
             public void run() {
                 Game.setGameScene(new LevelScene());
             }
         });
-
-        exitButton = new Button(0, 0, 2);
-        exitButton.attach(level);
+        exitButton = new Button(0, 0, 3);
         exitButton.setText("EXIT");
-        exitButton.setX((int) ((Game.WINDOW_MAX_WIDTH) - (Game.WINDOW_MAX_WIDTH / 5) - exitButton.getBounds().getWidth() / 2));
-        exitButton.setY((Game.WINDOW_MAX_HEIGHT / 2) + 50);
         exitButton.setClickAction(new Runnable() {
             @Override
             public void run() {
                 Game.setGameScene(new MainMenuScene());
             }
         });
+        resumeButton = new Button(0, 0, 3);
+        resumeButton.setText("RESUME");
+        resumeButton.setClickAction(new Runnable() {
+            @Override
+            public void run() {
+                level.togglePaused();
+            }
+        });
+    }
+
+    public void toggleGameEndVisibility() {
+        this.isGameEndVisible = !this.isGameEndVisible;
+        if (this.isGameEndVisible) {
+            exitButton.setX((int) ((Game.WINDOW_MAX_WIDTH)
+                    - (Game.WINDOW_MAX_WIDTH / 5)
+                    - exitButton.getBounds().getWidth() / 2));
+            exitButton.setY((Game.WINDOW_MAX_HEIGHT / 2) + 50);
+            exitButton.attach(level);
+
+            playButton.setX((int) ((Game.WINDOW_MAX_WIDTH / 5)
+                    - playButton.getBounds().getWidth() / 2));
+            playButton.setY((Game.WINDOW_MAX_HEIGHT / 2) + 50);
+            playButton.attach(level);
+        } else {
+            exitButton.detach(level);
+            playButton.detach(level);
+        }
+    }
+
+    public void togglePausedVisibility() {
+        this.isPausedVisible = !this.isPausedVisible;
+        if (this.isPausedVisible) {
+            exitButton.setX((int) (Game.WINDOW_MAX_WIDTH
+                    - (exitButton.getBounds().getWidth())
+                    - (Tile.SIZE_MID * 2)));
+            exitButton.setY(Game.WINDOW_MAX_HEIGHT - (Tile.SIZE_MID * 3) + 8);
+            exitButton.attach(level);
+
+            resumeButton.setX((int) (Game.WINDOW_MAX_WIDTH
+                    - (playButton.getBounds().getWidth())
+                    - (Tile.SIZE_MID * 8)));
+            resumeButton.setY(Game.WINDOW_MAX_HEIGHT - (Tile.SIZE_MID * 3) + 8);
+            resumeButton.attach(level);
+        } else {
+            exitButton.detach(level);
+            resumeButton.detach(level);
+        }
     }
 
     private String getLevelTimeLeftText() {

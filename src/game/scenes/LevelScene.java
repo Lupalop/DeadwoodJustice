@@ -325,6 +325,16 @@ public class LevelScene implements GameScene {
         this.powerupsCount[id]++;
     }
 
+    public void togglePaused() {
+        if (!levelPaused) {
+            getActions().stopAll();
+        } else {
+            getActions().startAll();
+        }
+        statusOverlay.togglePausedVisibility();
+        levelPaused = !levelPaused;
+    }
+
     private final EventHandler<KeyEvent> pauseEventHandler =
             new EventHandler<KeyEvent>() {
                 @Override
@@ -333,14 +343,7 @@ public class LevelScene implements GameScene {
                     switch (code) {
                     case BACK_SPACE:
                     case ESCAPE:
-                        if (!levelPaused) {
-                            getActions().stopAll();
-                            System.out.println("stop");
-                        } else {
-                            getActions().startAll();
-                            System.out.println("start");
-                        }
-                        levelPaused = !levelPaused;
+                        togglePaused();
                         break;
                     default:
                         break;
@@ -420,6 +423,7 @@ public class LevelScene implements GameScene {
         this.getActions().removeAll();
         this.removePauseHandler();
         MainMenuScene.handleReturnKeyPressEvent(this);
+        statusOverlay.toggleGameEndVisibility();
         this.levelDone = true;
     }
 
