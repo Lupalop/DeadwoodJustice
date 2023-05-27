@@ -203,7 +203,7 @@ public class MainMenuScene implements GameScene {
                     break;
                 case ENTER:
                 case SPACE:
-                    menuActions[menuIndex].run();
+                    actionButton.click();
                     break;
                 default:
                     break;
