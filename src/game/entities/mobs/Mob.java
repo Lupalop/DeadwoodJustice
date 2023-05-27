@@ -231,7 +231,7 @@ public abstract class Mob extends LevelSprite {
             return;
         }
 
-        if (outlaw.intersects(this, true, false) || this.getParent().isZeroSpeed()) {
+        if (outlaw.intersectsBase(this, true, false) || this.getParent().isZeroSpeed()) {
             this.dy = 0;
         } else if (outlaw.getBounds().getMinY() > this.getBounds().getMinY()) {
             this.dy = this.speed;
