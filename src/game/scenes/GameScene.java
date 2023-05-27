@@ -1,6 +1,5 @@
 package game.scenes;
 
-import game.TimedActionManager;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 
@@ -11,6 +10,5 @@ public interface GameScene {
 
     public Scene getInner();
     public Group getRoot();
-    public TimedActionManager getActions();
 
 }

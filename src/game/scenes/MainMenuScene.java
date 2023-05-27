@@ -5,7 +5,7 @@ import java.util.concurrent.TimeUnit;
 
 import game.Game;
 import game.LevelMap;
-import game.TimedActionManager;
+import game.TimedAction;
 import game.entities.Button;
 import game.entities.Prop;
 import game.entities.Sprite;
@@ -30,7 +30,6 @@ public class MainMenuScene implements GameScene {
     private Canvas canvas;
     private GraphicsContext gc;
 
-    private TimedActionManager actions;
     private LevelMap levelMap;
 
     public MainMenuScene() {
@@ -43,7 +42,6 @@ public class MainMenuScene implements GameScene {
         this.gc = canvas.getGraphicsContext2D();
         this.gc.setImageSmoothing(false);
 
-        this.actions = new TimedActionManager();
         this.addMenuControls();
 
         this.levelMap = new LevelMap();
@@ -133,7 +131,7 @@ public class MainMenuScene implements GameScene {
             }
         });
 
-        this.actions.add(MENU_BG_INTERVAL, true, new Callable<Boolean>() {
+        new TimedAction(MENU_BG_INTERVAL, true, new Callable<Boolean>() {
             @Override
             public Boolean call() {
                 levelMap.generate(true);
@@ -166,8 +164,6 @@ public class MainMenuScene implements GameScene {
             sprite.update(now);
         }
         this.levelMap.update(now);
-        this.actions.update(now);
-
         this.titleProp.update(now);
         previousButton.update(now);
         actionButton.update(now);
@@ -234,10 +230,6 @@ public class MainMenuScene implements GameScene {
     @Override
     public Group getRoot() {
         return root;
-    }
-
-    public TimedActionManager getActions() {
-        return this.actions;
     }
 
     public LevelMap getLevelMap() {

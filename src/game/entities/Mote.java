@@ -4,6 +4,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
 import game.Game;
+import game.TimedAction;
 import game.scenes.LevelScene;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
@@ -90,7 +91,7 @@ public class Mote extends LevelSprite {
     }
 
     private void show() {
-        getParent().getActions().add(MOTE_POPUP_INTERVAL, false, new Callable<Boolean>() {
+        new TimedAction(MOTE_POPUP_INTERVAL, false, new Callable<Boolean>() {
             @Override
             public Boolean call() {
                 if (offsetY == OFFSET_Y_END) {
@@ -105,7 +106,7 @@ public class Mote extends LevelSprite {
     }
 
     private void kill() {
-        getParent().getActions().add(MOTE_DEATH_INTERVAL, false, new Callable<Boolean>() {
+        new TimedAction(MOTE_DEATH_INTERVAL, false, new Callable<Boolean>() {
             @Override
             public Boolean call() {
                 getParent().getLevelMap().removeSpriteOnUpdate(Mote.this);

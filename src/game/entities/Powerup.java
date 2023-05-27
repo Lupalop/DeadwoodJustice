@@ -3,6 +3,7 @@ package game.entities;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
+import game.TimedAction;
 import game.scenes.LevelScene;
 import javafx.scene.canvas.GraphicsContext;
 
@@ -18,7 +19,7 @@ public abstract class Powerup extends LevelSprite {
     public Powerup(int x, int y, LevelScene parent) {
         super(x, y, parent);
 
-        parent.getActions().add(POWERUP_TIMEOUT, false, new Callable<Boolean>() {
+        new TimedAction(POWERUP_TIMEOUT, false, new Callable<Boolean>() {
             @Override
             public Boolean call() {
                 consumed = true;

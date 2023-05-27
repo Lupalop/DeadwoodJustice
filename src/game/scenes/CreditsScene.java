@@ -7,7 +7,6 @@ import java.util.List;
 
 import game.Game;
 import game.LevelMap;
-import game.TimedActionManager;
 import game.entities.Button;
 import game.entities.Sprite;
 import game.entities.Tile;
@@ -31,7 +30,6 @@ public class CreditsScene implements GameScene {
     private Canvas canvas;
     private GraphicsContext gc;
 
-    private TimedActionManager actions;
     private LevelMap levelMap;
 
     public CreditsScene() {
@@ -44,7 +42,6 @@ public class CreditsScene implements GameScene {
         this.gc = canvas.getGraphicsContext2D();
         this.gc.setImageSmoothing(false);
 
-        this.actions = new TimedActionManager();
         this.addMenuControls();
 
         this.levelMap = new LevelMap();
@@ -150,7 +147,6 @@ public class CreditsScene implements GameScene {
             sprite.update(now);
         }
         this.levelMap.update(now);
-        this.actions.update(now);
 
         backButton.update(now);
     }
@@ -174,10 +170,6 @@ public class CreditsScene implements GameScene {
     @Override
     public Group getRoot() {
         return root;
-    }
-
-    public TimedActionManager getActions() {
-        return this.actions;
     }
 
     public LevelMap getLevelMap() {

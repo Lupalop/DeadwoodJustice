@@ -10,6 +10,10 @@ public final class GameTimer extends AnimationTimer {
             return;
         }
 
+        if (Game.getActionManager() != null) {
+            Game.getActionManager().update(now);
+        }
+
         Game.getGameScene().update(now);
         Game.getGameScene().draw(now);
     }
