@@ -191,7 +191,7 @@ public class Outlaw extends LevelSprite {
         scene.addEventHandler(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent e) {
-                if (level.isLevelDone()) {
+                if (level.isLevelDone() || level.isLevelPaused()) {
                     return;
                 }
                 KeyCode code = e.getCode();

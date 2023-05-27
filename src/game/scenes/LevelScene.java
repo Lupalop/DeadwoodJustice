@@ -71,6 +71,7 @@ public class LevelScene implements GameScene {
     private boolean slowSpeed;
     private boolean zeroSpeed;
     private boolean levelDone;
+    private boolean levelPaused;
 
     private LevelMap levelMap;
 
@@ -107,6 +108,7 @@ public class LevelScene implements GameScene {
         this.slowSpeed = false;
         this.zeroSpeed = false;
         this.levelDone = false;
+        this.levelPaused = false;
 
         this.levelMap = new LevelMap();
         this.levelMap.generate();
@@ -126,6 +128,7 @@ public class LevelScene implements GameScene {
         }
 
         this.spawnMobs(MOB_COUNT_AT_SPAWN);
+        this.addPauseHandler();
     }
 
     private void initializeActions() {
@@ -194,13 +197,13 @@ public class LevelScene implements GameScene {
 
     @Override
     public void update(long now) {
+        this.actions.update(now);
         this.statusHud.update(now);
-        if (this.levelDone) {
+        if (this.levelDone || this.levelPaused) {
             return;
         }
         this.updateSprites(now);
         this.levelMap.update(now);
-        this.actions.update(now);
         this.levelTimeLeft = TimeUnit.NANOSECONDS.toSeconds(
                 LEVEL_END_TIME - (now - this.levelStartTime));
     }
@@ -328,6 +331,39 @@ public class LevelScene implements GameScene {
         this.powerupsCount[id]++;
     }
 
+    private final EventHandler<KeyEvent> pauseEventHandler =
+            new EventHandler<KeyEvent>() {
+                @Override
+                public void handle(KeyEvent e) {
+                    KeyCode code = e.getCode();
+                    switch (code) {
+                    case BACK_SPACE:
+                    case ESCAPE:
+                        if (!levelPaused) {
+                            getActions().stopAll();
+                            System.out.println("stop");
+                        } else {
+                            getActions().startAll();
+                            System.out.println("start");
+                        }
+                        levelPaused = !levelPaused;
+                        break;
+                    default:
+                        break;
+                    }
+                }
+            };
+
+    private void addPauseHandler() {
+        getInner().addEventHandler(
+                KeyEvent.KEY_RELEASED, this.pauseEventHandler);
+    }
+
+    private void removePauseHandler() {
+        getInner().removeEventHandler(
+                KeyEvent.KEY_RELEASED, this.pauseEventHandler);
+    }
+
     @Override
     public Scene getInner() {
         return this.scene;
@@ -379,10 +415,16 @@ public class LevelScene implements GameScene {
         return this.levelDone;
     }
 
+    public boolean isLevelPaused() {
+        return this.levelPaused;
+    }
+
     public void markLevelDone() {
         if (this.levelDone) {
             return;
         }
+        this.getActions().removeAll();
+        this.removePauseHandler();
         MainMenuScene.handleReturnKeyPressEvent(this);
         this.levelDone = true;
     }
