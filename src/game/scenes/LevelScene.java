@@ -85,26 +85,22 @@ public class LevelScene implements GameScene {
 
     public LevelScene(int difficulty) {
         this.difficulty = difficulty;
-        int speedFromDifficulty;
         switch (this.difficulty) {
         default:
         case DIFFICULTY_EASY:
             this.levelEndTime = LEVEL_END_TIME;
             this.mobCountAtStart = MOB_COUNT_AT_START;
             this.mobCountPerInterval = MOB_COUNT_PER_INTERVAL;
-            speedFromDifficulty = Outlaw.OUTLAW_SPEED;
             break;
         case DIFFICULTY_MEDIUM:
             this.levelEndTime = LEVEL_END_TIME * 2;
             this.mobCountAtStart = MOB_COUNT_AT_START * 2;
             this.mobCountPerInterval = MOB_COUNT_PER_INTERVAL * 2;
-            speedFromDifficulty = (int) (Outlaw.OUTLAW_SPEED / 1.5);
             break;
         case DIFFICULTY_HARD:
             this.levelEndTime = LEVEL_END_TIME * 3;
             this.mobCountAtStart = MOB_COUNT_AT_START * 4;
             this.mobCountPerInterval = MOB_COUNT_PER_INTERVAL * 3;
-            speedFromDifficulty = (int) (Outlaw.OUTLAW_SPEED / 1.5);
             break;
         }
 
@@ -121,8 +117,7 @@ public class LevelScene implements GameScene {
         this.initializeActions();
 
         this.outlaw = new Outlaw(
-                "Going merry", OUTLAW_INITIAL_X, 0,
-                speedFromDifficulty, this);
+                "Going merry", OUTLAW_INITIAL_X, 0, this);
         this.getOutlaw().setY(Game.RNG.nextInt(
                 (int) getOutlaw().getBounds().getHeight(),
                 Game.WINDOW_MAX_HEIGHT - (int) getOutlaw().getBounds().getHeight()));
