@@ -1,6 +1,5 @@
 package game.entities;
 
-import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
 import game.Game;
@@ -320,20 +319,6 @@ public class Outlaw extends LevelSprite {
         }
     }
 
-    public void applyImmortality(long endTime) {
-        this.immortalityEffect = new ImmortalityEffect(this);
-        this.immortal = true;
-        this.getParent().getActions().add(endTime, false, new Callable<Boolean>() {
-            @Override
-            public Boolean call() {
-                immortalityEffect = null;
-                immortal = false;
-                return true;
-            }
-        });
-    }
-
-    // TODO: move to effects manager
     public void spawnPowerupEffect() {
         this.powerupEffect = new SmokeEffect(this);
     }
@@ -356,6 +341,16 @@ public class Outlaw extends LevelSprite {
 
     public boolean isImmortal() {
         return this.immortal;
+    }
+
+    public void setImmortal(boolean immortal) {
+        if (immortal) {
+            this.immortalityEffect = new ImmortalityEffect(this);
+            this.immortal = true;
+        } else {
+            this.immortalityEffect = null;
+            this.immortal = false;
+        }
     }
 
 }

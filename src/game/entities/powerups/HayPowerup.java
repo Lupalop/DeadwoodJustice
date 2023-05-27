@@ -18,7 +18,7 @@ public class HayPowerup extends Powerup {
 
     @Override
     public void applyPowerup() {
-        this.getParent().getOutlaw().applyImmortality(POWERUP_TIMEOUT);
+        this.getParent().applyImmortality(POWERUP_TIMEOUT);
         this.getParent().consumePowerup(ID);
     }
 

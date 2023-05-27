@@ -73,6 +73,7 @@ public class LevelScene implements GameScene {
 
     private int mobKillCount;
     private int powerupsCount[];
+    private TimedAction[] powerupsAction;
 
     private TimedAction levelTimer;
 
@@ -131,6 +132,7 @@ public class LevelScene implements GameScene {
 
         this.mobKillCount = 0;
         this.powerupsCount = new int[Powerup.TOTAL_POWERUPS];
+        this.powerupsAction = new TimedAction[Powerup.TOTAL_POWERUPS];
 
         this.maxSpeed = false;
         this.slowSpeed = false;
@@ -327,26 +329,48 @@ public class LevelScene implements GameScene {
         this.levelMap.addSpriteOnUpdate(powerup);
     }
 
+    private void replacePowerupAction(int id, TimedAction action) {
+        TimedAction previousAction = this.powerupsAction[id];
+        if (previousAction != null) {
+            previousAction.close();
+        }
+        this.powerupsAction[id] = action;
+    }
+
+    public void applyImmortality(long powerupTimeout) {
+        replacePowerupAction(HayPowerup.ID,
+                actions.add(powerupTimeout, false, new Callable<Boolean>() {
+                    @Override
+                    public Boolean call() {
+                        getOutlaw().setImmortal(false);
+                        return true;
+                    }
+                }));
+        getOutlaw().setImmortal(true);
+    }
+
     public void applySlowMobSpeed(long powerupTimeout) {
+        replacePowerupAction(WheelPowerup.ID,
+                actions.add(powerupTimeout, false, new Callable<Boolean>() {
+                    @Override
+                    public Boolean call() {
+                        slowSpeed = false;
+                        return true;
+                    }
+                }));
         this.slowSpeed = true;
-        actions.add(powerupTimeout, false, new Callable<Boolean>() {
-            @Override
-            public Boolean call() {
-                slowSpeed = false;
-                return true;
-            }
-        });
     }
 
     public void applyZeroMobSpeed(long powerupTimeout) {
+        replacePowerupAction(SnakeOilPowerup.ID,
+                actions.add(powerupTimeout, false, new Callable<Boolean>() {
+                    @Override
+                    public Boolean call() {
+                        zeroSpeed = false;
+                        return true;
+                    }
+                }));
         this.zeroSpeed = true;
-        actions.add(powerupTimeout, false, new Callable<Boolean>() {
-            @Override
-            public Boolean call() {
-                zeroSpeed = false;
-                return true;
-            }
-        });
     }
 
     public void consumePowerup(int id) {
