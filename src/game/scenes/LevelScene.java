@@ -175,10 +175,11 @@ public class LevelScene implements GameScene {
             }
         });
         // Action: spawn boss.
-        actions.add(LEVEL_BOSS_TIME, false, new Callable<Boolean>() {
+        boolean spawnBossMultiple = (this.difficulty == DIFFICULTY_HARD);
+        actions.add(LEVEL_BOSS_TIME, spawnBossMultiple, new Callable<Boolean>() {
             @Override
             public Boolean call() {
-                if (bossMob == null) {
+                if (bossMob == null || !bossMob.isAlive()) {
                     bossMob = new CowboyMob(
                             Game.WINDOW_MAX_WIDTH,
                             Game.WINDOW_MAX_HEIGHT / 2,
