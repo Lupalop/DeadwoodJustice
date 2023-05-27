@@ -185,10 +185,14 @@ public class LevelMap {
 
     public boolean[] getPassability(Sprite source) {
         boolean passability[] = new boolean[4];
-        passability[0] = source.getBounds().getMinX() >= Game.WINDOW_MIN_WIDTH;
-        passability[1] = source.getBounds().getMaxX() <= Game.WINDOW_MAX_WIDTH;
-        passability[2] = source.getBounds().getMinY() >= Game.WINDOW_MIN_HEIGHT;
-        passability[3] = source.getBounds().getMaxY() <= Game.WINDOW_MAX_HEIGHT;
+        passability[Sprite.SIDE_LEFT] =
+                source.getBounds().getMinX() >= Game.WINDOW_MIN_WIDTH;
+        passability[Sprite.SIDE_RIGHT] =
+                source.getBounds().getMaxX() <= Game.WINDOW_MAX_WIDTH;
+        passability[Sprite.SIDE_TOP] =
+                source.getBounds().getMinY() >= Game.WINDOW_MIN_HEIGHT;
+        passability[Sprite.SIDE_BOTTOM] =
+                source.getBounds().getMaxY() <= Game.WINDOW_MAX_HEIGHT;
 
         for (Sprite sprite : this.sprites) {
             if (!Game.FLAG_MOBS_CHECK_PASSABILITY
@@ -201,14 +205,18 @@ public class LevelMap {
             }
 
             int side = source.baseIntersectsSide(sprite.getBaseBounds());
-            if (passability[0] && side == 0) {
-                passability[0] = false;
-            } else if (passability[1] && side == 1) {
-                passability[1] = false;
-            } else if (passability[2] && side == 2) {
-                passability[2] = false;
-            } else if (passability[3] && side == 3) {
-                passability[3] = false;
+            if (passability[Sprite.SIDE_LEFT]
+                    && side == Sprite.SIDE_LEFT) {
+                passability[Sprite.SIDE_LEFT] = false;
+            } else if (passability[Sprite.SIDE_RIGHT]
+                    && side == Sprite.SIDE_RIGHT) {
+                passability[Sprite.SIDE_RIGHT] = false;
+            } else if (passability[Sprite.SIDE_TOP]
+                    && side == Sprite.SIDE_TOP) {
+                passability[Sprite.SIDE_TOP] = false;
+            } else if (passability[Sprite.SIDE_BOTTOM]
+                    && side == Sprite.SIDE_BOTTOM) {
+                passability[Sprite.SIDE_BOTTOM] = false;
             }
         }
 

@@ -8,6 +8,7 @@ import game.entities.Bullet;
 import game.entities.LevelSprite;
 import game.entities.Mote;
 import game.entities.Outlaw;
+import game.entities.Sprite;
 import game.entities.effects.Effect;
 import game.entities.effects.ExplosionEffect;
 import game.scenes.LevelScene;
@@ -133,10 +134,14 @@ public abstract class Mob extends LevelSprite {
         }
 
         if (this.chasingPlayer) {
-            if (!passability[this.movingRight ? 1 : 0]) {
+            int sideX = this.movingRight
+                    ? Sprite.SIDE_RIGHT
+                    : Sprite.SIDE_LEFT;
+            if (!passability[sideX]) {
                 this.dx = 0;
             }
-            if (!passability[2] && this.dy >= 0 || !passability[3] && this.dy <= 0) {
+            if (!passability[Sprite.SIDE_TOP] && this.dy >= 0
+                    || !passability[Sprite.SIDE_BOTTOM] && this.dy <= 0) {
                 this.dy = 0;
             }
         } else {
@@ -146,7 +151,7 @@ public abstract class Mob extends LevelSprite {
             }
             // Check for passability if we're not stuck.
             if (!this.movingStuck) {
-                if (!passability[0] && !passability[1]) {
+                if (!passability[Sprite.SIDE_LEFT] && !passability[Sprite.SIDE_RIGHT]) {
                     this.dx = 0;
                     this.movingStuck = true;
                 } else if (!passability[this.movingRight ? 1 : 0]) {
@@ -155,7 +160,7 @@ public abstract class Mob extends LevelSprite {
                     this.movingStuck = true;
                 }
             // Stop marking as stuck if one side is now passable.
-            } else if (passability[0] && passability[1]) {
+            } else if (passability[Sprite.SIDE_LEFT] && passability[Sprite.SIDE_RIGHT]) {
                 this.movingStuck = false;
             }
         }

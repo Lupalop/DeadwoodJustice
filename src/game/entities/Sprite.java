@@ -11,6 +11,12 @@ public abstract class Sprite implements Comparable<Sprite> {
 
     public static final int DEFAULT_SCALE = 2;
 
+    public static final int SIDE_LEFT = 0;
+    public static final int SIDE_RIGHT = 1;
+    public static final int SIDE_TOP = 2;
+    public static final int SIDE_BOTTOM = 3;
+    public static final int SIDE_INVALID = -1;
+
     protected int dx, dy;
     protected boolean boundsDirty;
 
@@ -205,17 +211,17 @@ public abstract class Sprite implements Comparable<Sprite> {
 
         // Check which sides of the rectangles intersect.
         if (r1.getMinX() < r2.getMaxX() && r1.getMinX() > r2.getMinX()) {
-            return 0; // Left side of r1 intersects right side of r2.
+            return SIDE_LEFT; // Left side of r1 intersects right side of r2.
         } else if (r2.getMinX() < r1.getMaxX() && r2.getMinX() > r1.getMinX()) {
-            return 1; // Right side of r1 intersects left side of r2.
+            return SIDE_RIGHT; // Right side of r1 intersects left side of r2.
         } else if (r1.getMinY() < r2.getMaxY() && r1.getMinY() > r2.getMinY()) {
-            return 2; // Top side of r1 intersects bottom side of r2.
+            return SIDE_TOP; // Top side of r1 intersects bottom side of r2.
         } else if (r2.getMinY() < r1.getMaxY() && r2.getMinY() > r1.getMinY()) {
-            return 3; // Bottom side of r1 intersects top side of r2.
+            return SIDE_BOTTOM; // Bottom side of r1 intersects top side of r2.
         }
 
         // Should never reach this point.
-        return -1;
+        return SIDE_INVALID;
     }
 
     public int intersectsSide(Rectangle2D r2) {
