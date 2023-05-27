@@ -7,6 +7,9 @@ module FajardoProject {
 
     exports game;
     exports game.entities;
+    exports game.entities.effects;
+    exports game.entities.mobs;
+    exports game.entities.powerups;
     exports game.scenes;
 
 }
