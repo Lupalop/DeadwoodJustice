@@ -10,8 +10,10 @@ import game.entities.powerups.HayPowerup;
 import game.entities.powerups.LampPowerup;
 import game.entities.powerups.SnakeOilPowerup;
 import game.entities.powerups.WheelPowerup;
+import javafx.event.EventHandler;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
+import javafx.scene.input.KeyEvent;
 
 public class StatusOverlay {
 
@@ -72,6 +74,9 @@ public class StatusOverlay {
 
     private int hudOffsetY;
 
+    private EventHandler<KeyEvent> selectorEventHandler;
+    private Button selectedButton;
+
     public StatusOverlay(LevelScene scene) {
         this.level = scene;
 
@@ -92,6 +97,9 @@ public class StatusOverlay {
                 return false;
             }
         });
+
+        this.selectorEventHandler = null;
+        this.selectedButton = null;
 
         initializeButtons();
     }
@@ -119,6 +127,10 @@ public class StatusOverlay {
             drawGameEnd(gc);
         } else if (isPausedVisible) {
             drawPaused(gc);
+        }
+
+        if (this.selectedButton != null) {
+            this.selectedButton.drawSelector(gc);
         }
 
         gc.restore();
@@ -321,9 +333,11 @@ public class StatusOverlay {
                     - playButton.getBounds().getWidth() / 2));
             playButton.setY((Game.WINDOW_MAX_HEIGHT / 2) + 50);
             playButton.attach(level);
+            this.attachButtonSelector(playButton, exitButton);
         } else {
             exitButton.detach(level);
             playButton.detach(level);
+            this.detachButtonSelector(playButton, exitButton);
         }
     }
 
@@ -341,10 +355,52 @@ public class StatusOverlay {
                     - (Tile.SIZE_MID * 8)));
             resumeButton.setY(Game.WINDOW_MAX_HEIGHT - (Tile.SIZE_MID * 3) + 8);
             resumeButton.attach(level);
+            this.attachButtonSelector(resumeButton, exitButton);
         } else {
             exitButton.detach(level);
             resumeButton.detach(level);
+            this.detachButtonSelector(resumeButton, exitButton);
         }
+    }
+
+    private void attachButtonSelector(Button leftButton, Button rightButton) {
+        if (this.selectorEventHandler != null) {
+            return;
+        }
+        this.selectorEventHandler = new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent event) {
+                switch (event.getCode()) {
+                case LEFT:
+                case RIGHT:
+                    if (selectedButton == leftButton) {
+                        selectedButton = rightButton;
+                    } else {
+                        selectedButton = leftButton;
+                    }
+                    break;
+                case ENTER:
+                case SPACE:
+                    selectedButton.click();
+                    break;
+                default:
+                    break;
+                }
+            }
+        };
+        level.getInner().addEventHandler(KeyEvent.KEY_PRESSED,
+                this.selectorEventHandler);
+        this.selectedButton = leftButton;
+    }
+
+    private void detachButtonSelector(Button a, Button b) {
+        if (this.selectorEventHandler == null) {
+            return;
+        }
+        level.getInner().removeEventHandler(KeyEvent.KEY_PRESSED,
+                this.selectorEventHandler);
+        this.selectorEventHandler = null;
+        this.selectedButton = null;
     }
 
     private String getLevelTimeLeftText() {
