@@ -1,15 +1,19 @@
-package game.entities;
+package game.scenes;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
 import game.Game;
-import game.scenes.LevelScene;
-import game.scenes.MainMenuScene;
+import game.entities.Button;
+import game.entities.HayPowerup;
+import game.entities.LampPowerup;
+import game.entities.SnakeOilPowerup;
+import game.entities.Tile;
+import game.entities.WheelPowerup;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 
-public class StatusHUD extends Sprite {
+public class StatusOverlay {
 
     private static final Tile TILE =
             new Tile("tilemap_ui.png", 4, 8);
@@ -61,9 +65,7 @@ public class StatusHUD extends Sprite {
     private Button playButton;
     private Button exitButton;
 
-    public StatusHUD(LevelScene scene) {
-        super(0, 0);
-
+    public StatusOverlay(LevelScene scene) {
         this.level = scene;
         this.isGameEndVisible = false;
         this.hudOffsetY = -32;
@@ -82,7 +84,6 @@ public class StatusHUD extends Sprite {
         });
     }
 
-    @Override
     public void update(long now) {
         if (this.isGameEndVisible) {
             exitButton.update(now);
@@ -93,7 +94,6 @@ public class StatusHUD extends Sprite {
         }
     }
 
-    @Override
     public void draw(GraphicsContext gc) {
         gc.save();
         gc.setFont(Game.FONT_32);

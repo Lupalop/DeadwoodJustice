@@ -19,7 +19,6 @@ import game.entities.Outlaw;
 import game.entities.Powerup;
 import game.entities.SnakeOilPowerup;
 import game.entities.Sprite;
-import game.entities.StatusHUD;
 import game.entities.WheelPowerup;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
@@ -60,7 +59,7 @@ public class LevelScene implements GameScene {
 
     private Outlaw outlaw;
     private Mob bossMob;
-    private StatusHUD statusHud;
+    private StatusOverlay statusOverlay;
 
     private int mobKillCount;
     private int powerupsCount[];
@@ -96,7 +95,7 @@ public class LevelScene implements GameScene {
                 Game.WINDOW_MAX_HEIGHT - (int) getOutlaw().getBounds().getHeight()));
         this.getOutlaw().handleKeyPressEvent(this);
         this.bossMob = null;
-        this.statusHud = new StatusHUD(this);
+        this.statusOverlay = new StatusOverlay(this);
 
         this.mobKillCount = 0;
         this.powerupsCount = new int[Powerup.TOTAL_POWERUPS];
@@ -195,7 +194,7 @@ public class LevelScene implements GameScene {
     @Override
     public void update(long now) {
         this.actions.update(now);
-        this.statusHud.update(now);
+        this.statusOverlay.update(now);
         if (this.levelDone || this.levelPaused) {
             return;
         }
@@ -209,7 +208,7 @@ public class LevelScene implements GameScene {
                 Game.WINDOW_MAX_HEIGHT);
 
         this.levelMap.draw(gc);
-        this.statusHud.draw(gc);
+        this.statusOverlay.draw(gc);
     }
 
     private void updateSprites(long now) {
