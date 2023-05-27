@@ -8,15 +8,15 @@ public class TimedAction {
     private long interval;
     private boolean autoReset;
     private boolean enabled;
-    private Callable<Boolean> callback;
+    private Callable<Boolean> elapsed;
     private TimedActionManager owner;
 
     public TimedAction(long interval, boolean autoReset,
-            Callable<Boolean> callback, TimedActionManager owner) {
+            Callable<Boolean> elapsed, TimedActionManager owner) {
         this.elapsedTime = 0;
         this.interval = interval;
         this.autoReset = autoReset;
-        this.callback = callback;
+        this.elapsed = elapsed;
         this.owner = owner;
         this.enabled = true;
     }
@@ -30,10 +30,10 @@ public class TimedAction {
         if (this.elapsedTime >= this.interval) {
             boolean removeOrReset = false;
             try {
-                // The callback return value determines if we should
+                // The elapsed return value determines if we should
                 // remove or reset this timer.
-                if (callback != null) {
-                    removeOrReset = callback.call();
+                if (elapsed != null) {
+                    removeOrReset = elapsed.call();
                 } else {
                     removeOrReset = true;
                 }

@@ -19,9 +19,9 @@ public class TimedActionManager {
     }
 
     public synchronized void add(long interval, boolean autoReset,
-            Callable<Boolean> callback) {
+            Callable<Boolean> elapsed) {
         TimedAction action = new TimedAction(
-                interval, autoReset, callback, this);
+                interval, autoReset, elapsed, this);
         this.pendingAdds.add(action);
     }
 
