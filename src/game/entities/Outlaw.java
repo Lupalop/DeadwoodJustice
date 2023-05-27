@@ -4,6 +4,9 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
 import game.Game;
+import game.entities.effects.Effect;
+import game.entities.effects.ImmortalityEffect;
+import game.entities.effects.SmokeEffect;
 import game.scenes.LevelScene;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;

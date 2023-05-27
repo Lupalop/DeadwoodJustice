@@ -1,9 +1,15 @@
-package game.entities;
+package game.entities.mobs;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
 import game.Game;
+import game.entities.Bullet;
+import game.entities.LevelSprite;
+import game.entities.Mote;
+import game.entities.Outlaw;
+import game.entities.effects.Effect;
+import game.entities.effects.ExplosionEffect;
 import game.scenes.LevelScene;
 import javafx.scene.canvas.GraphicsContext;
 

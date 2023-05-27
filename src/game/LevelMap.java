@@ -4,12 +4,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import game.entities.Mob;
 import game.entities.Outlaw;
-import game.entities.Powerup;
 import game.entities.Prop;
 import game.entities.Sprite;
 import game.entities.Tile;
+import game.entities.mobs.Mob;
+import game.entities.powerups.Powerup;
 import javafx.scene.canvas.GraphicsContext;
 
 public class LevelMap {

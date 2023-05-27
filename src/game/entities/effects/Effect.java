@@ -1,4 +1,6 @@
-package game.entities;
+package game.entities.effects;
+
+import game.entities.Sprite;
 
 public abstract class Effect extends Sprite {
 

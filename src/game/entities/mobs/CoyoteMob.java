@@ -1,4 +1,4 @@
-package game.entities;
+package game.entities.mobs;
 
 import game.Game;
 import game.scenes.LevelScene;

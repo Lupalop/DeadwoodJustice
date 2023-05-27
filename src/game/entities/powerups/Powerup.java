@@ -1,8 +1,10 @@
-package game.entities;
+package game.entities.powerups;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
+import game.entities.LevelSprite;
+import game.entities.Sprite;
 import game.scenes.LevelScene;
 import javafx.scene.canvas.GraphicsContext;
 

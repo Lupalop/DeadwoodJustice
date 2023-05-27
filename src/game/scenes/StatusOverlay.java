@@ -5,11 +5,11 @@ import java.util.concurrent.TimeUnit;
 
 import game.Game;
 import game.entities.Button;
-import game.entities.HayPowerup;
-import game.entities.LampPowerup;
-import game.entities.SnakeOilPowerup;
 import game.entities.Tile;
-import game.entities.WheelPowerup;
+import game.entities.powerups.HayPowerup;
+import game.entities.powerups.LampPowerup;
+import game.entities.powerups.SnakeOilPowerup;
+import game.entities.powerups.WheelPowerup;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 

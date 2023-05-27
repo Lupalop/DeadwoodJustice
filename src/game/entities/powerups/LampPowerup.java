@@ -1,4 +1,4 @@
-package game.entities;
+package game.entities.powerups;
 
 import game.Game;
 import game.scenes.LevelScene;

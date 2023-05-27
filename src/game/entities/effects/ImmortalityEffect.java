@@ -1,6 +1,7 @@
-package game.entities;
+package game.entities.effects;
 
 import game.Game;
+import game.entities.Sprite;
 import javafx.scene.image.Image;
 
 public class ImmortalityEffect extends Effect {
