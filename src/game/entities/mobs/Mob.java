@@ -223,11 +223,7 @@ public abstract class Mob extends LevelSprite {
     }
 
     protected void chasePlayer(Outlaw outlaw) {
-        if (!outlaw.isAlive()) {
-            return;
-        }
-
-        if (!Game.FLAG_SMARTER_MOBS) {
+        if (!outlaw.isAlive() || !Game.FLAG_SMARTER_MOBS) {
             return;
         }
 
