@@ -10,12 +10,14 @@ public class TimedActionManager {
     private ArrayList<TimedAction> pendingAdds;
     private ArrayList<TimedAction> pendingRemoves;
     private long lastUpdateTime;
+    private boolean enabled;
 
     public TimedActionManager() {
         this.actions = new ArrayList<TimedAction>();
         this.pendingAdds = new ArrayList<TimedAction>();
         this.pendingRemoves = new ArrayList<TimedAction>();
         this.lastUpdateTime = 0;
+        this.enabled = true;
     }
 
     public synchronized TimedAction add(long interval, boolean autoReset,
@@ -42,30 +44,20 @@ public class TimedActionManager {
         this.removeAll(this.actions);
     }
 
-    public synchronized void stopAll(Collection<TimedAction> actions) {
-        for (TimedAction action : actions) {
-            action.stop();
-        }
-    }
-
     public synchronized void stopAll() {
-        this.stopAll(this.actions);
-    }
-
-    public synchronized void startAll(Collection<TimedAction> actions) {
-        for (TimedAction action : actions) {
-            action.start();
-        }
+        this.enabled = false;
     }
 
     public synchronized void startAll() {
-        this.startAll(this.actions);
+        this.enabled = true;
     }
 
     public synchronized void update(long now) {
         long deltaTime = (now - this.lastUpdateTime);
-        for (TimedAction action : this.actions) {
-            action.update(deltaTime);
+        if (this.enabled) {
+            for (TimedAction action : this.actions) {
+                action.update(deltaTime);
+            }
         }
         this.lastUpdateTime = now;
 
