@@ -267,7 +267,7 @@ public abstract class Mob extends LevelSprite {
                 : Game.DIR_LEFT;
         Bullet bullet = new Bullet(this, getParent(), activeDirections, true);
         this.getParent().getLevelMap().addSpriteOnUpdate(bullet);
-        this.playFrames(frameRanges[8], frameRanges[9], null, 50);
+        this.playFrames(frameRanges[8], frameRanges[9], null, TimeUnit.MILLISECONDS.toNanos(50));
     }
 
     public int getDamage() {
