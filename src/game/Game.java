@@ -62,9 +62,9 @@ public final class Game {
 
     public static final int MAX_HIGH_SCORES = 10;
 
-    public static final Paint COLOR_MAIN = Paint.valueOf("eeca84");
-    public static final Paint COLOR_ACCENT = Paint.valueOf("49276d");
-    public static final Paint COLOR_ACCENT2 = Paint.valueOf("a23e47");
+    public static final Paint COLOR_PRIMARY = Paint.valueOf("eeca84");
+    public static final Paint COLOR_SECONDARY = Paint.valueOf("49276d");
+    public static final Paint COLOR_TERTIARY = Paint.valueOf("a23e47");
 
     public static final boolean DEBUG_MODE = false;
     public static final boolean FLAG_DIRECTIONAL_SHOOTING = false;

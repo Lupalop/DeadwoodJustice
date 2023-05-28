@@ -46,7 +46,7 @@ public class Button extends Sprite {
         this.setHeight(Tile.SIZE);
         text = new Text();
         text.setFont(Game.FONT_ALT_48);
-        text.setFill(Game.COLOR_ACCENT);
+        text.setFill(Game.COLOR_SECONDARY);
         updateTextX();
         updateTextY();
 
@@ -117,7 +117,7 @@ public class Button extends Sprite {
     }
 
     public void drawSelector(GraphicsContext gc) {
-        gc.setStroke(Game.COLOR_ACCENT);
+        gc.setStroke(Game.COLOR_SECONDARY);
         gc.setLineWidth(SELECTOR_STROKE_WIDTH);
         gc.strokeRoundRect(
                 this.getBounds().getMinX(),

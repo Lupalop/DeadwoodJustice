@@ -144,7 +144,7 @@ public class StatusOverlay {
     public void draw(GraphicsContext gc) {
         gc.save();
         gc.setFont(Game.FONT_32);
-        gc.setFill(Game.COLOR_MAIN);
+        gc.setFill(Game.COLOR_PRIMARY);
 
         if (isGameEndVisible || isPausedVisible || isNameInputVisible) {
             this.drawShade(gc);
@@ -265,7 +265,7 @@ public class StatusOverlay {
     private void drawShade(GraphicsContext gc) {
         gc.save();
         gc.setGlobalAlpha(0.5);
-        gc.setFill(Game.COLOR_ACCENT);
+        gc.setFill(Game.COLOR_SECONDARY);
         gc.fillRect(0, 0, Game.WINDOW_MAX_WIDTH, Game.WINDOW_MAX_HEIGHT);
         gc.restore();
     }
@@ -384,11 +384,11 @@ public class StatusOverlay {
         headerProp.setScale(1);
         nameInputText = new Text(nameInputValue);
         nameInputText.setFont(Game.FONT_48);
-        nameInputText.setFill(Game.COLOR_MAIN);
+        nameInputText.setFill(Game.COLOR_PRIMARY);
         nameInputDescription = new Text("You've attained a new high score!");
         nameInputDescription.setFont(Game.FONT_ALT_48);
-        nameInputDescription.setFill(Game.COLOR_MAIN);
-        nameInputDescription.setStroke(Game.COLOR_ACCENT2);
+        nameInputDescription.setFill(Game.COLOR_PRIMARY);
+        nameInputDescription.setStroke(Game.COLOR_TERTIARY);
         nameInputDescription.setStrokeType(StrokeType.OUTSIDE);
         nameInputDescription.setStrokeWidth(3);
         nameInputDescription.setY((Game.WINDOW_MAX_HEIGHT / 2)

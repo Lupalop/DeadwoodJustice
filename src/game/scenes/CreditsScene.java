@@ -37,7 +37,7 @@ public class CreditsScene implements GameScene {
     public CreditsScene() {
         this.root = new Group();
         this.scene = new Scene(root, Game.WINDOW_MAX_WIDTH,
-                Game.WINDOW_MAX_HEIGHT, Game.COLOR_MAIN);
+                Game.WINDOW_MAX_HEIGHT, Game.COLOR_PRIMARY);
         this.canvas = new Canvas(Game.WINDOW_MAX_WIDTH,
                 Game.WINDOW_MAX_HEIGHT);
         this.root.getChildren().add(canvas);
@@ -88,15 +88,15 @@ public class CreditsScene implements GameScene {
             if (textString.startsWith(PREFIX_HEADING)) {
                 node.setFont(Game.FONT_ALT_48);
                 node.setText(textString.substring(1));
-                node.setFill(Game.COLOR_MAIN);
-                node.setStroke(Game.COLOR_ACCENT);
+                node.setFill(Game.COLOR_PRIMARY);
+                node.setStroke(Game.COLOR_SECONDARY);
                 node.setId(PREFIX_HEADING);
             // Case 2: subheading
             } else if (textString.startsWith(PREFIX_SUBHEADING)) {
                 node.setFont(Game.FONT_32);
                 node.setText(textString.substring(1));
-                node.setFill(Game.COLOR_MAIN);
-                node.setStroke(Game.COLOR_ACCENT);
+                node.setFill(Game.COLOR_PRIMARY);
+                node.setStroke(Game.COLOR_SECONDARY);
                 node.setId(PREFIX_SUBHEADING);
             // Case 3: regular text.
             } else {

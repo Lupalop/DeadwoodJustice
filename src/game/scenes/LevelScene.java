@@ -121,7 +121,7 @@ public class LevelScene implements GameScene {
 
         this.root = new Group();
         this.scene = new Scene(root, Game.WINDOW_MAX_WIDTH,
-                Game.WINDOW_MAX_HEIGHT, Game.COLOR_MAIN);
+                Game.WINDOW_MAX_HEIGHT, Game.COLOR_PRIMARY);
         this.canvas = new Canvas(Game.WINDOW_MAX_WIDTH,
                 Game.WINDOW_MAX_HEIGHT);
         this.root.getChildren().add(canvas);
