@@ -24,7 +24,7 @@ public class CoyoteMob extends Mob {
                     // Death
                     71, 74,
                     // On shoot
-                    57, 73
+                    57, 72
             };
 
     public CoyoteMob(int x, int y, LevelScene parent) {
