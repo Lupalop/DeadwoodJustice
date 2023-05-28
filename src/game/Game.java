@@ -34,6 +34,8 @@ public final class Game {
     public static final int FONT_SIZE_48 = 48;
     public static final int FONT_SIZE_BTN = 21;
 
+    public static final Font FONT_48 =
+            Font.loadFont(FONT_PATH, FONT_SIZE_48);
     public static final Font FONT_32 =
             Font.loadFont(FONT_PATH, FONT_SIZE_32);
 
