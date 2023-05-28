@@ -16,6 +16,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.shape.StrokeType;
 import javafx.scene.text.Text;
 
 public class StatusOverlay {
@@ -87,6 +88,7 @@ public class StatusOverlay {
     private Prop headerProp;
     private String nameInputValue;
     private Text nameInputText;
+    private Text nameInputDescription;
     private EventHandler<KeyEvent> nameInputEventHandler;
 
     private EventHandler<KeyEvent> selectorEventHandler;
@@ -118,6 +120,7 @@ public class StatusOverlay {
         this.headerProp = null;
         this.nameInputValue = "";
         this.nameInputText = null;
+        this.nameInputDescription = null;
         this.nameInputEventHandler = null;
 
         this.selectorEventHandler = null;
@@ -382,6 +385,16 @@ public class StatusOverlay {
         nameInputText = new Text(nameInputValue);
         nameInputText.setFont(Game.FONT_48);
         nameInputText.setFill(Game.COLOR_MAIN);
+        nameInputDescription = new Text("You've attained a new high score!");
+        nameInputDescription.setFont(Game.FONT_ALT_48);
+        nameInputDescription.setFill(Game.COLOR_MAIN);
+        nameInputDescription.setStroke(Game.COLOR_ACCENT2);
+        nameInputDescription.setStrokeType(StrokeType.OUTSIDE);
+        nameInputDescription.setStrokeWidth(3);
+        nameInputDescription.setY((Game.WINDOW_MAX_HEIGHT / 2)
+                + (Tile.SIZE_MID * 6));
+        nameInputDescription.setX((Game.WINDOW_MAX_WIDTH / 2)
+                - (nameInputDescription.getBoundsInLocal().getWidth() / 2));
     }
 
     public void toggleGameEndVisibility() {
@@ -463,11 +476,13 @@ public class StatusOverlay {
             this.selectedButton = goButton;
             this.level.getInner().addEventHandler(KeyEvent.KEY_TYPED, this.nameInputEventHandler);
             this.level.getRoot().getChildren().add(nameInputText);
+            this.level.getRoot().getChildren().add(nameInputDescription);
         } else {
             goButton.detach(level);
             this.detachButtonSelector(goButton, null, true);
             this.level.getInner().removeEventHandler(KeyEvent.KEY_TYPED, this.nameInputEventHandler);
             this.level.getRoot().getChildren().remove(nameInputText);
+            this.level.getRoot().getChildren().remove(nameInputDescription);
             this.nameInputEventHandler = null;
         }
     }
