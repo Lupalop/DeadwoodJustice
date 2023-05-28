@@ -63,7 +63,7 @@ public class MainMenuScene implements GameScene {
             "P: I'M TOO CHICKEN",
             "P: HURT ME PLENTY",
             "P: NIGHTMARE",
-            //"HIGH SCORES",
+            "HIGH SCORES",
             "HELP",
             "CREDITS",
             "EXIT",
@@ -90,18 +90,12 @@ public class MainMenuScene implements GameScene {
                             LevelScene.DIFFICULTY_HARD));
                 }
             },
-            /*new Runnable() {
-                @Override
-                public void run() {
-                    actionButton.setText("TODO");
-                }
-            },
             new Runnable() {
                 @Override
                 public void run() {
-                    actionButton.setText("TODO");
+                    Game.setGameScene(new HighScoresScene());
                 }
-            },*/
+            },
             new Runnable() {
                 @Override
                 public void run() {
