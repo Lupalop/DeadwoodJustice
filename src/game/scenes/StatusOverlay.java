@@ -374,7 +374,7 @@ public class StatusOverlay {
                     return;
                 }
                 toggleNameInputVisibility();
-                level.setPlayerName(nameInputValue);
+                level.handleHighScore(nameInputValue);
             }
         });
         headerProp = new Prop(0, 0, "ui_name.png");

@@ -2,13 +2,19 @@ package game;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.net.URISyntaxException;
 import java.nio.file.FileSystemNotFoundException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
+import java.util.ListIterator;
 import java.util.Random;
 
 import game.scenes.GameScene;
@@ -54,6 +60,8 @@ public final class Game {
     public static final byte DIR_LEFT = 0x4;
     public static final byte DIR_RIGHT = 0x8;
 
+    public static final int MAX_HIGH_SCORES = 10;
+
     public static final Paint COLOR_MAIN = Paint.valueOf("eeca84");
     public static final Paint COLOR_ACCENT = Paint.valueOf("49276d");
 
@@ -69,9 +77,12 @@ public final class Game {
 
     public static final Random RNG = new Random();
 
+    private static final Path highScoresPath = Path.of("scores.dat");
+
     private static MediaPlayer mediaPlayer;
     private static Hashtable<String, Media> cachedBGM;
     private static Hashtable<String, AudioClip> cachedSFX;
+    private static ArrayList<PlayerScore> highScores;
 
     private static Stage primaryStage;
     private static GameScene gameScene;
@@ -86,6 +97,8 @@ public final class Game {
         Game.mediaPlayer = null;
         Game.cachedBGM = new Hashtable<String, Media>();
         Game.cachedSFX = new Hashtable<String, AudioClip>();
+        Game.highScores = new ArrayList<PlayerScore>(MAX_HIGH_SCORES);
+        Game.loadHighScores();
 
         Game.primaryStage = primaryStage;
         Game.primaryStage.setResizable(false);
@@ -149,6 +162,93 @@ public final class Game {
         } catch (Exception e) {
             return null;
         }
+    }
+
+    public static List<PlayerScore> getHighScores() {
+        return (Game.highScores.size() > MAX_HIGH_SCORES)
+                ? Game.highScores.subList(0, MAX_HIGH_SCORES)
+                : Game.highScores;
+    }
+
+    public static int getHighScoreIndex(int score) {
+        // We need the index, so use an iterator.
+        ListIterator<PlayerScore> iter = Game.highScores.listIterator();
+        while (iter.hasNext()) {
+            PlayerScore other = iter.next();
+            if (other == null) {
+                continue;
+            }
+            // Case 1: Score is higher than something else on the list.
+            if (score > other.getScore()) {
+                return iter.previousIndex();
+            }
+        }
+        // Case 2: Score is lesser than everything else and there's still
+        // space on the list.
+        if (Game.highScores.size() < MAX_HIGH_SCORES) {
+            return Game.highScores.size();
+        }
+        // Case 3: Score isn't qualified for the high scores list.
+        return -1;
+    }
+
+    public static boolean addHighScore(String name, int score,
+            int difficulty) {
+        int index = Game.getHighScoreIndex(score);
+        if (index == -1) {
+            return false;
+        }
+        Game.highScores.add(index, new PlayerScore(
+                name, score, difficulty));
+        Game.saveHighScores();
+        return true;
+    }
+
+    private static void loadHighScores() {
+        if (!highScoresPath.toFile().exists()) {
+            return;
+        }
+
+        try {
+            List<String> lines = Files.readAllLines(highScoresPath);
+            for (String line : lines) {
+                String[] lineParts = line.split(",");
+                if (lineParts.length != 3) {
+                    continue;
+                }
+                PlayerScore score = new PlayerScore(
+                        lineParts[0],
+                        Integer.parseInt(lineParts[1]),
+                        Integer.parseInt(lineParts[2]));
+                Game.highScores.add(score);
+            }
+        } catch (Exception e) {
+            System.out.println("Failed to load high scores data file.");
+            if (DEBUG_MODE) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private static void saveHighScores() {
+        File output = highScoresPath.toFile();
+        try {
+            PrintWriter writer = new PrintWriter(new FileWriter(output));
+            for (PlayerScore score : getHighScores()) {
+                writer.printf("%s,%s,%s%n",
+                        score.getName(),
+                        score.getScore(),
+                        score.getDifficulty());
+            }
+            writer.flush();
+            writer.close();
+        } catch (IOException e) {
+            System.out.println("Failed to save high scores data file.");
+            if (DEBUG_MODE) {
+                e.printStackTrace();
+            }
+        }
+
     }
 
     private static synchronized void setMediaPlayer(

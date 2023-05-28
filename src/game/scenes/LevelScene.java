@@ -95,8 +95,6 @@ public class LevelScene implements GameScene {
 
     private LevelMap levelMap;
 
-    private String playerName;
-
     public LevelScene(int difficulty) {
         this.difficulty = difficulty;
         switch (this.difficulty) {
@@ -168,8 +166,6 @@ public class LevelScene implements GameScene {
                 }
             });
         }
-
-        this.playerName = null;
 
         this.spawnMobs(this.mobCountAtStart);
         this.addPauseHandler();
@@ -513,8 +509,7 @@ public class LevelScene implements GameScene {
         }
         this.getActions().removeAll();
         this.removePauseHandler();
-        // TODO: high score condition here!
-        if (true) {
+        if (Game.getHighScoreIndex(score) != -1) {
             this.statusOverlay.toggleNameInputVisibility();
         } else {
             MainMenuScene.handleReturnKeyPressEvent(this);
@@ -537,15 +532,8 @@ public class LevelScene implements GameScene {
         return MUSIC_REGULAR[index];
     }
 
-    public String getPlayerName() {
-        return this.playerName;
-    }
-
-    public void setPlayerName(String value) {
-        if (playerName != null) {
-            return;
-        }
-        this.playerName = value;
+    public void handleHighScore(String value) {
+        Game.addHighScore(value, this.getScore(), this.getDifficulty());
         MainMenuScene.handleReturnKeyPressEvent(this);
         this.statusOverlay.toggleGameEndVisibility();
     }
