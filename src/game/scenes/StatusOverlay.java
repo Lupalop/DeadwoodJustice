@@ -31,6 +31,8 @@ public class StatusOverlay {
     private static final Image STANDEE_EXIT =
             new Image(Game.getAsset("ui_game_end_standee_exit.png"));
 
+    private static final int STROKE_OFFSET = 2;
+
     private static final int HUD_BASE_SIZE = 9;
     private static final int HUD_BASE_POS = 1;
     private static final int HUD_BASE_POS_HP = 2;
@@ -201,6 +203,30 @@ public class StatusOverlay {
         gc.fillText(timeLeftText,
                 Tile.SIZE_MID * (HUD_BASE_POS_TIME + 1),
                 hudOffsetY + HUD_TEXT_OFFSET_Y);
+
+        gc.save();
+
+        gc.setFont(Game.FONT_32);
+
+        // gc.strokeText is inflexible, so we draw the outline on our own.
+        String score = String.format("Score: %s", this.level.getScore());
+        int x = Tile.SIZE_MID * 2;
+        int y = hudOffsetY + HUD_TEXT_OFFSET_Y + Tile.SIZE_MID;
+        gc.setFill(Game.COLOR_ACCENT);
+        gc.fillText(score,
+                x - STROKE_OFFSET, y);
+        gc.fillText(score,
+                x + STROKE_OFFSET, y);
+        gc.fillText(score,
+                x, y - STROKE_OFFSET);
+        gc.fillText(score,
+                x, y + STROKE_OFFSET);
+
+        gc.setFill(Game.COLOR_MAIN);
+
+        gc.fillText(score, x, y);
+
+        gc.restore();
     }
 
     private int drawHUDPowerup(GraphicsContext gc,
