@@ -5,6 +5,7 @@ import java.util.concurrent.TimeUnit;
 
 import game.Game;
 import game.entities.Button;
+import game.entities.Prop;
 import game.entities.Tile;
 import game.entities.powerups.HayPowerup;
 import game.entities.powerups.LampPowerup;
@@ -13,7 +14,9 @@ import game.entities.powerups.WheelPowerup;
 import javafx.event.EventHandler;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.text.Text;
 
 public class StatusOverlay {
 
@@ -72,11 +75,19 @@ public class StatusOverlay {
 
     private boolean isPausedVisible;
     private boolean isGameEndVisible;
+    private boolean isNameInputVisible;
+
     private Button playButton;
     private Button exitButton;
     private Button resumeButton;
+    private Button goButton;
 
     private int hudOffsetY;
+
+    private Prop headerProp;
+    private String nameInputValue;
+    private Text nameInputText;
+    private EventHandler<KeyEvent> nameInputEventHandler;
 
     private EventHandler<KeyEvent> selectorEventHandler;
     private Button selectedButton;
@@ -84,11 +95,13 @@ public class StatusOverlay {
     public StatusOverlay(LevelScene scene) {
         this.level = scene;
 
+        this.isNameInputVisible = false;
         this.isPausedVisible = false;
         this.isGameEndVisible = false;
         this.playButton = null;
         this.exitButton = null;
         this.resumeButton = null;
+        this.goButton = null;
 
         this.hudOffsetY = HUD_OFFSET_Y;
         scene.getActions().add(UI_SLIDE_INTERVAL, false, new Callable<Boolean>() {
@@ -102,10 +115,15 @@ public class StatusOverlay {
             }
         });
 
+        this.headerProp = null;
+        this.nameInputValue = "";
+        this.nameInputText = null;
+        this.nameInputEventHandler = null;
+
         this.selectorEventHandler = null;
         this.selectedButton = null;
 
-        initializeButtons();
+        initializeControls();
     }
 
     public void update(long now) {
@@ -114,6 +132,9 @@ public class StatusOverlay {
             playButton.update(now);
         } else if (this.isPausedVisible) {
             resumeButton.update(now);
+        } else if (this.isNameInputVisible) {
+            goButton.update(now);
+            headerProp.update(now);
         }
     }
 
@@ -122,7 +143,7 @@ public class StatusOverlay {
         gc.setFont(Game.FONT_32);
         gc.setFill(Game.COLOR_MAIN);
 
-        if (isGameEndVisible || isPausedVisible) {
+        if (isGameEndVisible || isPausedVisible || isNameInputVisible) {
             this.drawShade(gc);
         }
 
@@ -131,6 +152,8 @@ public class StatusOverlay {
             drawGameEnd(gc);
         } else if (isPausedVisible) {
             drawPaused(gc);
+        } else if (isNameInputVisible) {
+            drawNameInput(gc);
         }
 
         if (this.selectedButton != null) {
@@ -309,14 +332,21 @@ public class StatusOverlay {
         exitButton.draw(gc);
     }
 
-    private void initializeButtons() {
+    private void drawNameInput(GraphicsContext gc) {
+        this.drawMenuBackground(gc, (Tile.ALL_VERTICAL / 2), 1);
+
+        goButton.draw(gc);
+        headerProp.draw(gc);
+    }
+
+    private void initializeControls() {
         playButton = new Button(0, 0, 3);
         playButton.setText("PLAY");
         playButton.setClickAction(new Runnable() {
             @Override
             public void run() {
                 Game.setGameScene(
-                        new LevelScene(level.getDifficulty()));
+                        new LevelScene(level.getDifficulty(), level.getPlayerName()));
             }
         });
         exitButton = new Button(0, 0, 3);
@@ -335,6 +365,23 @@ public class StatusOverlay {
                 level.togglePaused();
             }
         });
+        goButton = new Button(0, 0, 3);
+        goButton.setText("GO");
+        goButton.setClickAction(new Runnable() {
+            @Override
+            public void run() {
+                if (nameInputValue.trim().isEmpty()) {
+                    return;
+                }
+                toggleNameInputVisibility();
+                level.setPlayerName(nameInputValue);
+            }
+        });
+        headerProp = new Prop(0, 0, "ui_name.png");
+        headerProp.setScale(1);
+        nameInputText = new Text(nameInputValue);
+        nameInputText.setFont(Game.FONT_48);
+        nameInputText.setFill(Game.COLOR_MAIN);
     }
 
     public void toggleGameEndVisibility() {
@@ -350,11 +397,11 @@ public class StatusOverlay {
                     - playButton.getBounds().getWidth() / 2));
             playButton.setY((Game.WINDOW_MAX_HEIGHT / 2) + 50);
             playButton.attach(level);
-            this.attachButtonSelector(playButton, exitButton);
+            this.attachButtonSelector(playButton, exitButton, false);
         } else {
             exitButton.detach(level);
             playButton.detach(level);
-            this.detachButtonSelector(playButton, exitButton);
+            this.detachButtonSelector(playButton, exitButton, false);
         }
     }
 
@@ -372,15 +419,60 @@ public class StatusOverlay {
                     - (Tile.SIZE_MID * 8)));
             resumeButton.setY(Game.WINDOW_MAX_HEIGHT - (Tile.SIZE_MID * 3) + 8);
             resumeButton.attach(level);
-            this.attachButtonSelector(resumeButton, exitButton);
+            this.attachButtonSelector(resumeButton, exitButton, false);
         } else {
             exitButton.detach(level);
             resumeButton.detach(level);
-            this.detachButtonSelector(resumeButton, exitButton);
+            this.detachButtonSelector(resumeButton, exitButton, false);
         }
     }
 
-    private void attachButtonSelector(Button leftButton, Button rightButton) {
+    public void toggleNameInputVisibility() {
+        this.isNameInputVisible = !this.isNameInputVisible;
+
+        if (this.isNameInputVisible) {
+            headerProp.setX((int) ((Game.WINDOW_MAX_WIDTH / 2)
+                    - (headerProp.getWidth() / 2)));
+            headerProp.setY((int) ((Game.WINDOW_MAX_HEIGHT / 2)
+                    - (headerProp.getHeight() / 2)) - (Tile.SIZE_MID));
+
+            goButton.setX((int) ((Game.WINDOW_MAX_WIDTH / 2)
+                    - (goButton.getBounds().getWidth() / 2)));
+            goButton.setY((Game.WINDOW_MAX_HEIGHT / 2)
+                    + (Tile.SIZE_MID * 3));
+
+            this.nameInputEventHandler = new EventHandler<KeyEvent>() {
+                @Override
+                public void handle(KeyEvent event) {
+                    if (event.getCharacter().equals(KeyCode.BACK_SPACE.getChar())
+                            && nameInputValue.length() > 0) {
+                        nameInputValue = nameInputValue.substring(0, nameInputValue.length() - 1);
+                    } else if (nameInputValue.length() <= LevelScene.NAME_MAX_LEN) {
+                        nameInputValue += event.getCharacter().trim();
+                    }
+                    nameInputText.setText(nameInputValue);
+                    nameInputText.setY((Game.WINDOW_MAX_HEIGHT / 2)
+                            + (Tile.SIZE_MID) + 15);
+                    nameInputText.setX((Game.WINDOW_MAX_WIDTH / 2)
+                            - (nameInputText.getBoundsInLocal().getWidth() / 2));
+                }
+            };
+
+            goButton.attach(level);
+            this.attachButtonSelector(goButton, null, true);
+            this.selectedButton = goButton;
+            this.level.getInner().addEventHandler(KeyEvent.KEY_TYPED, this.nameInputEventHandler);
+            this.level.getRoot().getChildren().add(nameInputText);
+        } else {
+            goButton.detach(level);
+            this.detachButtonSelector(goButton, null, true);
+            this.level.getInner().removeEventHandler(KeyEvent.KEY_TYPED, this.nameInputEventHandler);
+            this.level.getRoot().getChildren().remove(nameInputText);
+            this.nameInputEventHandler = null;
+        }
+    }
+
+    private void attachButtonSelector(Button leftButton, Button rightButton, boolean onRelease) {
         if (this.selectorEventHandler != null) {
             return;
         }
@@ -392,7 +484,11 @@ public class StatusOverlay {
                 case TAB:
                 case LEFT:
                 case RIGHT:
-                    if (selectedButton == leftButton) {
+                    if (rightButton == null) {
+                        selectedButton = leftButton;
+                    } else if (leftButton == null) {
+                        selectedButton = rightButton;
+                    } else if (selectedButton == leftButton) {
                         selectedButton = rightButton;
                     } else {
                         selectedButton = leftButton;
@@ -411,15 +507,17 @@ public class StatusOverlay {
                 }
             }
         };
-        level.getInner().addEventHandler(KeyEvent.KEY_PRESSED,
+        level.getInner().addEventHandler(
+                onRelease ? KeyEvent.KEY_RELEASED : KeyEvent.KEY_PRESSED,
                 this.selectorEventHandler);
     }
 
-    private void detachButtonSelector(Button a, Button b) {
+    private void detachButtonSelector(Button a, Button b, boolean onRelease) {
         if (this.selectorEventHandler == null) {
             return;
         }
-        level.getInner().removeEventHandler(KeyEvent.KEY_PRESSED,
+        level.getInner().removeEventHandler(
+                onRelease ? KeyEvent.KEY_RELEASED : KeyEvent.KEY_PRESSED,
                 this.selectorEventHandler);
         this.selectorEventHandler = null;
         this.selectedButton = null;

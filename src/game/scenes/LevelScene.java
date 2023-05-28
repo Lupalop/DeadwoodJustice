@@ -35,6 +35,8 @@ public class LevelScene implements GameScene {
     public static final int DIFFICULTY_MEDIUM = 1;
     public static final int DIFFICULTY_HARD = 2;
 
+    public static final int NAME_MAX_LEN = 10;
+
     private static final int MOB_COUNT_AT_START = 7;
     private static final int MOB_COUNT_PER_INTERVAL = 3;
 
@@ -93,7 +95,10 @@ public class LevelScene implements GameScene {
 
     private LevelMap levelMap;
 
-    public LevelScene(int difficulty) {
+    private String playerName;
+    private boolean waitingForName;
+
+    public LevelScene(int difficulty, String playerName) {
         this.difficulty = difficulty;
         switch (this.difficulty) {
         default:
@@ -134,7 +139,6 @@ public class LevelScene implements GameScene {
         this.getOutlaw().setY(Game.RNG.nextInt(
                 (int) getOutlaw().getBounds().getHeight(),
                 Game.WINDOW_MAX_HEIGHT - (int) getOutlaw().getBounds().getHeight()));
-        this.getOutlaw().handleKeyPressEvent(this);
         this.bossMob = null;
         this.statusOverlay = new StatusOverlay(this);
 
@@ -166,7 +170,19 @@ public class LevelScene implements GameScene {
         }
 
         this.spawnMobs(this.mobCountAtStart);
-        this.addPauseHandler();
+
+        this.playerName = playerName;
+        if (this.playerName != null) {
+            this.initializeAfterNameInput();
+        } else {
+            this.waitingForName = true;
+            this.statusOverlay.toggleNameInputVisibility();
+            this.actions.stopAll();
+        }
+    }
+
+    public LevelScene(int difficulty) {
+        this(difficulty, null);
     }
 
     private void initializeActions() {
@@ -234,11 +250,18 @@ public class LevelScene implements GameScene {
         });
     }
 
+    private void initializeAfterNameInput() {
+        this.waitingForName = false;
+        this.getOutlaw().handleKeyPressEvent(this);
+        this.addPauseHandler();
+        this.actions.startAll();
+    }
+
     @Override
     public void update(long now) {
         this.actions.update(now);
         this.statusOverlay.update(now);
-        if (this.levelDone || this.levelPaused) {
+        if (this.levelDone || this.levelPaused || this.waitingForName) {
             return;
         }
         this.updateSprites(now);
@@ -524,6 +547,18 @@ public class LevelScene implements GameScene {
             return MUSIC_HARD[index];
         }
         return MUSIC_REGULAR[index];
+    }
+
+    public String getPlayerName() {
+        return this.playerName;
+    }
+
+    public void setPlayerName(String value) {
+        if (playerName != null) {
+            return;
+        }
+        this.playerName = value;
+        this.initializeAfterNameInput();
     }
 
 }
