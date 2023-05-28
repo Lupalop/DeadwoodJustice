@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import game.entities.Bullet;
 import game.entities.Mote;
 import game.entities.Outlaw;
 import game.entities.Prop;
@@ -212,6 +213,7 @@ public class LevelMap {
                     || (sprite instanceof Mob && !((Mob)sprite).isAlive())
                     || sprite instanceof Powerup
                     || sprite instanceof Outlaw
+                    || sprite instanceof Bullet
                     || sprite == source) {
                 continue;
             }
