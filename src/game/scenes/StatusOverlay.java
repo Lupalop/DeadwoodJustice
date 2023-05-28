@@ -389,6 +389,7 @@ public class StatusOverlay {
             @Override
             public void handle(KeyEvent event) {
                 switch (event.getCode()) {
+                case TAB:
                 case LEFT:
                 case RIGHT:
                     if (selectedButton == leftButton) {
