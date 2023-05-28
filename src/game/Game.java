@@ -8,10 +8,14 @@ import java.net.URISyntaxException;
 import java.nio.file.FileSystemNotFoundException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Hashtable;
 import java.util.Random;
 
 import game.scenes.GameScene;
 import game.scenes.MainMenuScene;
+import javafx.scene.media.AudioClip;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
@@ -63,6 +67,10 @@ public final class Game {
 
     public static final Random RNG = new Random();
 
+    private static MediaPlayer mediaPlayer;
+    private static Hashtable<String, Media> cachedBGM;
+    private static Hashtable<String, AudioClip> cachedSFX;
+
     private static Stage primaryStage;
     private static GameScene gameScene;
     private static GameTimer gameTimer = new GameTimer();
@@ -73,12 +81,22 @@ public final class Game {
             return;
         }
 
+        Game.mediaPlayer = null;
+        Game.cachedBGM = new Hashtable<String, Media>();
+        Game.cachedSFX = new Hashtable<String, AudioClip>();
+
         Game.primaryStage = primaryStage;
         Game.primaryStage.setResizable(false);
         Game.primaryStage.setTitle(GAME_NAME);
         Game.setGameScene(new MainMenuScene());
         Game.gameTimer.start();
         Game.primaryStage.show();
+
+        // XXX: We have to re-play the background music again here since
+        // starting the media playback before the stage/window is
+        // shown doesn't work properly.
+        Game.playGameSceneBGM();
+
         Game.initialized = true;
     }
 
@@ -93,6 +111,7 @@ public final class Game {
     public static void setGameScene(GameScene gameScene) {
         Game.gameScene = gameScene;
         Game.primaryStage.setScene(Game.gameScene.getInner());
+        Game.playGameSceneBGM();
     }
 
     public static String getAsset(String path) {
@@ -127,6 +146,78 @@ public final class Game {
         } catch (Exception e) {
             return null;
         }
+    }
+
+    private static synchronized void setMediaPlayer(
+            String assetName, double volume) {
+        if (!Game.initialized) {
+            return;
+        }
+
+        Media media = Game.cachedBGM.get(assetName);
+        if (media == null) {
+            String assetPath = Game.getAsset(assetName);
+            if (assetPath == null) {
+                return;
+            }
+            media = new Media(assetPath);
+            Game.cachedBGM.put(assetName, media);
+        }
+
+        if (Game.mediaPlayer != null) {
+            if (Game.mediaPlayer.getMedia() == media) {
+                return;
+            }
+            Game.mediaPlayer.stop();
+        }
+
+        Game.mediaPlayer = new MediaPlayer(media);
+        Game.mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
+        Game.mediaPlayer.play();
+    }
+
+    public static void playBGM(String assetName, double volume) {
+        // XXX: We have to do this in a different thread to avoid the
+        // noticeable lag on input when loading media files.
+        Thread player = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                setMediaPlayer(assetName, volume);
+            }
+        });
+        player.start();
+    }
+
+    public static void playBGM(String assetName) {
+        playBGM(assetName, 1);
+    }
+
+    private static void playGameSceneBGM() {
+        if (Game.gameScene.getBGM() != null) {
+            Game.playBGM(Game.gameScene.getBGM());
+        }
+    }
+
+    public static void playSFX(String assetName, double volume) {
+        if (!Game.initialized) {
+            return;
+        }
+
+        AudioClip clip = Game.cachedSFX.get(assetName);
+        if (clip == null) {
+            String assetPath = Game.getAsset(assetName);
+            if (assetPath == null) {
+                return;
+            }
+            clip = new AudioClip(assetPath);
+            Game.cachedSFX.put(assetName, clip);
+        }
+
+        clip.play(volume);
+    }
+
+    public static void playSFX(String assetName) {
+        playSFX(assetName, 1);
     }
 
     public static boolean isDirectionActive(byte activeDirections, byte directionFlag) {

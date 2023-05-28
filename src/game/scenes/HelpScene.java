@@ -102,4 +102,9 @@ public class HelpScene implements GameScene {
         return this.levelMap;
     }
 
+    @Override
+    public String getBGM() {
+        return "bgm_01.mp3";
+    }
+
 }

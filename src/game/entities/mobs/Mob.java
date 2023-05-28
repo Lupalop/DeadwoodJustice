@@ -28,6 +28,8 @@ public abstract class Mob extends LevelSprite {
     private static final int MOB_SHOOT_INTERVAL_MIN = 1;
     private static final int MOB_SHOOT_INTERVAL_MAX = 3;
 
+    private static final String SFX_DEAD_MOB = "sfx_dead_mob.wav";
+
     private int health;
     private int damage;
     private int speed;
@@ -216,6 +218,7 @@ public abstract class Mob extends LevelSprite {
         this.setFrameInterval(FRAME_DEATH_INTERVAL);
         this.setMinMaxFrame(frameRanges[6], frameRanges[7]);
         this.deathEffect = new ExplosionEffect(this);
+        Game.playSFX(SFX_DEAD_MOB, 0.3);
     }
 
     public void changeDirection() {

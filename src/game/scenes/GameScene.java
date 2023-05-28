@@ -12,5 +12,6 @@ public interface GameScene {
     public Scene getInner();
     public Group getRoot();
     public TimedActionManager getActions();
+    public String getBGM();
 
 }

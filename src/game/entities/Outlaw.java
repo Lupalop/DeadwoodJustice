@@ -34,6 +34,8 @@ public class Outlaw extends LevelSprite {
 
     public static final int OUTLAW_SPEED = 10;
 
+    private static final String SFX_DEAD_OUTLAW = "sfx_dead_outlaw.wav";
+
     private String name;
     private int strength;
 
@@ -141,6 +143,7 @@ public class Outlaw extends LevelSprite {
             return;
         }
 
+        Game.playSFX(Bullet.SFX_SHOOT, 0.3);
         Bullet bullet = new Bullet(this, getParent(), activeDirections,
                 Game.FLAG_DIRECTIONAL_SHOOTING);
         this.getParent().getLevelMap().addSpriteOnUpdate(bullet);
@@ -177,6 +180,7 @@ public class Outlaw extends LevelSprite {
             this.setFrameAutoReset(false);
             this.setMinMaxFrame(56, 69);
             moteType = Mote.TYPE_BAD;
+            Game.playSFX(SFX_DEAD_OUTLAW);
         } else {
             this.playFrames(56, 58, null, TimeUnit.MILLISECONDS.toNanos(200));
         }

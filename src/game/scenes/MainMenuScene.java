@@ -213,10 +213,10 @@ public class MainMenuScene implements GameScene {
                 KeyCode code = e.getCode();
                 switch (code) {
                 case LEFT:
-                    updateButton(false);
+                    previousButton.click();
                     break;
                 case RIGHT:
-                    updateButton(true);
+                    nextButton.click();
                     break;
                 case ENTER:
                 case SPACE:
@@ -238,6 +238,7 @@ public class MainMenuScene implements GameScene {
                 case BACK_SPACE:
                 case ESCAPE:
                     Game.setGameScene(new MainMenuScene());
+                    Game.playSFX(Button.SFX_BUTTON);
                     break;
                 default:
                     break;
@@ -263,6 +264,11 @@ public class MainMenuScene implements GameScene {
 
     public LevelMap getLevelMap() {
         return this.levelMap;
+    }
+
+    @Override
+    public String getBGM() {
+        return "bgm_01.mp3";
     }
 
 }

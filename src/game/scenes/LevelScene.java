@@ -8,6 +8,7 @@ import game.LevelMap;
 import game.TimedAction;
 import game.TimedActionManager;
 import game.entities.Bullet;
+import game.entities.Button;
 import game.entities.Outlaw;
 import game.entities.Sprite;
 import game.entities.mobs.CactusMob;
@@ -53,6 +54,12 @@ public class LevelScene implements GameScene {
             TimeUnit.SECONDS.toNanos(60);
 
     private static final int OUTLAW_INITIAL_X = 100;
+
+    private static final String[] MUSIC_REGULAR =
+            { "bgm_01.mp3", "bgm_02.mp3", "bgm_04.mp3" };
+
+    private static final String[] MUSIC_HARD =
+            { "bgm_03.mp3", "bgm_05.mp3" };
 
     private Group root;
     private Scene scene;
@@ -390,6 +397,7 @@ public class LevelScene implements GameScene {
         }
         statusOverlay.togglePausedVisibility();
         levelPaused = !levelPaused;
+        Game.playSFX(Button.SFX_BUTTON);
     }
 
     private final EventHandler<KeyEvent> pauseEventHandler =
@@ -490,6 +498,16 @@ public class LevelScene implements GameScene {
 
     public LevelMap getLevelMap() {
         return this.levelMap;
+    }
+
+    @Override
+    public String getBGM() {
+        int index = Game.RNG.nextInt(0, MUSIC_REGULAR.length);
+        if (this.getDifficulty() == DIFFICULTY_HARD) {
+            index = Game.RNG.nextInt(0, MUSIC_HARD.length);
+            return MUSIC_HARD[index];
+        }
+        return MUSIC_REGULAR[index];
     }
 
 }

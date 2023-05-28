@@ -22,7 +22,7 @@ https://github.com/Lupalop/Maquina
 
 +Art
 
--Generic Old West Pack
+-Generic Old West Pack (Graphics/Music)
 Created by:
 @bakudas,  @_DeuTilt,
 @_sofarama, and @itsarfo
@@ -59,6 +59,17 @@ https://itch.io/profile/foozlecc
 https://nyknck.itch.io/fx062
 https://itch.io/profile/nyknck
 
+-RTS and FPS Sound Effects Asset Pack
+mattflat
+License: CC BY-ND 3.0
+https://mattflat.itch.io/rts-and-fps-sound-effects-asset-pack
+https://mattflat.itch.io/
+
+-8-bit / 16-bit Sound Effects (x25) Pack
+Jade Leamcharaskul (@jdwasabi)
+https://jdwasabi.itch.io/8-bit-16-bit-sound-effects-pack
+https://itch.io/profile/jdwasabi
+
 -Humble Fonts
 Eeve Somepx
 https://somepx.itch.io/humble-fonts-free
@@ -68,7 +79,6 @@ https://itch.io/profile/somepx
 Michelle Lehmann
 https://www.dafont.com/pixel-western.font
 https://www.dafont.com/mirz123.d2603
-
 
 
 Thanks for playing!

@@ -13,6 +13,8 @@ public class Button extends Sprite {
     public static final String TEXT_BACK = "<-";
     public static final String TEXT_FORWARD = "->";
 
+    public static final String SFX_BUTTON = "sfx_button.wav";
+
     private static final Tile TILE =
             new Tile("tilemap_ui.png", 4, 8);
 
@@ -174,6 +176,7 @@ public class Button extends Sprite {
 
     public void click() {
         this.clickAction.run();
+        Game.playSFX(SFX_BUTTON);
     }
 
 }

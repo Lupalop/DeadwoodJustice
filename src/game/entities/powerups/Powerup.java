@@ -3,6 +3,7 @@ package game.entities.powerups;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
+import game.Game;
 import game.entities.LevelSprite;
 import game.scenes.LevelScene;
 import javafx.scene.canvas.GraphicsContext;
@@ -13,6 +14,8 @@ public abstract class Powerup extends LevelSprite {
 
     public static final long POWERUP_TIMEOUT =
             TimeUnit.SECONDS.toNanos(5);
+
+    private static final String SFX_POWERUP_COLLECT = "sfx_powerup_collect.wav";
 
     private boolean consumed;
 
@@ -41,6 +44,7 @@ public abstract class Powerup extends LevelSprite {
                 this.consumed = true;
                 this.applyPowerup();
                 this.getParent().getOutlaw().spawnPowerupEffect();
+                Game.playSFX(SFX_POWERUP_COLLECT);
             }
         }
     }
