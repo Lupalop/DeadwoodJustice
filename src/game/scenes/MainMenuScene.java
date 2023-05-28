@@ -60,7 +60,7 @@ public class MainMenuScene implements GameScene {
 
     private int menuIndex = -1;
     private String[] menuLabels = {
-            "P: BABY MODE",
+            "P: I'M TOO CHICKEN",
             "P: HURT ME PLENTY",
             "P: NIGHTMARE",
             //"HIGH SCORES",
