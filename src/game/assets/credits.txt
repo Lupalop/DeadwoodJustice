@@ -15,7 +15,6 @@ CMSC 22
 -Supplemental Reference
 Maquina Game Engine
 Francis Dominic Fajardo/Lupálop Games
-
 https://github.com/Lupalop/Maquina
 
 
@@ -26,16 +25,13 @@ https://github.com/Lupalop/Maquina
 Created by:
 @bakudas,  @_DeuTilt,
 @_sofarama, and @itsarfo
-
 Published by:
 Vaca Roxa
-
 https://bakudas.itch.io/generic-oldwest-pack
 https://itch.io/profile/bakudas
 
 -Simple Desert - Tileset
 Elisha Ramos
-
 https://wrlck.itch.io/simple-desert
 http://elisharamos.art/
 
