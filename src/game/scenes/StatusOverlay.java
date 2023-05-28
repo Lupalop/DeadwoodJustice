@@ -31,26 +31,26 @@ public class StatusOverlay {
     private static final Image STANDEE_EXIT =
             new Image(Game.getAsset("ui_game_end_standee_exit.png"));
 
-    private static final int STROKE_OFFSET = 2;
-
-    private static final int HUD_BASE_SIZE = 9;
-    private static final int HUD_BASE_POS = 1;
+    private static final int HUD_BASE_SIZE = 12;
+    private static final int HUD_BASE_POS = 2;
     private static final int HUD_BASE_POS_HP = 2;
     private static final int HUD_BASE_POS_MOB = 5;
     private static final int HUD_BASE_POS_TIME = 8;
-    private static final int HUD_POWERUP_POS = 12;
+    private static final int HUD_BASE_POS_SCORE = 11;
+    private static final int HUD_POWERUP_POS = 16;
 
     private static final int HUD_OFFSET_Y = -Tile.SIZE_MID;
     private static final int HUD_TEXT_OFFSET_Y = (Tile.SIZE_MID / 2) + 3;
     private static final int HUD_MAX_NUM = 9999;
 
-    private static final int TX_BASE_START = 3;
+    private static final int TX_BASE_START = 0;
     private static final int TX_BASE_MID = 1;
-    private static final int TX_BASE_END = 4;
+    private static final int TX_BASE_END = 2;
     private static final int TX_OUTLAW = 13;
     private static final int TX_INFINITY = 14;
     private static final int TX_MOB = 12;
     private static final int TX_TIME = 8;
+    private static final int TX_SCORE = 23;
 
     private static final int TX_POWERUP_START = 5;
     private static final int TX_POWERUP_END = 7;
@@ -167,16 +167,21 @@ public class StatusOverlay {
         String strengthText = Integer.toString(strength);
         String mobKillCountText = Integer.toString(mobKillCount);
         String timeLeftText = this.getLevelTimeLeftText();
+        String scoreText = Integer.toString(this.level.getScore());
+        if (this.level.getScore() > 99999) {
+            scoreText = ">99999";
+        }
+
         // Draw base HUD background.
         int tileOffset = HUD_BASE_POS;
-        TILE.draw(gc, Tile.SIZE_MID,
-                hudOffsetY, TX_BASE_START);
+        TILE.draw(gc, Tile.SIZE_MID, hudOffsetY, TX_BASE_START);
         for (int i = 0; i < HUD_BASE_SIZE; i++) {
-            TILE.draw(gc, Tile.SIZE_MID * ++tileOffset,
+            TILE.draw(gc, Tile.SIZE_MID * tileOffset++,
                     hudOffsetY, TX_BASE_MID);
         }
-        TILE.draw(gc, Tile.SIZE_MID * ++tileOffset,
+        TILE.draw(gc, Tile.SIZE_MID * tileOffset++,
                 hudOffsetY, TX_BASE_END);
+
         // Base HUD: player strength.
         TILE.draw(gc, Tile.SIZE_MID * HUD_BASE_POS_HP,
                 hudOffsetY, TX_OUTLAW);
@@ -203,30 +208,13 @@ public class StatusOverlay {
         gc.fillText(timeLeftText,
                 Tile.SIZE_MID * (HUD_BASE_POS_TIME + 1),
                 hudOffsetY + HUD_TEXT_OFFSET_Y);
-
-        gc.save();
-
-        gc.setFont(Game.FONT_32);
-
-        // gc.strokeText is inflexible, so we draw the outline on our own.
-        String score = String.format("Score: %s", this.level.getScore());
-        int x = Tile.SIZE_MID * 2;
-        int y = hudOffsetY + HUD_TEXT_OFFSET_Y + Tile.SIZE_MID;
-        gc.setFill(Game.COLOR_ACCENT);
-        gc.fillText(score,
-                x - STROKE_OFFSET, y);
-        gc.fillText(score,
-                x + STROKE_OFFSET, y);
-        gc.fillText(score,
-                x, y - STROKE_OFFSET);
-        gc.fillText(score,
-                x, y + STROKE_OFFSET);
-
-        gc.setFill(Game.COLOR_MAIN);
-
-        gc.fillText(score, x, y);
-
-        gc.restore();
+        // Base HUD: score.
+        TILE.draw(gc,
+                Tile.SIZE_MID * HUD_BASE_POS_SCORE,
+                hudOffsetY, TX_SCORE);
+        gc.fillText(scoreText,
+                Tile.SIZE_MID * (HUD_BASE_POS_SCORE + 1),
+                hudOffsetY + HUD_TEXT_OFFSET_Y);
     }
 
     private int drawHUDPowerup(GraphicsContext gc,
@@ -243,7 +231,7 @@ public class StatusOverlay {
         gc.fillText(valueText, Tile.SIZE_MID * tileOffset,
                 hudOffsetY + HUD_TEXT_OFFSET_Y);
         gc.restore();
-        return tileOffset += 2;
+        return tileOffset += 1;
     }
 
     private void drawShade(GraphicsContext gc) {
