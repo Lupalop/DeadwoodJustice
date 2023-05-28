@@ -78,6 +78,7 @@ public class LevelScene implements GameScene {
     private long levelEndTime;
     private long powerupSpawnInterval;
 
+    private int score;
     private int mobKillCount;
     private int powerupsCount[];
     private TimedAction[] powerupsAction;
@@ -447,6 +448,21 @@ public class LevelScene implements GameScene {
 
     public int getDifficulty() {
         return this.difficulty;
+    }
+
+    public int getScore() {
+        return this.score
+                + (this.score > 0 ? (this.getOutlaw().getStrength() / 2) : 0)
+                * (this.getDifficulty() + 1);
+    }
+
+    public void addScore(int value) {
+        // This must be a non-negative number.
+        if (value < 0) {
+            return;
+        }
+
+        this.score += value;
     }
 
     public int getMobKillCount() {

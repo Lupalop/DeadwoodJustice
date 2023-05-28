@@ -217,6 +217,7 @@ public abstract class Mob extends LevelSprite {
                 }
                 outlaw.reduceStrength(this.damage);
                 if (this.deadOnPlayerImpact) {
+                    this.getParent().addScore(outlaw.getStrength() / 4);
                     this.prepareDeath();
                 } else {
                     this.playFrames(frameRanges[2], frameRanges[3], null, 0);
@@ -313,6 +314,7 @@ public abstract class Mob extends LevelSprite {
             return;
         }
         this.health -= value;
+        this.getParent().addScore(value / 3);
 
         byte moteType = Mote.TYPE_NEUTRAL;
         if (this.health <= 0) {

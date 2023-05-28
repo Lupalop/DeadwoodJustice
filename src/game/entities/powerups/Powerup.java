@@ -15,6 +15,7 @@ public abstract class Powerup extends LevelSprite {
     public static final long POWERUP_TIMEOUT =
             TimeUnit.SECONDS.toNanos(5);
 
+    private static final int POWERUP_BASE_SCORE = 100;
     private static final String SFX_POWERUP_COLLECT = "sfx_powerup_collect.wav";
 
     private boolean consumed;
@@ -44,6 +45,7 @@ public abstract class Powerup extends LevelSprite {
                 this.consumed = true;
                 this.applyPowerup();
                 this.getParent().getOutlaw().spawnPowerupEffect();
+                this.getParent().addScore(POWERUP_BASE_SCORE);
                 Game.playSFX(SFX_POWERUP_COLLECT);
             }
         }
