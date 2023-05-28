@@ -163,7 +163,7 @@ public class Outlaw extends LevelSprite {
 
     public void reduceStrength(int value) {
         // This must be a positive integer.
-        if (value < 0 || this.immortal) {
+        if (value < 0 || this.immortal || !this.alive) {
             return;
         }
         // Clamp the strength value to 0.
@@ -175,12 +175,8 @@ public class Outlaw extends LevelSprite {
 
         byte moteType = Mote.TYPE_NEUTRAL;
         if (this.strength == 0) {
-            this.alive = false;
-            this.dying = true;
-            this.setFrameAutoReset(false);
-            this.setMinMaxFrame(56, 69);
             moteType = Mote.TYPE_BAD;
-            Game.playSFX(SFX_DEAD_OUTLAW);
+            this.prepareDeath();
         } else {
             this.playFrames(56, 58, null, TimeUnit.MILLISECONDS.toNanos(200));
         }
@@ -189,6 +185,14 @@ public class Outlaw extends LevelSprite {
             this.getParent().getLevelMap().addSpriteOnUpdate(
                     new Mote(this, value, moteType, getParent()));
         }
+    }
+
+    private void prepareDeath() {
+        this.alive = false;
+        this.dying = true;
+        this.setFrameAutoReset(false);
+        this.setMinMaxFrame(56, 69);
+        Game.playSFX(SFX_DEAD_OUTLAW);
     }
 
     // method that will listen and handle the key press events
