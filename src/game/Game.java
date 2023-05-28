@@ -75,7 +75,7 @@ public final class Game {
 
     private static Stage primaryStage;
     private static GameScene gameScene;
-    private static GameTimer gameTimer = new GameTimer();
+    private static GameTimer gameTimer;
     private static boolean initialized;
 
     public static void run(Stage primaryStage) {
@@ -91,6 +91,7 @@ public final class Game {
         Game.primaryStage.setResizable(false);
         Game.primaryStage.setTitle(GAME_NAME);
         Game.setGameScene(new MainMenuScene());
+        Game.gameTimer = new GameTimer();
         Game.gameTimer.start();
         Game.primaryStage.show();
 
