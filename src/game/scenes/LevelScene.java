@@ -96,9 +96,8 @@ public class LevelScene implements GameScene {
     private LevelMap levelMap;
 
     private String playerName;
-    private boolean waitingForName;
 
-    public LevelScene(int difficulty, String playerName) {
+    public LevelScene(int difficulty) {
         this.difficulty = difficulty;
         switch (this.difficulty) {
         default:
@@ -139,6 +138,7 @@ public class LevelScene implements GameScene {
         this.getOutlaw().setY(Game.RNG.nextInt(
                 (int) getOutlaw().getBounds().getHeight(),
                 Game.WINDOW_MAX_HEIGHT - (int) getOutlaw().getBounds().getHeight()));
+        this.getOutlaw().handleKeyPressEvent(this);
         this.bossMob = null;
         this.statusOverlay = new StatusOverlay(this);
 
@@ -169,20 +169,10 @@ public class LevelScene implements GameScene {
             });
         }
 
+        this.playerName = null;
+
         this.spawnMobs(this.mobCountAtStart);
-
-        this.playerName = playerName;
-        if (this.playerName != null) {
-            this.initializeAfterNameInput();
-        } else {
-            this.waitingForName = true;
-            this.statusOverlay.toggleNameInputVisibility();
-            this.actions.stopAll();
-        }
-    }
-
-    public LevelScene(int difficulty) {
-        this(difficulty, null);
+        this.addPauseHandler();
     }
 
     private void initializeActions() {
@@ -250,18 +240,11 @@ public class LevelScene implements GameScene {
         });
     }
 
-    private void initializeAfterNameInput() {
-        this.waitingForName = false;
-        this.getOutlaw().handleKeyPressEvent(this);
-        this.addPauseHandler();
-        this.actions.startAll();
-    }
-
     @Override
     public void update(long now) {
         this.actions.update(now);
         this.statusOverlay.update(now);
-        if (this.levelDone || this.levelPaused || this.waitingForName) {
+        if (this.levelDone || this.levelPaused) {
             return;
         }
         this.updateSprites(now);
@@ -530,8 +513,13 @@ public class LevelScene implements GameScene {
         }
         this.getActions().removeAll();
         this.removePauseHandler();
-        MainMenuScene.handleReturnKeyPressEvent(this);
-        statusOverlay.toggleGameEndVisibility();
+        // TODO: high score condition here!
+        if (true) {
+            this.statusOverlay.toggleNameInputVisibility();
+        } else {
+            MainMenuScene.handleReturnKeyPressEvent(this);
+            this.statusOverlay.toggleGameEndVisibility();
+        }
         this.levelDone = true;
     }
 
@@ -558,7 +546,8 @@ public class LevelScene implements GameScene {
             return;
         }
         this.playerName = value;
-        this.initializeAfterNameInput();
+        MainMenuScene.handleReturnKeyPressEvent(this);
+        this.statusOverlay.toggleGameEndVisibility();
     }
 
 }

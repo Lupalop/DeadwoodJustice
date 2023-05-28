@@ -346,7 +346,7 @@ public class StatusOverlay {
             @Override
             public void run() {
                 Game.setGameScene(
-                        new LevelScene(level.getDifficulty(), level.getPlayerName()));
+                        new LevelScene(level.getDifficulty()));
             }
         });
         exitButton = new Button(0, 0, 3);
