@@ -8,6 +8,7 @@ import java.util.List;
 import game.Game;
 import game.LevelMap;
 import game.TimedActionManager;
+import game.UIUtils;
 import game.entities.Button;
 import game.entities.Sprite;
 import game.entities.Tile;
@@ -37,7 +38,7 @@ public class CreditsScene implements GameScene {
     public CreditsScene() {
         this.root = new Group();
         this.scene = new Scene(root, Game.WINDOW_MAX_WIDTH,
-                Game.WINDOW_MAX_HEIGHT, Game.COLOR_PRIMARY);
+                Game.WINDOW_MAX_HEIGHT, UIUtils.COLOR_PRIMARY);
         this.canvas = new Canvas(Game.WINDOW_MAX_WIDTH,
                 Game.WINDOW_MAX_HEIGHT);
         this.root.getChildren().add(canvas);
@@ -86,21 +87,21 @@ public class CreditsScene implements GameScene {
             Text node = new Text(textString);
             // Case 1: heading
             if (textString.startsWith(PREFIX_HEADING)) {
-                node.setFont(Game.FONT_ALT_48);
+                node.setFont(UIUtils.FONT_ALT_48);
                 node.setText(textString.substring(1));
-                node.setFill(Game.COLOR_PRIMARY);
-                node.setStroke(Game.COLOR_SECONDARY);
+                node.setFill(UIUtils.COLOR_PRIMARY);
+                node.setStroke(UIUtils.COLOR_SECONDARY);
                 node.setId(PREFIX_HEADING);
             // Case 2: subheading
             } else if (textString.startsWith(PREFIX_SUBHEADING)) {
-                node.setFont(Game.FONT_32);
+                node.setFont(UIUtils.FONT_32);
                 node.setText(textString.substring(1));
-                node.setFill(Game.COLOR_PRIMARY);
-                node.setStroke(Game.COLOR_SECONDARY);
+                node.setFill(UIUtils.COLOR_PRIMARY);
+                node.setStroke(UIUtils.COLOR_SECONDARY);
                 node.setId(PREFIX_SUBHEADING);
             // Case 3: regular text.
             } else {
-                node.setFont(Game.FONT_ALT_32);
+                node.setFont(UIUtils.FONT_ALT_32);
                 node.setFill(Color.WHITE);
                 node.setStroke(Color.BLACK);
             }

@@ -3,7 +3,7 @@ package game.entities;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
-import game.Game;
+import game.UIUtils;
 import game.scenes.LevelScene;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
@@ -58,7 +58,7 @@ public class Mote extends LevelSprite {
         gc.save();
 
         gc.setGlobalAlpha(this.opacity);
-        gc.setFont(Game.FONT_32);
+        gc.setFont(UIUtils.FONT_32);
 
         // gc.strokeText is inflexible, so we draw the outline on our own.
         gc.setFill(Color.BLACK);

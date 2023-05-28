@@ -4,6 +4,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
 import game.Game;
+import game.UIUtils;
 import game.entities.Button;
 import game.entities.Prop;
 import game.entities.Tile;
@@ -20,9 +21,6 @@ import javafx.scene.shape.StrokeType;
 import javafx.scene.text.Text;
 
 public class StatusOverlay {
-
-    private static final Tile TILE =
-            new Tile("tilemap_ui.png", 4, 8);
 
     private static final Image GAME_PAUSED =
             new Image(Game.getAsset("ui_paused.png"));
@@ -64,10 +62,6 @@ public class StatusOverlay {
     private static final int TX_POWERUP_HAY = 10;
     private static final int TX_POWERUP_WHEEL = 11;
     private static final int TX_POWERUP_SNAKEOIL = 15;
-
-    private static final int TX_POP_START = 16;
-    private static final int TX_POP_MID = 18;
-    private static final int TX_POP_END = 17;
 
     private static final long UI_SLIDE_INTERVAL =
             TimeUnit.MILLISECONDS.toNanos(100);
@@ -143,11 +137,11 @@ public class StatusOverlay {
 
     public void draw(GraphicsContext gc) {
         gc.save();
-        gc.setFont(Game.FONT_32);
-        gc.setFill(Game.COLOR_PRIMARY);
+        gc.setFont(UIUtils.FONT_32);
+        gc.setFill(UIUtils.COLOR_PRIMARY);
 
         if (isGameEndVisible || isPausedVisible || isNameInputVisible) {
-            this.drawShade(gc);
+            UIUtils.drawShade(gc);
         }
 
         drawHUD(gc);
@@ -202,19 +196,19 @@ public class StatusOverlay {
 
         // Draw base HUD background.
         int tileOffset = HUD_BASE_POS;
-        TILE.draw(gc, Tile.SIZE_MID, hudOffsetY, TX_BASE_START);
+        UIUtils.TILE.draw(gc, Tile.SIZE_MID, hudOffsetY, TX_BASE_START);
         for (int i = 0; i < HUD_BASE_SIZE; i++) {
-            TILE.draw(gc, Tile.SIZE_MID * tileOffset++,
+            UIUtils.TILE.draw(gc, Tile.SIZE_MID * tileOffset++,
                     hudOffsetY, TX_BASE_MID);
         }
-        TILE.draw(gc, Tile.SIZE_MID * tileOffset++,
+        UIUtils.TILE.draw(gc, Tile.SIZE_MID * tileOffset++,
                 hudOffsetY, TX_BASE_END);
 
         // Base HUD: player strength.
-        TILE.draw(gc, Tile.SIZE_MID * HUD_BASE_POS_HP,
+        UIUtils.TILE.draw(gc, Tile.SIZE_MID * HUD_BASE_POS_HP,
                 hudOffsetY, TX_OUTLAW);
         if (level.getOutlaw().isImmortal() || strength > HUD_MAX_NUM) {
-            TILE.draw(gc,
+            UIUtils.TILE.draw(gc,
                     Tile.SIZE_MID * (HUD_BASE_POS_HP + 1),
                     hudOffsetY, TX_INFINITY);
         } else {
@@ -223,21 +217,21 @@ public class StatusOverlay {
                     hudOffsetY + HUD_TEXT_OFFSET_Y);
         }
         // Base HUD: mob kill count.
-        TILE.draw(gc,
+        UIUtils.TILE.draw(gc,
                 Tile.SIZE_MID * HUD_BASE_POS_MOB,
                 hudOffsetY, TX_MOB);
         gc.fillText(mobKillCountText,
                 Tile.SIZE_MID * (HUD_BASE_POS_MOB + 1),
                 hudOffsetY + HUD_TEXT_OFFSET_Y);
         // Base HUD: time left.
-        TILE.draw(gc,
+        UIUtils.TILE.draw(gc,
                 Tile.SIZE_MID * HUD_BASE_POS_TIME,
                 hudOffsetY, TX_TIME);
         gc.fillText(timeLeftText,
                 Tile.SIZE_MID * (HUD_BASE_POS_TIME + 1),
                 hudOffsetY + HUD_TEXT_OFFSET_Y);
         // Base HUD: score.
-        TILE.draw(gc,
+        UIUtils.TILE.draw(gc,
                 Tile.SIZE_MID * HUD_BASE_POS_SCORE,
                 hudOffsetY, TX_SCORE);
         gc.fillText(scoreText,
@@ -250,11 +244,11 @@ public class StatusOverlay {
         String valueText = Integer.toString(value);
         gc.save();
         gc.setGlobalAlpha(alpha);
-        TILE.draw(gc, Tile.SIZE_MID * tileOffset,
+        UIUtils.TILE.draw(gc, Tile.SIZE_MID * tileOffset,
                 hudOffsetY, TX_POWERUP_START);
-        TILE.draw(gc, Tile.SIZE_MID * tileOffset,
+        UIUtils.TILE.draw(gc, Tile.SIZE_MID * tileOffset,
                 hudOffsetY, iconIndex);
-        TILE.draw(gc, Tile.SIZE_MID * ++tileOffset,
+        UIUtils.TILE.draw(gc, Tile.SIZE_MID * ++tileOffset,
                 hudOffsetY, TX_POWERUP_END);
         gc.fillText(valueText, Tile.SIZE_MID * tileOffset,
                 hudOffsetY + HUD_TEXT_OFFSET_Y);
@@ -262,37 +256,8 @@ public class StatusOverlay {
         return tileOffset += 1;
     }
 
-    private void drawShade(GraphicsContext gc) {
-        gc.save();
-        gc.setGlobalAlpha(0.5);
-        gc.setFill(Game.COLOR_SECONDARY);
-        gc.fillRect(0, 0, Game.WINDOW_MAX_WIDTH, Game.WINDOW_MAX_HEIGHT);
-        gc.restore();
-    }
-
-    private void drawMenuBackground(GraphicsContext gc, int base, int innerHeight) {
-        for (int i = 0; i < (Game.WINDOW_MAX_WIDTH) / Tile.SIZE_MID; i++) {
-            TILE.draw(gc, Tile.SIZE_MID * i,
-                    Tile.SIZE_MID * base, TX_POP_START);
-        }
-
-        for (int i = 0; i < innerHeight; i++) {
-            base++;
-            for (int j = 0; j < (Game.WINDOW_MAX_WIDTH) / Tile.SIZE_MID; j++) {
-                TILE.draw(gc, Tile.SIZE_MID * j,
-                        Tile.SIZE_MID * base, TX_POP_MID);
-            }
-        }
-
-        base++;
-        for (int i = 0; i < (Game.WINDOW_MAX_WIDTH) / Tile.SIZE_MID; i++) {
-            TILE.draw(gc, Tile.SIZE_MID * i,
-                    Tile.SIZE_MID * base, TX_POP_END);
-        }
-    }
-
     private void drawGameEnd(GraphicsContext gc) {
-        this.drawMenuBackground(gc, Tile.ALL_VERTICAL / 3, 5);
+        UIUtils.drawMenuBackground(gc, Tile.ALL_VERTICAL / 3, 5);
 
         Image gameEndCenterImage = null;
         if (!level.getOutlaw().isAlive()) {
@@ -322,7 +287,7 @@ public class StatusOverlay {
     }
 
     private void drawPaused(GraphicsContext gc) {
-        this.drawMenuBackground(gc, Tile.ALL_VERTICAL - 4, 1);
+        UIUtils.drawMenuBackground(gc, Tile.ALL_VERTICAL - 4, 1);
 
         gc.drawImage(
                 GAME_PAUSED,
@@ -336,7 +301,7 @@ public class StatusOverlay {
     }
 
     private void drawNameInput(GraphicsContext gc) {
-        this.drawMenuBackground(gc, (Tile.ALL_VERTICAL / 2), 1);
+        UIUtils.drawMenuBackground(gc, (Tile.ALL_VERTICAL / 2), 1);
 
         goButton.draw(gc);
         headerProp.draw(gc);
@@ -383,12 +348,12 @@ public class StatusOverlay {
         headerProp = new Prop(0, 0, "ui_name.png");
         headerProp.setScale(1);
         nameInputText = new Text(nameInputValue);
-        nameInputText.setFont(Game.FONT_48);
-        nameInputText.setFill(Game.COLOR_PRIMARY);
+        nameInputText.setFont(UIUtils.FONT_48);
+        nameInputText.setFill(UIUtils.COLOR_PRIMARY);
         nameInputDescription = new Text("You've attained a new high score!");
-        nameInputDescription.setFont(Game.FONT_ALT_48);
-        nameInputDescription.setFill(Game.COLOR_PRIMARY);
-        nameInputDescription.setStroke(Game.COLOR_TERTIARY);
+        nameInputDescription.setFont(UIUtils.FONT_ALT_48);
+        nameInputDescription.setFill(UIUtils.COLOR_PRIMARY);
+        nameInputDescription.setStroke(UIUtils.COLOR_TERTIARY);
         nameInputDescription.setStrokeType(StrokeType.OUTSIDE);
         nameInputDescription.setStrokeWidth(3);
         nameInputDescription.setY((Game.WINDOW_MAX_HEIGHT / 2)

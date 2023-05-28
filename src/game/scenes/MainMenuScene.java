@@ -6,6 +6,7 @@ import java.util.concurrent.TimeUnit;
 import game.Game;
 import game.LevelMap;
 import game.TimedActionManager;
+import game.UIUtils;
 import game.entities.Button;
 import game.entities.Prop;
 import game.entities.Sprite;
@@ -36,7 +37,7 @@ public class MainMenuScene implements GameScene {
     public MainMenuScene() {
         this.root = new Group();
         this.scene = new Scene(root, Game.WINDOW_MAX_WIDTH,
-                Game.WINDOW_MAX_HEIGHT, Game.COLOR_PRIMARY);
+                Game.WINDOW_MAX_HEIGHT, UIUtils.COLOR_PRIMARY);
         this.canvas = new Canvas(Game.WINDOW_MAX_WIDTH,
                 Game.WINDOW_MAX_HEIGHT);
         this.root.getChildren().add(canvas);

@@ -22,33 +22,12 @@ import game.scenes.MainMenuScene;
 import javafx.scene.media.AudioClip;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
-import javafx.scene.paint.Paint;
-import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 public final class Game {
 
     public static final String GAME_NAME = "Deadwood Justice";
     public static final String GAME_ASSETS_PATH = "/game/assets/";
-
-    public static final String FONT_PATH =
-            Game.getAsset("THALEAHFAT.ttf");
-    public static final String FONT_MUP_PATH =
-            Game.getAsset("MATCHUPPRO.ttf");
-
-    public static final int FONT_SIZE_32 = 32;
-    public static final int FONT_SIZE_48 = 48;
-    public static final int FONT_SIZE_BTN = 21;
-
-    public static final Font FONT_48 =
-            Font.loadFont(FONT_PATH, FONT_SIZE_48);
-    public static final Font FONT_32 =
-            Font.loadFont(FONT_PATH, FONT_SIZE_32);
-
-    public static final Font FONT_ALT_48 =
-            Font.loadFont(FONT_MUP_PATH, FONT_SIZE_48);
-    public static final Font FONT_ALT_32 =
-            Font.loadFont(FONT_MUP_PATH, FONT_SIZE_32);
 
     public static final int WINDOW_MIN_WIDTH = 0;
     public static final int WINDOW_MAX_WIDTH = 800;
@@ -61,10 +40,6 @@ public final class Game {
     public static final byte DIR_RIGHT = 0x8;
 
     public static final int MAX_HIGH_SCORES = 10;
-
-    public static final Paint COLOR_PRIMARY = Paint.valueOf("eeca84");
-    public static final Paint COLOR_SECONDARY = Paint.valueOf("49276d");
-    public static final Paint COLOR_TERTIARY = Paint.valueOf("a23e47");
 
     public static final boolean DEBUG_MODE = false;
     public static final boolean FLAG_DIRECTIONAL_SHOOTING = false;

@@ -4,6 +4,7 @@ import game.Game;
 import game.LevelMap;
 import game.PlayerScore;
 import game.TimedActionManager;
+import game.UIUtils;
 import game.entities.Button;
 import game.entities.Prop;
 import game.entities.Sprite;
@@ -16,7 +17,6 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
-import javafx.scene.shape.StrokeType;
 import javafx.scene.text.Text;
 
 public class HighScoresScene implements GameScene {
@@ -33,7 +33,7 @@ public class HighScoresScene implements GameScene {
     public HighScoresScene() {
         this.root = new Group();
         this.scene = new Scene(root, Game.WINDOW_MAX_WIDTH,
-                Game.WINDOW_MAX_HEIGHT, Game.COLOR_PRIMARY);
+                Game.WINDOW_MAX_HEIGHT, UIUtils.COLOR_PRIMARY);
         this.canvas = new Canvas(Game.WINDOW_MAX_WIDTH,
                 Game.WINDOW_MAX_HEIGHT);
         this.root.getChildren().add(canvas);
@@ -94,25 +94,16 @@ public class HighScoresScene implements GameScene {
         for (int i = 0; i < Game.getHighScores().size(); i++) {
             PlayerScore score = Game.getHighScores().get(i);
             Text nameText = new Text(score.getName());
-            nameText.setFill(Game.COLOR_PRIMARY);
-            nameText.setStroke(Game.COLOR_TERTIARY);
-            nameText.setStrokeType(StrokeType.OUTSIDE);
-            nameText.setStrokeWidth(2);
-            nameText.setFont(Game.FONT_48);
+            nameText.setFill(UIUtils.COLOR_PRIMARY);
+            nameText.setFont(UIUtils.FONT_48);
 
             Text scoreText = new Text(Integer.toString(score.getScore()));
-            scoreText.setFill(Game.COLOR_PRIMARY);
-            scoreText.setStroke(Game.COLOR_TERTIARY);
-            scoreText.setStrokeType(StrokeType.OUTSIDE);
-            scoreText.setStrokeWidth(2);
-            scoreText.setFont(Game.FONT_48);
+            scoreText.setFill(UIUtils.COLOR_PRIMARY);
+            scoreText.setFont(UIUtils.FONT_48);
 
             Text difficultyText = new Text();
-            difficultyText.setFill(Game.COLOR_PRIMARY);
-            difficultyText.setStroke(Game.COLOR_TERTIARY);
-            difficultyText.setStrokeType(StrokeType.OUTSIDE);
-            difficultyText.setStrokeWidth(2);
-            difficultyText.setFont(Game.FONT_48);
+            difficultyText.setFill(UIUtils.COLOR_PRIMARY);
+            difficultyText.setFont(UIUtils.FONT_48);
 
             switch (score.getDifficulty()) {
             case LevelScene.DIFFICULTY_EASY:
@@ -152,6 +143,7 @@ public class HighScoresScene implements GameScene {
                 Game.WINDOW_MAX_HEIGHT);
         this.levelMap.draw(gc);
 
+        UIUtils.drawMenuBackground(gc, 2, Tile.ALL_VERTICAL);
         this.headerProp.draw(gc);
         backButton.draw(gc);
         backButton.drawSelector(gc);

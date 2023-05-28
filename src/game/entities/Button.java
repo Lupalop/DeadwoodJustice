@@ -1,6 +1,7 @@
 package game.entities;
 
 import game.Game;
+import game.UIUtils;
 import game.scenes.GameScene;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
@@ -45,8 +46,8 @@ public class Button extends Sprite {
         this.setWidth(Tile.SIZE * (2 + size));
         this.setHeight(Tile.SIZE);
         text = new Text();
-        text.setFont(Game.FONT_ALT_48);
-        text.setFill(Game.COLOR_SECONDARY);
+        text.setFont(UIUtils.FONT_ALT_48);
+        text.setFill(UIUtils.COLOR_SECONDARY);
         updateTextX();
         updateTextY();
 
@@ -117,7 +118,7 @@ public class Button extends Sprite {
     }
 
     public void drawSelector(GraphicsContext gc) {
-        gc.setStroke(Game.COLOR_SECONDARY);
+        gc.setStroke(UIUtils.COLOR_SECONDARY);
         gc.setLineWidth(SELECTOR_STROKE_WIDTH);
         gc.strokeRoundRect(
                 this.getBounds().getMinX(),
@@ -157,7 +158,7 @@ public class Button extends Sprite {
 
     private void updateTextY() {
         this.text.setY(this.getBounds().getMaxY()
-                - ((this.getBounds().getHeight() - Game.FONT_SIZE_BTN) / 2));
+                - ((this.getBounds().getHeight() - UIUtils.FONT_SIZE_BTN) / 2));
     }
 
     public String getText() {
