@@ -31,7 +31,9 @@ public class StatusOverlay {
     private static final Image STANDEE_EXIT =
             new Image(Game.getAsset("ui_game_end_standee_exit.png"));
 
-    private static final int HUD_BASE_SIZE = 12;
+    private static final int HUD_MAX_SCORE = 9999999;
+
+    private static final int HUD_BASE_SIZE = 13;
     private static final int HUD_BASE_POS = 2;
     private static final int HUD_BASE_POS_HP = 2;
     private static final int HUD_BASE_POS_MOB = 5;
@@ -168,8 +170,8 @@ public class StatusOverlay {
         String mobKillCountText = Integer.toString(mobKillCount);
         String timeLeftText = this.getLevelTimeLeftText();
         String scoreText = Integer.toString(this.level.getScore());
-        if (this.level.getScore() > 99999) {
-            scoreText = ">99999";
+        if (this.level.getScore() > HUD_MAX_SCORE) {
+            scoreText = ">" + HUD_MAX_SCORE;
         }
 
         // Draw base HUD background.
