@@ -11,6 +11,7 @@ import game.entities.Outlaw;
 import game.entities.Sprite;
 import game.entities.effects.Effect;
 import game.entities.effects.ExplosionEffect;
+import game.entities.effects.TornadoEffect;
 import game.scenes.LevelScene;
 import javafx.scene.canvas.GraphicsContext;
 
@@ -48,6 +49,7 @@ public abstract class Mob extends LevelSprite {
     private int[] frameRanges;
 
     private Effect deathEffect;
+    private Effect zeroSpeedEffect;
 
     public Mob(int x, int y, int health, int damage, LevelScene parent) {
         super(x, y, parent);
@@ -103,8 +105,18 @@ public abstract class Mob extends LevelSprite {
     public void update(long now) {
         super.update(now);
 
+        if (this.getParent().isZeroSpeed()) {
+            if (this.zeroSpeedEffect == null || this.zeroSpeedEffect.isFrameSequenceDone()) {
+                this.zeroSpeedEffect = new TornadoEffect(this);
+            }
+        }
+
         if (this.deathEffect != null) {
             this.deathEffect.update(now);
+        }
+
+        if (this.zeroSpeedEffect != null) {
+            this.zeroSpeedEffect.update(now);
         }
 
         if (this.dying) {
@@ -182,6 +194,12 @@ public abstract class Mob extends LevelSprite {
         if (this.deathEffect != null) {
             this.deathEffect.draw(gc);
         }
+        gc.save();
+        gc.setGlobalAlpha(0.5);
+        if (this.zeroSpeedEffect != null) {
+            this.zeroSpeedEffect.draw(gc);
+        }
+        gc.restore();
     }
 
     private void checkOutlaw(Outlaw outlaw) {
