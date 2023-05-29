@@ -226,8 +226,8 @@ public abstract class Mob extends LevelSprite {
         Outlaw outlaw = this.getParent().getOutlaw();
         if (this.chasingPlayer && outlaw.isAlive()) {
             int sideX = this.movingRight
-                    ? Sprite.SIDE_RIGHT
-                    : Sprite.SIDE_LEFT;
+                    ? SIDE_RIGHT
+                    : SIDE_LEFT;
             boolean passableX = passability[sideX];
             if (!passableX) {
                 this.dx = 0;
@@ -262,8 +262,8 @@ public abstract class Mob extends LevelSprite {
             }
 
             if (this.getParent().isZeroSpeed()
-                    || !passability[Sprite.SIDE_TOP] && this.dy <= 0
-                    || !passability[Sprite.SIDE_BOTTOM] && this.dy >= 0) {
+                    || !passability[SIDE_TOP] && this.dy <= 0
+                    || !passability[SIDE_BOTTOM] && this.dy >= 0) {
                 this.dy = 0;
             }
         } else {
@@ -273,7 +273,7 @@ public abstract class Mob extends LevelSprite {
             }
             // Check for passability if we're not stuck.
             if (!this.movingStuck) {
-                if (!passability[Sprite.SIDE_LEFT] && !passability[Sprite.SIDE_RIGHT]) {
+                if (!passability[SIDE_LEFT] && !passability[SIDE_RIGHT]) {
                     this.dx = 0;
                     this.movingStuck = true;
                 } else if (!passability[this.movingRight ? 1 : 0]) {
@@ -282,7 +282,7 @@ public abstract class Mob extends LevelSprite {
                     this.movingStuck = true;
                 }
             // Stop marking as stuck if one side is now passable.
-            } else if (passability[Sprite.SIDE_LEFT] && passability[Sprite.SIDE_RIGHT]) {
+            } else if (passability[SIDE_LEFT] && passability[SIDE_RIGHT]) {
                 this.movingStuck = false;
             }
         }
