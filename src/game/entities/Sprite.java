@@ -202,28 +202,36 @@ public abstract class Sprite implements Comparable<Sprite> {
         return intersects(target, false, false, false);
     }
 
-    private int intersectsSide(Rectangle2D r1, Rectangle2D r2) {
+    private boolean[] intersectsSide(Rectangle2D r1, Rectangle2D r2) {
         // Check if the rectangles intersect.
         if (!r1.intersects(r2)) {
-            return -1;
+            return null;
         }
 
         // Check which sides of the rectangles intersect.
+        boolean[] sides = new boolean[4];
+
+        // Left side of r1 intersects right side of r2.
         if (r1.getMinX() < r2.getMaxX() && r1.getMinX() > r2.getMinX()) {
-            return SIDE_LEFT; // Left side of r1 intersects right side of r2.
-        } else if (r2.getMinX() < r1.getMaxX() && r2.getMinX() > r1.getMinX()) {
-            return SIDE_RIGHT; // Right side of r1 intersects left side of r2.
-        } else if (r1.getMinY() < r2.getMaxY() && r1.getMinY() > r2.getMinY()) {
-            return SIDE_TOP; // Top side of r1 intersects bottom side of r2.
-        } else if (r2.getMinY() < r1.getMaxY() && r2.getMinY() > r1.getMinY()) {
-            return SIDE_BOTTOM; // Bottom side of r1 intersects top side of r2.
+            sides[SIDE_LEFT] = true;
+        }
+        // Right side of r1 intersects left side of r2.
+        if (r2.getMinX() < r1.getMaxX() && r2.getMinX() > r1.getMinX()) {
+            sides[SIDE_RIGHT] = true;
+        }
+        // Top side of r1 intersects bottom side of r2.
+        if (r1.getMinY() < r2.getMaxY() && r1.getMinY() > r2.getMinY()) {
+            sides[SIDE_TOP] = true;
+        }
+        // Bottom side of r1 intersects top side of r2.
+        if (r2.getMinY() < r1.getMaxY() && r2.getMinY() > r1.getMinY()) {
+            sides[SIDE_BOTTOM] = true;
         }
 
-        // Should never reach this point.
-        return SIDE_INVALID;
+        return sides;
     }
 
-    public int intersectsSide(Sprite target, boolean forCollider) {
+    public boolean[] intersectsSide(Sprite target, boolean forCollider) {
         return intersectsSide(
                 forCollider ? this.getCollider() : this.getBounds(),
                 forCollider ? target.getCollider() : target.getBounds());

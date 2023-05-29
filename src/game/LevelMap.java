@@ -219,19 +219,20 @@ public class LevelMap {
                 continue;
             }
 
-            int side = source.intersectsSide(sprite, true);
-            if (passability[Sprite.SIDE_LEFT]
-                    && side == Sprite.SIDE_LEFT) {
-                passability[Sprite.SIDE_LEFT] = false;
-            } else if (passability[Sprite.SIDE_RIGHT]
-                    && side == Sprite.SIDE_RIGHT) {
-                passability[Sprite.SIDE_RIGHT] = false;
-            } else if (passability[Sprite.SIDE_TOP]
-                    && side == Sprite.SIDE_TOP) {
-                passability[Sprite.SIDE_TOP] = false;
-            } else if (passability[Sprite.SIDE_BOTTOM]
-                    && side == Sprite.SIDE_BOTTOM) {
-                passability[Sprite.SIDE_BOTTOM] = false;
+            boolean[] sides = source.intersectsSide(sprite, true);
+            if (sides != null) {
+                if (passability[Sprite.SIDE_LEFT] && sides[Sprite.SIDE_LEFT]) {
+                    passability[Sprite.SIDE_LEFT] = false;
+                }
+                if (passability[Sprite.SIDE_RIGHT] && sides[Sprite.SIDE_RIGHT]) {
+                    passability[Sprite.SIDE_RIGHT] = false;
+                }
+                if (passability[Sprite.SIDE_TOP] && sides[Sprite.SIDE_TOP]) {
+                    passability[Sprite.SIDE_TOP] = false;
+                }
+                if (passability[Sprite.SIDE_BOTTOM] && sides[Sprite.SIDE_BOTTOM]) {
+                    passability[Sprite.SIDE_BOTTOM] = false;
+                }
             }
         }
 
