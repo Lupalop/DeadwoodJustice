@@ -194,12 +194,9 @@ public abstract class Mob extends LevelSprite {
         if (this.deathEffect != null) {
             this.deathEffect.draw(gc);
         }
-        gc.save();
-        gc.setGlobalAlpha(0.5);
         if (this.zeroSpeedEffect != null) {
             this.zeroSpeedEffect.draw(gc);
         }
-        gc.restore();
     }
 
     private void checkOutlaw(Outlaw outlaw) {
