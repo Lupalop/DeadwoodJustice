@@ -5,9 +5,10 @@ import game.LevelMap;
 import game.TimedActionManager;
 import game.UIUtils;
 import game.entities.Button;
-import game.entities.Prop;
 import game.entities.Sprite;
 import game.entities.Tile;
+import game.entities.props.HeaderProp;
+import game.entities.props.Prop;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
@@ -57,7 +58,7 @@ public class HelpScene implements GameScene {
             }
         });
 
-        helpImage = new Prop(0, 0, "ui_howtoplay.png");
+        helpImage = new HeaderProp(0, 0, HeaderProp.HOW_TO_PLAY);
         helpImage.setScale(1);
     }
 

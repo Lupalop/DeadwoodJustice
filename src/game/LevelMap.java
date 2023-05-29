@@ -7,21 +7,20 @@ import java.util.List;
 import game.entities.Bullet;
 import game.entities.Mote;
 import game.entities.Outlaw;
-import game.entities.Prop;
 import game.entities.Sprite;
 import game.entities.Tile;
 import game.entities.mobs.Mob;
 import game.entities.powerups.Powerup;
+import game.entities.props.HouseProp;
+import game.entities.props.Prop;
+import game.entities.props.TreeProp;
+import game.entities.props.WagonProp;
 import javafx.scene.canvas.GraphicsContext;
 
 public class LevelMap {
 
     private static final Tile TILE_DESERT =
             new Tile("tilemap_desert.png", 3, 4, 1);
-
-    private static final String PROP_HOUSE = "a_house.png";
-    private static final String PROP_COVERED_WAGON = "a_coveredwagon.png";
-    private static final String PROP_TREE = "a_tree.png";
 
     private static final int TILEGEN_MATCH = 1;
     private static final int TILEGEN_FREQ_GRASS_OR_ROCK = 6;
@@ -108,24 +107,20 @@ public class LevelMap {
         }
 
         for (int i = 0; i < 3; i++) {
-            Prop tree = new Prop(
+            Prop tree = new TreeProp(
                     Game.RNG.nextInt(1, 8) * Game.RNG.nextInt(1, 3) * 60,
-                    Game.RNG.nextInt(2, 6) * Game.RNG.nextInt(1, 3) * 60,
-                    PROP_TREE);
+                    Game.RNG.nextInt(2, 6) * Game.RNG.nextInt(1, 3) * 60);
             this.generatedProps.add(tree);
         }
 
-        Prop wagon = new Prop(
+        Prop wagon = new WagonProp(
                 Game.RNG.nextInt(50, Game.WINDOW_MAX_WIDTH / 2),
-                Game.RNG.nextInt(3, 6) * 100,
-                PROP_COVERED_WAGON);
+                Game.RNG.nextInt(3, 6) * 100);
         this.generatedProps.add(wagon);
 
-        Prop house = new Prop(
+        Prop house = new HouseProp(
                 Game.RNG.nextInt(Game.WINDOW_MAX_WIDTH / 2, Game.WINDOW_MAX_WIDTH),
-                -100,
-                PROP_HOUSE);
-        house.setCustomCollider(house.getBounds());
+                -100);
         this.generatedProps.add(house);
 
         this.pendingSpriteAdds.addAll(generatedProps);

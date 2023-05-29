@@ -8,9 +8,10 @@ import game.LevelMap;
 import game.TimedActionManager;
 import game.UIUtils;
 import game.entities.Button;
-import game.entities.Prop;
 import game.entities.Sprite;
 import game.entities.Tile;
+import game.entities.props.HeaderProp;
+import game.entities.props.Prop;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -118,7 +119,7 @@ public class MainMenuScene implements GameScene {
     };
 
     private void addMenuControls() {
-        titleProp = new Prop(0, 0, "ui_title.png");
+        titleProp = new HeaderProp(0, 0, HeaderProp.MENU_TITLE);
         titleProp.setScale(1);
         titleProp.setX((int) ((Game.WINDOW_MAX_WIDTH / 2) - (titleProp.getWidth() / 2)));
         titleProp.setY((int) ((Game.WINDOW_MAX_HEIGHT / 2) - (titleProp.getHeight() / 2)) - (Tile.SIZE_MID));

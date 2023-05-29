@@ -6,9 +6,10 @@ import game.PlayerScore;
 import game.TimedActionManager;
 import game.UIUtils;
 import game.entities.Button;
-import game.entities.Prop;
 import game.entities.Sprite;
 import game.entities.Tile;
+import game.entities.props.HeaderProp;
+import game.entities.props.Prop;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.scene.Group;
@@ -77,7 +78,7 @@ public class HighScoresScene implements GameScene {
     private Button backButton;
 
     private void addMenuControls() {
-        headerProp = new Prop(0, Tile.SIZE_MID, "ui_highscores.png");
+        headerProp = new HeaderProp(0, Tile.SIZE_MID, HeaderProp.HIGH_SCORES);
         headerProp.setScale(1);
         headerProp.setX((int) ((Game.WINDOW_MAX_WIDTH / 2) - (headerProp.getWidth() / 2)));
 

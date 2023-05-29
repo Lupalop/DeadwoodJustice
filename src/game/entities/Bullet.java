@@ -2,6 +2,7 @@ package game.entities;
 
 import game.Game;
 import game.entities.mobs.Mob;
+import game.entities.props.Prop;
 import game.scenes.LevelScene;
 import javafx.scene.image.Image;
 

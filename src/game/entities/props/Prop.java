@@ -1,10 +1,11 @@
-package game.entities;
+package game.entities.props;
 
 import game.Game;
+import game.entities.Sprite;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.image.Image;
 
-public class Prop extends Sprite {
+public abstract class Prop extends Sprite {
 
     private Rectangle2D customCollider;
 
@@ -21,13 +22,15 @@ public class Prop extends Sprite {
             return super.getCollider();
         }
         return new Rectangle2D(
-                super.getBounds().getMinX(),
-                super.getBounds().getMinY(),
-                this.customCollider.getWidth(),
-                this.customCollider.getHeight());
+                super.getBounds().getMinX()
+                + (this.customCollider.getMinX() * this.getScale()),
+                super.getBounds().getMinY()
+                + (this.customCollider.getMinY() * this.getScale()),
+                this.customCollider.getWidth() * this.getScale(),
+                this.customCollider.getHeight() * this.getScale());
     }
 
-    public void setCustomCollider(Rectangle2D customCollider) {
+    protected void setCustomCollider(Rectangle2D customCollider) {
         this.customCollider = customCollider;
     }
 
