@@ -59,7 +59,7 @@ public class MainMenuScene implements GameScene {
     private Button actionButton;
     private Button nextButton;
 
-    private int menuIndex = -1;
+    private static int menuIndex = -1;
     private String[] menuLabels = {
             "P: I'M TOO CHICKEN",
             "P: HURT ME PLENTY",
@@ -129,13 +129,17 @@ public class MainMenuScene implements GameScene {
         previousButton.setClickAction(new Runnable() {
             @Override
             public void run() {
-                updateButton(false);
+                updateMenuIndex(false);
             }
         });
 
         actionButton = new Button(Tile.SIZE_MID * 7, MENU_Y, 9);
         actionButton.attach(this);
-        updateButton(true);
+        if (menuIndex != -1) {
+            updateButton();
+        } else {
+            updateMenuIndex(true);
+        }
 
         nextButton = new Button(Game.WINDOW_MAX_WIDTH - (Tile.SIZE_MID * 6), MENU_Y, 0);
         nextButton.attach(this);
@@ -143,7 +147,7 @@ public class MainMenuScene implements GameScene {
         nextButton.setClickAction(new Runnable() {
             @Override
             public void run() {
-                updateButton(true);
+                updateMenuIndex(true);
             }
         });
 
@@ -157,7 +161,7 @@ public class MainMenuScene implements GameScene {
         });
     }
 
-    private void updateButton(boolean isNext) {
+    private void updateMenuIndex(boolean isNext) {
         if (isNext) {
             menuIndex++;
             if (menuIndex >= menuLabels.length) {
@@ -170,6 +174,10 @@ public class MainMenuScene implements GameScene {
             }
         }
 
+        this.updateButton();
+    }
+
+    private void updateButton() {
         actionButton.setText(menuLabels[menuIndex]);
         actionButton.setClickAction(menuActions[menuIndex]);
     }
