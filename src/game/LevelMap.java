@@ -42,9 +42,9 @@ public class LevelMap {
     private boolean tilesGenerated;
     private boolean propsGenerated;
 
-    public LevelMap() {
+    public LevelMap(boolean excludeProps) {
         this.tilesGenerated = false;
-        this.propsGenerated = false;
+        this.propsGenerated = excludeProps;
 
         this.sprites = new ArrayList<Sprite>();
         this.spritesLayer1 = new ArrayList<Sprite>();
@@ -52,6 +52,10 @@ public class LevelMap {
         this.pendingSpriteAdds = new ArrayList<Sprite>();
         this.pendingSpriteRemoves = new ArrayList<Sprite>();
         this.generatedProps = new ArrayList<Sprite>();
+    }
+
+    public LevelMap() {
+        this(false);
     }
 
     public void generate(boolean regenerate) {
