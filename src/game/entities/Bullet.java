@@ -11,6 +11,9 @@ public class Bullet extends LevelSprite {
     public static final Image BULLET_IMAGE = new Image(
             Game.getAsset("bullet.png"),
             Bullet.BULLET_WIDTH, Bullet.BULLET_WIDTH, false, false);
+    public static final Image BULLET_ALT_IMAGE = new Image(
+            Game.getAsset("bullet_alt.png"),
+            Bullet.BULLET_WIDTH, Bullet.BULLET_WIDTH, false, false);
 
     public static final String SFX_SHOOT = "sfx_shoot.wav";
     public static final String SFX_HIT = "sfx_hit.wav";
@@ -53,7 +56,6 @@ public class Bullet extends LevelSprite {
             + (source.getBounds().getHeight() / 2)
             - (this.getBounds().getHeight() / 2)));
 
-        this.setImage(Bullet.BULLET_IMAGE);
         this.setScale(Bullet.BULLET_SCALE);
 
         this.isDirectional = isDirectional;
@@ -61,7 +63,10 @@ public class Bullet extends LevelSprite {
         this.fromOutlaw = fromOutlaw;
 
         if (this.fromOutlaw) {
+            this.setImage(Bullet.BULLET_IMAGE);
             this.addY(OUTLAW_OFFSET_Y);
+        } else {
+            this.setImage(BULLET_ALT_IMAGE);
         }
 
         this.computeDestination(activeDirections);
