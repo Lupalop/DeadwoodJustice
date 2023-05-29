@@ -144,17 +144,75 @@ public abstract class Mob extends LevelSprite {
         }
     }
 
+    private boolean steeringUp;
+    private boolean steeringDown;
+
+    private void tryMovingUp(boolean targetPassable, int speed) {
+        // Don't bother moving up if it's impassable.
+        if (!passability[SIDE_TOP]) {
+            if (passability[SIDE_BOTTOM]) {
+                tryMovingDown(targetPassable, speed);
+            }
+            // Bail. None of the vertical sides are passable.
+            return;
+        }
+
+        if (!steeringUp) {
+            this.steeringUp = true;
+        }
+
+        if (targetPassable) {
+            this.steeringUp = false;
+            this.dy = 0;
+        } else {
+            this.dy = -speed;
+        }
+    }
+
+    private void tryMovingDown(boolean passableX, int speed) {
+        // Don't bother moving down if it's impassable.
+        if (!passability[SIDE_BOTTOM]) {
+            if (passability[SIDE_TOP]) {
+                tryMovingUp(passableX, speed);
+            }
+            // Bail. None of the vertical sides are passable.
+            return;
+        }
+
+        if (!steeringDown) {
+            this.steeringDown = true;
+        }
+
+        if (passableX) {
+            this.steeringDown = false;
+            this.dy = 0;
+        } else {
+            this.dy = speed;
+        }
+    }
+
+    private void tryMovingYToTarget(Sprite target, int speed) {
+        if (target.intersectsBase(this, true, false)) {
+            this.dy = 0;
+        } else if (target.getBounds().getMinY() > this.getBounds().getMinY()) {
+            this.dy = speed;
+        } else {
+            this.dy = -speed;
+        }
+    }
+
     private void moveMob() {
-        this.dx = (this.getParent().isMaxSpeed() && !this.excludedFromMaxSpeed)
+        int currentSpeed = (this.getParent().isMaxSpeed() && !this.excludedFromMaxSpeed)
                 ? MAX_SPEED
                 : this.speed;
         if (this.getParent().isSlowSpeed()) {
-            this.dx = MIN_SPEED;
+            currentSpeed = MIN_SPEED;
         }
         // Zero speed power-up takes precedence over slow speed power-up.
         if (this.getParent().isZeroSpeed()) {
-            this.dx = 0;
+            currentSpeed = 0;
         }
+        this.dx = currentSpeed;
 
         int nextX = (int) (getBounds().getMinX() + dx);
         boolean changeFromRight = this.movingRight
@@ -170,16 +228,27 @@ public abstract class Mob extends LevelSprite {
             int sideX = this.movingRight
                     ? Sprite.SIDE_RIGHT
                     : Sprite.SIDE_LEFT;
-            if (!passability[sideX]) {
+            boolean passableX = passability[sideX];
+            if (!passableX) {
                 this.dx = 0;
             }
 
-            if (outlaw.intersectsBase(this, true, false)) {
-                this.dy = 0;
-            } else if (outlaw.getBounds().getMinY() > this.getBounds().getMinY()) {
-                this.dy = this.speed;
+            if (Game.FLAG_TEST_MOB_STEERING) {
+                if (this.steeringUp) {
+                    tryMovingUp(passableX, currentSpeed);
+                } else if (this.steeringDown) {
+                    tryMovingDown(passableX, currentSpeed);
+                } else if (!passableX) {
+                    if (Game.RNG.nextBoolean()) {
+                        tryMovingUp(passableX, currentSpeed);
+                    } else {
+                        tryMovingDown(passableX, currentSpeed);
+                    }
+                } else {
+                    tryMovingYToTarget(outlaw, currentSpeed);
+                }
             } else {
-                this.dy = -this.speed;
+                tryMovingYToTarget(outlaw, currentSpeed);
             }
 
             if (!outlaw.intersects(this, false, true)) {
