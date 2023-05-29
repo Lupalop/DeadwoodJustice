@@ -85,8 +85,8 @@ public class Mote extends LevelSprite {
 
     @Override
     public void update(long now) {
-        this.setX((int) this.target.getBaseBounds().getMaxX() - OFFSET_FROM_SOURCE_X);
-        this.setY((int) this.target.getBaseBounds().getMaxY() + OFFSET_FROM_SOURCE_Y);
+        this.setX((int) this.target.getBounds().getMaxX() - OFFSET_FROM_SOURCE_X);
+        this.setY((int) this.target.getBounds().getMaxY() + OFFSET_FROM_SOURCE_Y);
     }
 
     private void show() {
