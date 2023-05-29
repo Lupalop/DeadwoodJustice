@@ -126,7 +126,7 @@ public class Bullet extends LevelSprite {
 
         // Props can consume bullets if either mobs don't ignore prop collision
         // or if we're in a higher difficulty.
-        boolean propsConsumeBullets = (!Game.FLAG_IGNORE_PROP_COLLISION
+        boolean propsConsumeBullets = (Game.FLAG_CHECK_PROP_COLLIDERS
                 || getParent().getDifficulty() >= LevelScene.DIFFICULTY_MEDIUM);
         boolean bulletCaught = false;
         Outlaw outlaw = this.getParent().getOutlaw();

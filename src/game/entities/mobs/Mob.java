@@ -14,6 +14,7 @@ import game.entities.effects.ExplosionEffect;
 import game.entities.effects.TornadoEffect;
 import game.scenes.LevelScene;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
 
 public abstract class Mob extends LevelSprite {
 
@@ -142,6 +143,23 @@ public abstract class Mob extends LevelSprite {
         if (this.zeroSpeedEffect != null) {
             this.zeroSpeedEffect.draw(gc);
         }
+
+        if (Game.DEBUG_MODE && !hideWireframe) {
+            gc.save();
+            // Top
+            gc.setFill(passability[SIDE_TOP] ? Color.GREEN : Color.RED);
+            gc.fillRoundRect(this.getBounds().getMinX(), this.getBounds().getMinY() - 10, 10, 10, 100, 100);
+            // Left
+            gc.setFill(passability[SIDE_LEFT] ? Color.GREEN : Color.RED);
+            gc.fillRoundRect(this.getBounds().getMinX() - 10, this.getBounds().getMinY(), 10, 10, 100, 100);
+            // Bottom
+            gc.setFill(passability[SIDE_BOTTOM] ? Color.GREEN : Color.RED);
+            gc.fillRoundRect(this.getBounds().getMaxX(), this.getBounds().getMaxY()+10, 10, 10, 100, 100);
+            // Right
+            gc.setFill(passability[SIDE_RIGHT] ? Color.GREEN : Color.RED);
+            gc.fillRoundRect(this.getBounds().getMaxX() + 10, this.getBounds().getMaxY(), 10, 10, 100, 100);
+            gc.restore();
+        }
     }
 
     private boolean steeringUp;
@@ -192,7 +210,7 @@ public abstract class Mob extends LevelSprite {
     }
 
     private void tryMovingYToTarget(Sprite target, int speed) {
-        if (target.intersectsBase(this, true, false)) {
+        if (target.intersects(this, true, false, true)) {
             this.dy = 0;
         } else if (target.getBounds().getMinY() > this.getBounds().getMinY()) {
             this.dy = speed;
@@ -251,7 +269,7 @@ public abstract class Mob extends LevelSprite {
                 tryMovingYToTarget(outlaw, currentSpeed);
             }
 
-            if (!outlaw.intersects(this, false, true)) {
+            if (!outlaw.intersects(this, false, true, false)) {
                 if (outlaw.getBounds().getMinX() > this.getBounds().getMinX()) {
                     if (!this.movingRight) {
                         this.changeDirection();

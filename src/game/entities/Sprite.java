@@ -19,6 +19,7 @@ public abstract class Sprite implements Comparable<Sprite> {
 
     protected int dx, dy;
     protected boolean boundsDirty;
+    protected boolean hideWireframe;
 
     private static final long DEFAULT_FRAME_INTERVAL =
             TimeUnit.MILLISECONDS.toNanos(100);
@@ -29,7 +30,7 @@ public abstract class Sprite implements Comparable<Sprite> {
     private double width;
     private double height;
     private Rectangle2D bounds;
-    private Rectangle2D baseBounds;
+    private Rectangle2D collider;
     private int scale;
     private boolean visible;
     private boolean flipHorizontal;
@@ -64,7 +65,7 @@ public abstract class Sprite implements Comparable<Sprite> {
         this.width = 0;
         this.height = 0;
         this.bounds = null;
-        this.baseBounds = null;
+        this.collider = null;
         this.scale = DEFAULT_SCALE;
         this.visible = true;
         this.flipHorizontal = false;
@@ -86,6 +87,7 @@ public abstract class Sprite implements Comparable<Sprite> {
         this.overrideFrameInterval = -1;
 
         this.boundsOffset = null;
+        this.hideWireframe = false;
     }
 
     public Sprite() {
@@ -160,7 +162,7 @@ public abstract class Sprite implements Comparable<Sprite> {
                     this.getHeight() * this.getScale() * flipMultiplierHeight);
         }
 
-        if (Game.DEBUG_MODE) {
+        if (Game.DEBUG_MODE && !hideWireframe) {
             gc.save();
             gc.setStroke(javafx.scene.paint.Color.RED);
             gc.strokeRect(
@@ -168,8 +170,8 @@ public abstract class Sprite implements Comparable<Sprite> {
                     this.getBounds().getWidth(), this.getBounds().getHeight());
             gc.setStroke(javafx.scene.paint.Color.GREEN);
             gc.strokeRect(
-                    this.getBaseBounds().getMinX(), this.getBaseBounds().getMinY(),
-                    this.getBaseBounds().getWidth(), this.getBaseBounds().getHeight());
+                    this.getCollider().getMinX(), this.getCollider().getMinY(),
+                    this.getCollider().getWidth(), this.getCollider().getHeight());
             gc.restore();
         }
     }
@@ -188,19 +190,16 @@ public abstract class Sprite implements Comparable<Sprite> {
     }
 
     public boolean intersects(Sprite target,
-            boolean xIgnore, boolean yIgnore) {
-        return intersects(this.getBounds(), target.getBounds(),
-                xIgnore, yIgnore);
+            boolean xIgnore, boolean yIgnore, boolean forCollider) {
+        return intersects(
+                forCollider ? this.getCollider() : this.getBounds(),
+                forCollider ? target.getCollider() : target.getBounds(),
+                xIgnore,
+                yIgnore);
     }
 
     public boolean intersects(Sprite target) {
-        return intersects(target, false, false);
-    }
-
-    public boolean intersectsBase(Sprite target,
-            boolean xIgnore, boolean yIgnore) {
-        return intersects(this.getBaseBounds(), target.getBaseBounds(),
-                xIgnore, yIgnore);
+        return intersects(target, false, false, false);
     }
 
     private int intersectsSide(Rectangle2D r1, Rectangle2D r2) {
@@ -224,12 +223,10 @@ public abstract class Sprite implements Comparable<Sprite> {
         return SIDE_INVALID;
     }
 
-    public int intersectsSide(Rectangle2D r2) {
-        return intersectsSide(this.getBounds(), r2);
-    }
-
-    public int baseIntersectsSide(Rectangle2D r2) {
-        return intersectsSide(this.getBaseBounds(), r2);
+    public int intersectsSide(Sprite target, boolean forCollider) {
+        return intersectsSide(
+                forCollider ? this.getCollider() : this.getBounds(),
+                forCollider ? target.getCollider() : target.getBounds());
     }
 
     protected void playFrames(int min, int max, Image frameSetOverride, long frameIntervalOverride) {
@@ -294,7 +291,7 @@ public abstract class Sprite implements Comparable<Sprite> {
                     newX, newY, newWidth, newHeight);
 
             double baseHeight = newHeight / BASE_DIVIDER;
-            this.baseBounds = new Rectangle2D(
+            this.collider = new Rectangle2D(
                     newX, newY + newHeight - baseHeight,
                     newWidth, baseHeight);
         }
@@ -302,11 +299,11 @@ public abstract class Sprite implements Comparable<Sprite> {
         return this.bounds;
     }
 
-    public Rectangle2D getBaseBounds() {
+    public Rectangle2D getCollider() {
         if (this.boundsDirty) {
             this.getBounds();
         }
-        return this.baseBounds;
+        return this.collider;
     }
 
     public Image getImage() {

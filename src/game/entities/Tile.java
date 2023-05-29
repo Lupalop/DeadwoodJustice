@@ -24,6 +24,7 @@ public class Tile {
         tileset.setFrameSet(tilesetImage, rows, columns);
         tileset.setFrameAutoReset(false);
         tileset.setScale(scale);
+        tileset.hideWireframe = true;
     }
 
     public Tile(String assetPath, int rows, int columns) {
