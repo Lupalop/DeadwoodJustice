@@ -4,6 +4,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
 import game.Game;
+import game.UIUtils;
 import game.entities.Bullet;
 import game.entities.LevelSprite;
 import game.entities.Mote;
@@ -14,7 +15,6 @@ import game.entities.effects.ExplosionEffect;
 import game.entities.effects.TornadoEffect;
 import game.scenes.LevelScene;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.paint.Color;
 
 public abstract class Mob extends LevelSprite {
 
@@ -145,20 +145,7 @@ public abstract class Mob extends LevelSprite {
         }
 
         if (Game.DEBUG_MODE && !hideWireframe) {
-            gc.save();
-            // Top
-            gc.setFill(passability[SIDE_TOP] ? Color.GREEN : Color.RED);
-            gc.fillRoundRect(this.getBounds().getMinX(), this.getBounds().getMinY() - 10, 10, 10, 100, 100);
-            // Left
-            gc.setFill(passability[SIDE_LEFT] ? Color.GREEN : Color.RED);
-            gc.fillRoundRect(this.getBounds().getMinX() - 10, this.getBounds().getMinY(), 10, 10, 100, 100);
-            // Bottom
-            gc.setFill(passability[SIDE_BOTTOM] ? Color.GREEN : Color.RED);
-            gc.fillRoundRect(this.getBounds().getMaxX(), this.getBounds().getMaxY()+10, 10, 10, 100, 100);
-            // Right
-            gc.setFill(passability[SIDE_RIGHT] ? Color.GREEN : Color.RED);
-            gc.fillRoundRect(this.getBounds().getMaxX() + 10, this.getBounds().getMaxY(), 10, 10, 100, 100);
-            gc.restore();
+            UIUtils.drawPassability(gc, this, passability);
         }
     }
 

@@ -1,8 +1,10 @@
 package game.entities;
 
+import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
 import game.Game;
+import game.UIUtils;
 import game.entities.effects.Effect;
 import game.entities.effects.ImmortalityEffect;
 import game.entities.effects.SmokeEffect;
@@ -49,6 +51,8 @@ public class Outlaw extends LevelSprite {
     private Effect powerupEffect;
     private Effect immortalityEffect;
 
+    private boolean[] passability;
+
     public Outlaw(String name, int x, int y, LevelScene parent) {
         super(x, y, parent);
 
@@ -70,6 +74,8 @@ public class Outlaw extends LevelSprite {
 
         this.powerupEffect = null;
         this.immortalityEffect = null;
+        this.passability = new boolean[4];
+        Arrays.fill(passability, true);
     }
 
     @Override
@@ -96,21 +102,29 @@ public class Outlaw extends LevelSprite {
             return;
         }
 
-        if (this.getBounds().getMinX() + dx >= 0 &&
-                Game.isDirectionActive(this.activeDirections, Game.DIR_LEFT)) {
+        if (Game.FLAG_CHECK_PROP_COLLIDERS) {
+            passability = this.getParent().getLevelMap().getPassability(this);
+        }
+
+        if (this.getBounds().getMinX() + dx >= 0
+                && Game.isDirectionActive(this.activeDirections, Game.DIR_LEFT)
+                && passability[SIDE_LEFT]) {
             this.dx = -OUTLAW_SPEED;
         } else if (this.getBounds().getMinX() + this.dx <= Game.WINDOW_MAX_WIDTH - this.getBounds().getWidth()
-                && Game.isDirectionActive(this.activeDirections, Game.DIR_RIGHT)) {
+                && Game.isDirectionActive(this.activeDirections, Game.DIR_RIGHT)
+                && passability[SIDE_RIGHT]) {
             this.dx = OUTLAW_SPEED;
         } else {
             this.dx = 0;
         }
 
-        if (this.getBounds().getMinY() + dy >= 0 &&
-                Game.isDirectionActive(this.activeDirections, Game.DIR_UP)) {
+        if (this.getBounds().getMinY() + dy >= 0
+                && Game.isDirectionActive(this.activeDirections, Game.DIR_UP)
+                && passability[SIDE_TOP]) {
             this.dy = -OUTLAW_SPEED;
         } else if (this.getBounds().getMinY() + dy <= Game.WINDOW_MAX_HEIGHT - this.getBounds().getHeight()
-                && Game.isDirectionActive(this.activeDirections, Game.DIR_DOWN)) {
+                && Game.isDirectionActive(this.activeDirections, Game.DIR_DOWN)
+                && passability[SIDE_BOTTOM]) {
             this.dy = OUTLAW_SPEED;
         } else {
             this.dy = 0;
@@ -134,6 +148,9 @@ public class Outlaw extends LevelSprite {
         super.draw(gc);
         if (powerupEffect != null) {
             powerupEffect.draw(gc);
+        }
+        if (Game.DEBUG_MODE && !hideWireframe) {
+            UIUtils.drawPassability(gc, this, passability);
         }
     }
 
