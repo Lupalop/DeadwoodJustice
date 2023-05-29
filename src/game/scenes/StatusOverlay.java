@@ -10,6 +10,7 @@ import game.entities.Prop;
 import game.entities.Tile;
 import game.entities.powerups.HayPowerup;
 import game.entities.powerups.LampPowerup;
+import game.entities.powerups.Powerup;
 import game.entities.powerups.SnakeOilPowerup;
 import game.entities.powerups.WheelPowerup;
 import javafx.event.EventHandler;
@@ -57,6 +58,7 @@ public class StatusOverlay {
     private static final int TX_SCORE = 23;
 
     private static final int TX_POWERUP_START = 5;
+    private static final int TX_POWERUP_MID = 6;
     private static final int TX_POWERUP_END = 7;
     private static final int TX_POWERUP_LAMP = 9;
     private static final int TX_POWERUP_HAY = 10;
@@ -170,17 +172,13 @@ public class StatusOverlay {
 
         int tileOffset = HUD_POWERUP_POS;
         tileOffset = this.drawHUDPowerup(gc, tileOffset,
-                TX_POWERUP_LAMP, powerupLampCount,
-                (powerupLampCount == 0) ? 0.5 : 1);
+                TX_POWERUP_LAMP, powerupLampCount, LampPowerup.ID);
         tileOffset = this.drawHUDPowerup(gc, tileOffset,
-                TX_POWERUP_HAY, powerupHayCount,
-                (!level.getOutlaw().isImmortal()) ? 0.5 : 1);
+                TX_POWERUP_HAY, powerupHayCount, HayPowerup.ID);
         tileOffset = this.drawHUDPowerup(gc, tileOffset,
-                TX_POWERUP_WHEEL, powerupWheelCount,
-                (!level.isSlowSpeed()) ? 0.5 : 1);
+                TX_POWERUP_WHEEL, powerupWheelCount, WheelPowerup.ID);
         tileOffset = this.drawHUDPowerup(gc, tileOffset,
-                TX_POWERUP_SNAKEOIL, powerupSnakeOilCount,
-                (!level.isZeroSpeed()) ? 0.5 : 1);
+                TX_POWERUP_SNAKEOIL, powerupSnakeOilCount, SnakeOilPowerup.ID);
     }
 
     private void drawHUDBase(GraphicsContext gc) {
@@ -240,19 +238,22 @@ public class StatusOverlay {
     }
 
     private int drawHUDPowerup(GraphicsContext gc,
-            int tileOffset, int iconIndex, int value, double alpha) {
+            int tileOffset, int iconIndex, int value, int powerupIndex) {
         String valueText = Integer.toString(value);
-        gc.save();
-        gc.setGlobalAlpha(alpha);
+        int startPartId = (powerupIndex == 0)
+                ? TX_POWERUP_START
+                : TX_POWERUP_MID;
+        int endPartId = (powerupIndex == Powerup.TOTAL_POWERUPS - 1)
+                ? TX_POWERUP_END
+                : TX_POWERUP_MID;
         UIUtils.TILE.draw(gc, Tile.SIZE_MID * tileOffset,
-                hudOffsetY, TX_POWERUP_START);
+                hudOffsetY, startPartId);
         UIUtils.TILE.draw(gc, Tile.SIZE_MID * tileOffset,
                 hudOffsetY, iconIndex);
         UIUtils.TILE.draw(gc, Tile.SIZE_MID * ++tileOffset,
-                hudOffsetY, TX_POWERUP_END);
+                hudOffsetY, endPartId);
         gc.fillText(valueText, Tile.SIZE_MID * tileOffset,
                 hudOffsetY + HUD_TEXT_OFFSET_Y);
-        gc.restore();
         return tileOffset += 1;
     }
 
