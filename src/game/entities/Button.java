@@ -23,8 +23,8 @@ public class Button extends Sprite {
     private static final int BUTTON_HOVER_PARTS[] = {27, 28, 29};
     private static final int BUTTON_ACTIVE_PARTS[] = {24, 25, 26};
 
-    private static final int SELECTOR_STROKE_WIDTH = 5;
-    private static final int SELECTOR_STROKE_RADIUS = 12;
+    private static final int SELECTOR_STROKE_WIDTH = 3;
+    private static final int SELECTOR_STROKE_RADIUS = 0;
 
     private boolean isHover;
     private boolean isActive;
