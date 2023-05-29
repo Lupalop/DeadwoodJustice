@@ -195,7 +195,7 @@ public class Outlaw extends LevelSprite {
             moteType = Mote.TYPE_BAD;
             this.prepareDeath();
         } else {
-            this.playFrames(56, 58, null, TimeUnit.MILLISECONDS.toNanos(200));
+            this.playFrames(56, 58, null, TimeUnit.MILLISECONDS.toNanos(400));
         }
 
         if (Game.FLAG_SHOW_MOTES) {
