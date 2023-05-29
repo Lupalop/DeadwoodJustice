@@ -86,6 +86,7 @@ public class StatusOverlay {
     private String nameInputValue;
     private Text nameInputText;
     private Text nameInputDescription;
+    private Text nameInputTip;
     private EventHandler<KeyEvent> nameInputEventHandler;
 
     private EventHandler<KeyEvent> selectorEventHandler;
@@ -118,6 +119,7 @@ public class StatusOverlay {
         this.nameInputValue = "";
         this.nameInputText = null;
         this.nameInputDescription = null;
+        this.nameInputTip = null;
         this.nameInputEventHandler = null;
 
         this.selectorEventHandler = null;
@@ -362,6 +364,13 @@ public class StatusOverlay {
                 + (Tile.SIZE_MID * 6));
         nameInputDescription.setX((Game.WINDOW_MAX_WIDTH / 2)
                 - (nameInputDescription.getBoundsInLocal().getWidth() / 2));
+        nameInputTip = new Text("Your name goes here");
+        nameInputTip.setFont(UIUtils.FONT_32);
+        nameInputTip.setFill(UIUtils.COLOR_PRIMARY);
+        nameInputTip.setY((Game.WINDOW_MAX_HEIGHT / 2)
+                + (Tile.SIZE_MID) + 15);
+        nameInputTip.setX((Game.WINDOW_MAX_WIDTH / 2)
+                - (nameInputTip.getBoundsInLocal().getWidth() / 2));
     }
 
     public void toggleGameEndVisibility() {
@@ -435,6 +444,12 @@ public class StatusOverlay {
                             + (Tile.SIZE_MID) + 15);
                     nameInputText.setX((Game.WINDOW_MAX_WIDTH / 2)
                             - (nameInputText.getBoundsInLocal().getWidth() / 2));
+
+                    if (nameInputValue.length() == 0) {
+                        nameInputTip.setOpacity(1);
+                    } else {
+                        nameInputTip.setOpacity(0);
+                    }
                 }
             };
 
@@ -444,12 +459,14 @@ public class StatusOverlay {
             this.level.getInner().addEventHandler(KeyEvent.KEY_TYPED, this.nameInputEventHandler);
             this.level.getRoot().getChildren().add(nameInputText);
             this.level.getRoot().getChildren().add(nameInputDescription);
+            this.level.getRoot().getChildren().add(nameInputTip);
         } else {
             goButton.detach(level);
             this.detachButtonSelector(goButton, null, true);
             this.level.getInner().removeEventHandler(KeyEvent.KEY_TYPED, this.nameInputEventHandler);
             this.level.getRoot().getChildren().remove(nameInputText);
             this.level.getRoot().getChildren().remove(nameInputDescription);
+            this.level.getRoot().getChildren().remove(nameInputTip);
             this.nameInputEventHandler = null;
         }
     }
