@@ -142,7 +142,7 @@ public class Bullet extends LevelSprite {
                 }
             }
             if (sprite instanceof Prop && propsConsumeBullets) {
-                if (this.intersects(sprite)) {
+                if (this.intersects(sprite, false, false, true)) {
                     bulletCaught = true;
                     break;
                 }
