@@ -470,6 +470,12 @@ public class LevelScene implements GameScene {
             return;
         }
 
+        // Fallback: Catch cases where the value is probably fractional
+        // and was rounded to 0. Default them to 1.
+        if (value == 0) {
+            value = 1;
+        }
+
         this.score += value;
     }
 
