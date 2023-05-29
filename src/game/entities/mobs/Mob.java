@@ -90,7 +90,7 @@ public abstract class Mob extends LevelSprite {
             });
         }
 
-        if (Game.FLAG_SMARTER_MOBS) {
+        if (this.getParent().getDifficulty() > LevelScene.DIFFICULTY_EASY) {
             this.chasingPlayer = Game.RNG.nextBoolean();
         }
 
