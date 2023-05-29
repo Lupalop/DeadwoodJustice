@@ -459,8 +459,8 @@ public class LevelScene implements GameScene {
     }
 
     public int getScore() {
-        return this.score
-                + (this.score > 0 ? (this.getOutlaw().getStrength() / 2) : 0)
+        return (this.score
+                + (this.score > 0 ? (this.getOutlaw().getStrength() / 2) : 0))
                 * (this.getDifficulty() + 1);
     }
 
