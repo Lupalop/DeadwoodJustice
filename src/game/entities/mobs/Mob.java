@@ -129,6 +129,22 @@ public abstract class Mob extends LevelSprite {
             return;
         }
 
+        moveMob();
+        checkOutlawCollision(this.getParent().getOutlaw());
+    }
+
+    @Override
+    public void draw(GraphicsContext gc) {
+        super.draw(gc);
+        if (this.deathEffect != null) {
+            this.deathEffect.draw(gc);
+        }
+        if (this.zeroSpeedEffect != null) {
+            this.zeroSpeedEffect.draw(gc);
+        }
+    }
+
+    private void moveMob() {
         this.dx = (this.getParent().isMaxSpeed() && !this.excludedFromMaxSpeed)
                 ? MAX_SPEED
                 : this.speed;
@@ -149,14 +165,35 @@ public abstract class Mob extends LevelSprite {
             this.changeDirection();
         }
 
-        if (this.chasingPlayer) {
+        Outlaw outlaw = this.getParent().getOutlaw();
+        if (this.chasingPlayer && outlaw.isAlive()) {
             int sideX = this.movingRight
                     ? Sprite.SIDE_RIGHT
                     : Sprite.SIDE_LEFT;
             if (!passability[sideX]) {
                 this.dx = 0;
             }
-            if (!passability[Sprite.SIDE_TOP] && this.dy <= 0
+
+            if (outlaw.intersectsBase(this, true, false)) {
+                this.dy = 0;
+            } else if (outlaw.getBounds().getMinY() > this.getBounds().getMinY()) {
+                this.dy = this.speed;
+            } else {
+                this.dy = -this.speed;
+            }
+
+            if (!outlaw.intersects(this, false, true)) {
+                if (outlaw.getBounds().getMinX() > this.getBounds().getMinX()) {
+                    if (!this.movingRight) {
+                        this.changeDirection();
+                    }
+                } else if (this.movingRight) {
+                    this.changeDirection();
+                }
+            }
+
+            if (this.getParent().isZeroSpeed()
+                    || !passability[Sprite.SIDE_TOP] && this.dy <= 0
                     || !passability[Sprite.SIDE_BOTTOM] && this.dy >= 0) {
                 this.dy = 0;
             }
@@ -185,45 +222,28 @@ public abstract class Mob extends LevelSprite {
         this.addY(dy);
 
         this.passability = this.getParent().getLevelMap().getPassability(this);
-        checkOutlaw(this.getParent().getOutlaw());
     }
 
-    @Override
-    public void draw(GraphicsContext gc) {
-        super.draw(gc);
-        if (this.deathEffect != null) {
-            this.deathEffect.draw(gc);
-        }
-        if (this.zeroSpeedEffect != null) {
-            this.zeroSpeedEffect.draw(gc);
-        }
-    }
-
-    private void checkOutlaw(Outlaw outlaw) {
-        if (this.chasingPlayer) {
-            if (!outlaw.isAlive()) {
-                this.chasingPlayer = false;
-            }
-            this.chasePlayer(outlaw);
+    private void checkOutlawCollision(Outlaw outlaw) {
+        if (!outlaw.isAlive()) {
+            return;
         }
 
-        if (outlaw.isAlive()) {
-            if (this.intersects(outlaw)) {
-                if (this.playerInMobBounds) {
-                    return;
-                }
-                outlaw.reduceStrength(this.damage);
-                if (this.deadOnPlayerImpact) {
-                    this.getParent().addScore(outlaw.getStrength() / 4);
-                    this.prepareDeath();
-                } else {
-                    this.playFrames(frameRanges[2], frameRanges[3], null, 0);
-                }
-                this.playerInMobBounds = true;
+        if (this.intersects(outlaw)) {
+            if (this.playerInMobBounds) {
                 return;
-            } else {
-                this.playerInMobBounds = false;
             }
+            outlaw.reduceStrength(this.damage);
+            if (this.deadOnPlayerImpact) {
+                this.getParent().addScore(outlaw.getStrength() / 4);
+                this.prepareDeath();
+            } else {
+                this.playFrames(frameRanges[2], frameRanges[3], null, 0);
+            }
+            this.playerInMobBounds = true;
+            return;
+        } else {
+            this.playerInMobBounds = false;
         }
     }
 
@@ -250,30 +270,6 @@ public abstract class Mob extends LevelSprite {
         boolean shootCondition = (Game.FLAG_MOBS_CAN_SHOOT
                 || getParent().getDifficulty() >= LevelScene.DIFFICULTY_MEDIUM);
         return (shootCondition && Game.RNG.nextBoolean());
-    }
-
-    protected void chasePlayer(Outlaw outlaw) {
-        if (!outlaw.isAlive() || !Game.FLAG_SMARTER_MOBS) {
-            return;
-        }
-
-        if (outlaw.intersectsBase(this, true, false) || this.getParent().isZeroSpeed()) {
-            this.dy = 0;
-        } else if (outlaw.getBounds().getMinY() > this.getBounds().getMinY()) {
-            this.dy = this.speed;
-        } else {
-            this.dy = -this.speed;
-        }
-
-        if (!outlaw.intersects(this, false, true)) {
-            if (outlaw.getBounds().getMinX() > this.getBounds().getMinX()) {
-                if (!this.movingRight) {
-                    this.changeDirection();
-                }
-            } else if (this.movingRight) {
-                this.changeDirection();
-            }
-        }
     }
 
     protected void shoot() {
