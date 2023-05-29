@@ -125,6 +125,7 @@ public class LevelMap {
                 Game.RNG.nextInt(Game.WINDOW_MAX_WIDTH / 2, Game.WINDOW_MAX_WIDTH),
                 -100,
                 PROP_HOUSE);
+        house.setCustomCollider(house.getBounds());
         this.generatedProps.add(house);
 
         this.pendingSpriteAdds.addAll(generatedProps);
