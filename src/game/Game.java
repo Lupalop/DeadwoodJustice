@@ -39,8 +39,6 @@ public final class Game {
     public static final byte DIR_LEFT = 0x4;
     public static final byte DIR_RIGHT = 0x8;
 
-    public static final int MAX_HIGH_SCORES = 10;
-
     public static final boolean DEBUG_MODE = false;
     public static final boolean FLAG_DIRECTIONAL_SHOOTING = false;
     public static final boolean FLAG_DELAY_IF_BOSS_IS_ALIVE = false;
@@ -54,7 +52,8 @@ public final class Game {
 
     public static final Random RNG = new Random();
 
-    private static final Path highScoresPath = Path.of("scores.dat");
+    private static final Path PATH_HIGH_SCORES = Path.of("scores.dat");
+    private static final int MAX_HIGH_SCORES = 10;
 
     private static MediaPlayer mediaPlayer;
     private static Hashtable<String, Media> cachedBGM;
@@ -182,12 +181,12 @@ public final class Game {
     }
 
     private static void loadHighScores() {
-        if (!highScoresPath.toFile().exists()) {
+        if (!PATH_HIGH_SCORES.toFile().exists()) {
             return;
         }
 
         try {
-            List<String> lines = Files.readAllLines(highScoresPath);
+            List<String> lines = Files.readAllLines(PATH_HIGH_SCORES);
             for (String line : lines) {
                 String[] lineParts = line.split(",");
                 if (lineParts.length != 3) {
@@ -208,7 +207,7 @@ public final class Game {
     }
 
     private static void saveHighScores() {
-        File output = highScoresPath.toFile();
+        File output = PATH_HIGH_SCORES.toFile();
         try {
             PrintWriter writer = new PrintWriter(new FileWriter(output));
             for (PlayerScore score : getHighScores()) {
