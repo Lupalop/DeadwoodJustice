@@ -45,7 +45,7 @@ public class CowboyMob extends Mob {
         }
 
         this.excludedFromMaxSpeed = true;
-        this.setChasingPlayer(true);
+        this.setChasingPlayer(!parent.getRestrictedMode());
     }
 
     @Override
