@@ -106,17 +106,9 @@ public abstract class Mob extends LevelSprite {
     public void update(long now) {
         super.update(now);
 
-        if (this.getParent().isZeroSpeed()) {
-            if (this.zeroSpeedEffect == null || this.zeroSpeedEffect.isFrameSequenceDone()) {
-                this.zeroSpeedEffect = new TornadoEffect(this);
-            }
-        }
-
         if (this.deathEffect != null) {
             this.deathEffect.update(now);
-        }
-
-        if (this.zeroSpeedEffect != null) {
+        } else if (this.zeroSpeedEffect != null) {
             this.zeroSpeedEffect.update(now);
         }
 
@@ -130,6 +122,12 @@ public abstract class Mob extends LevelSprite {
             return;
         }
 
+        if (this.getParent().isZeroSpeed()) {
+            if (this.zeroSpeedEffect == null || this.zeroSpeedEffect.isFrameSequenceDone()) {
+                this.zeroSpeedEffect = new TornadoEffect(this);
+            }
+        }
+
         moveMob();
         checkOutlawCollision(this.getParent().getOutlaw());
     }
@@ -139,8 +137,7 @@ public abstract class Mob extends LevelSprite {
         super.draw(gc);
         if (this.deathEffect != null) {
             this.deathEffect.draw(gc);
-        }
-        if (this.zeroSpeedEffect != null) {
+        } else if (this.zeroSpeedEffect != null) {
             this.zeroSpeedEffect.draw(gc);
         }
 
