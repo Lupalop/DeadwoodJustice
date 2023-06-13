@@ -7,23 +7,34 @@ Deadwood Justice
 -Lead Programmer
 Francis Dominic Fajardo
 
--Base Code
-University of the Philippines - Los Baños
-Institute of Computer Science
-CMSC 22
-
--Supplemental References
-Maquina Game Engine
-Francis Dominic Fajardo/Lupálop Games
-https://github.com/Lupalop/Maquina
-
-Julien Giband
-https://stackoverflow.com/a/71500331/9610960
 
 
 +Testers
 Darniel Zidane Garcia
 Edwin Gumba, Jr.
+
+
+
++Supplemental References
+
+-Base Code
+University of the Philippines - Los Baños
+Institute of Computer Science
+CMSC 22
+
+-Maquina Game Engine
+Francis Dominic Fajardo/Lupálop Games
+https://github.com/Lupalop/Maquina
+
+-Smooth time-based animation
+-with JavaFX AnimationTimer
+Julien Giband
+https://stackoverflow.com/a/71500331/9610960
+
+-Steering Behaviors
+-For Autonomous Characters
+Craig Reynolds
+http://www.red3d.com/cwr/steer/
 
 
 
