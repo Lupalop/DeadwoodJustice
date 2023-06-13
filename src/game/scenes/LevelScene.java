@@ -10,6 +10,7 @@ import game.TimedActionManager;
 import game.UIUtils;
 import game.entities.Bullet;
 import game.entities.Button;
+import game.entities.Mote;
 import game.entities.Outlaw;
 import game.entities.Sprite;
 import game.entities.mobs.CactusMob;
@@ -280,6 +281,11 @@ public class LevelScene implements GameScene {
             }
             sprite.update(now);
         }
+    }
+
+    public void spawnMote(Sprite target, int value, byte moteType) {
+        this.getLevelMap().addSpriteOnUpdate(
+                new Mote(target, value, moteType, this));
     }
 
     private void spawnMobs(int mobCount) {
