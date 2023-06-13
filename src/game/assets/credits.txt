@@ -12,11 +12,13 @@ University of the Philippines - Los Baños
 Institute of Computer Science
 CMSC 22
 
--Supplemental Reference
+-Supplemental References
 Maquina Game Engine
 Francis Dominic Fajardo/Lupálop Games
 https://github.com/Lupalop/Maquina
 
+Julien Giband
+https://stackoverflow.com/a/71500331/9610960
 
 
 +Testers

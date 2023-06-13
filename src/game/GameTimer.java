@@ -17,6 +17,8 @@ public final class GameTimer extends AnimationTimer {
             return;
         }
 
+        // The following is based on code written by Julien Giband
+        // at SO: https://stackoverflow.com/a/71500331/9610960
         if (Game.FLAG_FREEZE_REFRESH_RATE) {
             // Skip first frame but record its timing.
             if (nextFrameTime == 0) {
