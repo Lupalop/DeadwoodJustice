@@ -238,19 +238,18 @@ public abstract class Mob extends LevelSprite {
                 this.dx = 0;
             }
 
-            if (Game.FLAG_TEST_MOB_STEERING) {
-                if (this.steeringUp) {
+            // This is a good-enough substitute for implementing a
+            // full-blown pathfinder. We check if we're steering in a
+            // certain direction and decide where to move accordingly.
+            if (this.steeringUp) {
+                tryMovingUp(passableX, currentSpeed);
+            } else if (this.steeringDown) {
+                tryMovingDown(passableX, currentSpeed);
+            } else if (!passableX) {
+                if (Game.RNG.nextBoolean()) {
                     tryMovingUp(passableX, currentSpeed);
-                } else if (this.steeringDown) {
-                    tryMovingDown(passableX, currentSpeed);
-                } else if (!passableX) {
-                    if (Game.RNG.nextBoolean()) {
-                        tryMovingUp(passableX, currentSpeed);
-                    } else {
-                        tryMovingDown(passableX, currentSpeed);
-                    }
                 } else {
-                    tryMovingYToTarget(outlaw, currentSpeed);
+                    tryMovingDown(passableX, currentSpeed);
                 }
             } else {
                 tryMovingYToTarget(outlaw, currentSpeed);

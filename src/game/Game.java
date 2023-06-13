@@ -44,7 +44,6 @@ public final class Game {
     public static final boolean FLAG_CHECK_ALL_COLLIDERS = true;
     public static final boolean FLAG_CHECK_PROP_COLLIDERS = true;
     public static final boolean FLAG_SHOW_MOTES = true;
-    public static final boolean FLAG_TEST_MOB_STEERING = true;
     public static final boolean FLAG_FREEZE_REFRESH_RATE = true;
 
     public static final Random RNG = new Random();
