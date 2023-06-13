@@ -52,19 +52,21 @@ public class StatusOverlay {
     private static final int TX_BASE_START = 0;
     private static final int TX_BASE_MID = 1;
     private static final int TX_BASE_END = 2;
-    private static final int TX_OUTLAW = 13;
-    private static final int TX_INFINITY = 14;
-    private static final int TX_MOB = 12;
-    private static final int TX_TIME = 8;
-    private static final int TX_SCORE = 23;
 
-    private static final int TX_POWERUP_START = 5;
-    private static final int TX_POWERUP_MID = 6;
-    private static final int TX_POWERUP_END = 7;
-    private static final int TX_POWERUP_LAMP = 9;
-    private static final int TX_POWERUP_HAY = 10;
-    private static final int TX_POWERUP_WHEEL = 11;
-    private static final int TX_POWERUP_SNAKEOIL = 15;
+    private static final int TX_POWERUP_START = 3;
+    private static final int TX_POWERUP_MID = 4;
+    private static final int TX_POWERUP_END = 5;
+
+    private static final int TX_OUTLAW = 9;
+    private static final int TX_INFINITY = 10;
+    private static final int TX_MOB = 11;
+    private static final int TX_TIME = 12;
+    private static final int TX_SCORE = 13;
+
+    private static final int TX_POWERUP_LAMP = 14;
+    private static final int TX_POWERUP_HAY = 15;
+    private static final int TX_POWERUP_WHEEL = 16;
+    private static final int TX_POWERUP_SNAKEOIL = 17;
 
     private static final long UI_SLIDE_INTERVAL =
             TimeUnit.MILLISECONDS.toNanos(100);

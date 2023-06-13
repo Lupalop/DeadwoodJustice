@@ -16,11 +16,8 @@ public class Button extends Sprite {
 
     public static final String SFX_BUTTON = "sfx_button.wav";
 
-    private static final Tile TILE =
-            new Tile("tilemap_ui.png", 4, 8);
-
-    private static final int BUTTON_NORMAL_PARTS[] = {19, 20, 21};
-    private static final int BUTTON_HOVER_PARTS[] = {27, 28, 29};
+    private static final int BUTTON_NORMAL_PARTS[] = {18, 19, 20};
+    private static final int BUTTON_HOVER_PARTS[] = {21, 22, 23};
     private static final int BUTTON_ACTIVE_PARTS[] = {24, 25, 26};
 
     private static final int SELECTOR_STROKE_WIDTH = 3;
@@ -110,11 +107,11 @@ public class Button extends Sprite {
         if (this.isActive) {
             parts = BUTTON_ACTIVE_PARTS;
         }
-        TILE.draw(gc, this.getX() + (Tile.SIZE_MID * 0), this.getY(), parts[0]);
+        UIUtils.TILE.draw(gc, this.getX() + (Tile.SIZE_MID * 0), this.getY(), parts[0]);
         for (int i = 1; i <= size; i++) {
-            TILE.draw(gc, this.getX() + (Tile.SIZE_MID * i), this.getY(), parts[1]);
+            UIUtils.TILE.draw(gc, this.getX() + (Tile.SIZE_MID * i), this.getY(), parts[1]);
         }
-        TILE.draw(gc, this.getX() + (Tile.SIZE_MID * (size + 1)), this.getY(), parts[2]);
+        UIUtils.TILE.draw(gc, this.getX() + (Tile.SIZE_MID * (size + 1)), this.getY(), parts[2]);
     }
 
     public void drawSelector(GraphicsContext gc) {

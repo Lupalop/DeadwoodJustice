@@ -14,7 +14,7 @@ public final class UIUtils {
     public static final Paint COLOR_TERTIARY = Paint.valueOf("a23e47");
 
     public static final Tile TILE =
-            new Tile("tilemap_ui.png", 4, 8);
+            new Tile("tilemap_ui.png", 4, 9);
 
     public static final int FONT_SIZE_32 = 32;
     public static final int FONT_SIZE_48 = 48;
@@ -35,9 +35,9 @@ public final class UIUtils {
     public static final Font FONT_ALT_32 =
             Font.loadFont(FONT_MUP_PATH, FONT_SIZE_32);
 
-    private static final int TX_POP_START = 16;
-    private static final int TX_POP_MID = 18;
-    private static final int TX_POP_END = 17;
+    private static final int TX_POP_START = 6;
+    private static final int TX_POP_MID = 7;
+    private static final int TX_POP_END = 8;
 
     public static void drawShade(GraphicsContext gc) {
         gc.save();
