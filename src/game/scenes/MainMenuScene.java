@@ -120,9 +120,9 @@ public class MainMenuScene implements GameScene {
 
     private void addMenuControls() {
         titleProp = new HeaderProp(0, 0, HeaderProp.MENU_TITLE);
-        titleProp.setScale(1);
-        titleProp.setX((int) ((Game.WINDOW_MAX_WIDTH / 2) - (titleProp.getWidth() / 2)));
-        titleProp.setY((int) ((Game.WINDOW_MAX_HEIGHT / 2) - (titleProp.getHeight() / 2)) - (Tile.SIZE_MID));
+        titleProp.setScale(2);
+        titleProp.setX((int) ((Game.WINDOW_MAX_WIDTH / 2) - (titleProp.getBounds().getWidth() / 2)));
+        titleProp.setY((int) ((Game.WINDOW_MAX_HEIGHT / 2) - (titleProp.getBounds().getHeight() / 2)) - (Tile.SIZE_MID));
 
         previousButton = new Button(Tile.SIZE_MID * 4, MENU_Y, 0);
         previousButton.attach(this);
