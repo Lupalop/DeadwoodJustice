@@ -49,7 +49,7 @@ public class CowboyMob extends Mob {
     }
 
     @Override
-    protected boolean guessShooterAbility() {
+    protected boolean getShootingCapability() {
         return true;
     }
 

@@ -71,7 +71,7 @@ public abstract class Mob extends LevelSprite {
         this.playerInMobBounds = false;
         this.movingStuck = false;
         this.movingRight = Game.RNG.nextBoolean();
-        this.shooter = this.guessShooterAbility();
+        this.shooter = this.getShootingCapability();
 
         this.passability = new boolean[4];
         this.frameRanges = null;
@@ -338,12 +338,11 @@ public abstract class Mob extends LevelSprite {
         this.addX((int) this.getBounds().getWidth() / 2 * multiplier);
     }
 
-    protected boolean guessShooterAbility() {
-        // On higher difficulty or if the mobs can shoot flag is enabled,
-        // their ability to shoot is decided by the RNG.
-        boolean shootCondition = (Game.FLAG_MOBS_CAN_SHOOT
-                || getParent().getDifficulty() >= LevelScene.DIFFICULTY_MEDIUM);
-        return (shootCondition && Game.RNG.nextBoolean());
+    protected boolean getShootingCapability() {
+        // On higher difficulties, the mob's shooting capability is randomized.
+        boolean allowMobShooting =
+                (getParent().getDifficulty() >= LevelScene.DIFFICULTY_MEDIUM);
+        return (allowMobShooting && Game.RNG.nextBoolean());
     }
 
     protected void shoot() {
