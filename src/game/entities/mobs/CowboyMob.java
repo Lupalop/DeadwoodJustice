@@ -44,7 +44,6 @@ public class CowboyMob extends Mob {
             this.changeDirection();
         }
 
-        this.excludedFromMaxSpeed = true;
         this.setChasingPlayer(!parent.getRestrictedMode());
     }
 

@@ -38,7 +38,6 @@ public abstract class Mob extends LevelSprite {
 
     private boolean alive;
     private boolean dying;
-    protected boolean excludedFromMaxSpeed;
     private boolean deadOnPlayerImpact;
     private boolean chasingPlayer;
     private boolean playerInMobBounds;
@@ -65,7 +64,6 @@ public abstract class Mob extends LevelSprite {
 
         this.alive = true;
         this.dying = false;
-        this.excludedFromMaxSpeed = false;
         this.deadOnPlayerImpact = true;
         this.chasingPlayer = false;
         this.playerInMobBounds = false;
@@ -204,7 +202,7 @@ public abstract class Mob extends LevelSprite {
     }
 
     private void moveMob() {
-        int currentSpeed = (this.getParent().isMaxSpeed() && !this.excludedFromMaxSpeed)
+        int currentSpeed = this.getParent().isMaxSpeed()
                 ? MAX_SPEED
                 : this.speed;
         if (this.getParent().isSlowSpeed()) {
