@@ -48,9 +48,9 @@ public class HelpScene implements GameScene {
     private Prop helpImage;
 
     private void addMenuControls() {
-        backButton = new Button(Tile.SIZE_MID, Tile.SIZE_MID, 0);
+        backButton = new Button(Tile.SIZE_MID, Tile.SIZE_MID,
+                Button.SIZE_ARROW_LEFT);
         backButton.attach(this);
-        backButton.setText(Button.TEXT_BACK);
         backButton.setClickAction(new Runnable() {
             @Override
             public void run() {

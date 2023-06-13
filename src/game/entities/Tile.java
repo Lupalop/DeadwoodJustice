@@ -31,11 +31,17 @@ public class Tile {
         this(assetPath, rows, columns, Sprite.DEFAULT_SCALE);
     }
 
-    public void draw(GraphicsContext gc, int x, int y, int frameId) {
+    public void draw(GraphicsContext gc, int x, int y, int frameId,
+            boolean flip, boolean flipVertical) {
+        tileset.setFlip(flip, flipVertical);
         tileset.setFrame(frameId);
         tileset.setX(x);
         tileset.setY(y);
         tileset.draw(gc);
+    }
+
+    public void draw(GraphicsContext gc, int x, int y, int frameId) {
+        draw(gc, x, y, frameId, false, false);
     }
 
 }

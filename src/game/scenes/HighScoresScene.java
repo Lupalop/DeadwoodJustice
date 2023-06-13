@@ -82,9 +82,9 @@ public class HighScoresScene implements GameScene {
         headerProp.setScale(1);
         headerProp.setX((int) ((Game.WINDOW_MAX_WIDTH / 2) - (headerProp.getWidth() / 2)));
 
-        backButton = new Button(Tile.SIZE_MID, Tile.SIZE_MID, 0);
+        backButton = new Button(Tile.SIZE_MID, Tile.SIZE_MID,
+                Button.SIZE_ARROW_LEFT);
         backButton.attach(this);
-        backButton.setText(Button.TEXT_BACK);
         backButton.setClickAction(new Runnable() {
             @Override
             public void run() {

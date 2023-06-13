@@ -11,14 +11,15 @@ import javafx.scene.text.Text;
 
 public class Button extends Sprite {
 
-    public static final String TEXT_BACK = "<-";
-    public static final String TEXT_FORWARD = "->";
-
     public static final String SFX_BUTTON = "sfx_button.wav";
+
+    public static final int SIZE_ARROW_LEFT = -100;
+    public static final int SIZE_ARROW_RIGHT = -101;
 
     private static final int BUTTON_NORMAL_PARTS[] = {18, 19, 20};
     private static final int BUTTON_HOVER_PARTS[] = {21, 22, 23};
     private static final int BUTTON_ACTIVE_PARTS[] = {24, 25, 26};
+    private static final int BUTTON_ARROW_PARTS[] = {27, 28, 29};
 
     private static final int SELECTOR_STROKE_WIDTH = 3;
     private static final int SELECTOR_STROKE_RADIUS = 0;
@@ -40,7 +41,11 @@ public class Button extends Sprite {
         this.isHover = false;
         this.isActive = false;
         this.size = size;
-        this.setWidth(Tile.SIZE * (2 + size));
+        if (size == SIZE_ARROW_LEFT || size == SIZE_ARROW_RIGHT) {
+            this.setWidth(Tile.SIZE);
+        } else {
+            this.setWidth(Tile.SIZE * (2 + size));
+        }
         this.setHeight(Tile.SIZE);
         text = new Text();
         text.setFont(UIUtils.FONT_ALT_48);
@@ -100,6 +105,26 @@ public class Button extends Sprite {
 
     @Override
     public void draw(GraphicsContext gc) {
+        if (this.size == SIZE_ARROW_LEFT || this.size == SIZE_ARROW_RIGHT) {
+            this.drawArrow(gc);
+        } else {
+            this.drawBase(gc);
+        }
+    }
+
+    private void drawArrow(GraphicsContext gc) {
+        int partId = BUTTON_ARROW_PARTS[0];
+        if (this.isHover) {
+            partId = BUTTON_ARROW_PARTS[1];
+        }
+        if (this.isActive) {
+            partId = BUTTON_ARROW_PARTS[2];
+        }
+        UIUtils.TILE.draw(gc, this.getX(), this.getY(), partId,
+                this.size == SIZE_ARROW_RIGHT, false);
+    }
+
+    private void drawBase(GraphicsContext gc) {
         int[] parts = BUTTON_NORMAL_PARTS;
         if (this.isHover) {
             parts = BUTTON_HOVER_PARTS;
@@ -107,6 +132,7 @@ public class Button extends Sprite {
         if (this.isActive) {
             parts = BUTTON_ACTIVE_PARTS;
         }
+
         UIUtils.TILE.draw(gc, this.getX() + (Tile.SIZE_MID * 0), this.getY(), parts[0]);
         for (int i = 1; i <= size; i++) {
             UIUtils.TILE.draw(gc, this.getX() + (Tile.SIZE_MID * i), this.getY(), parts[1]);
