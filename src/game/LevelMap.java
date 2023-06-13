@@ -207,9 +207,7 @@ public class LevelMap {
                 source.getBounds().getMaxY() <= Game.WINDOW_MAX_HEIGHT;
 
         for (Sprite sprite : this.sprites) {
-            if (!Game.FLAG_CHECK_ALL_COLLIDERS
-                    || (!Game.FLAG_CHECK_PROP_COLLIDERS && sprite instanceof Prop)
-                    || (sprite instanceof Mob && !((Mob)sprite).isAlive())
+            if ((sprite instanceof Mob && !((Mob)sprite).isAlive())
                     || sprite instanceof Powerup
                     || sprite instanceof Outlaw
                     || sprite instanceof Bullet

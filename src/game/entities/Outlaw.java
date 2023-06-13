@@ -102,9 +102,7 @@ public class Outlaw extends LevelSprite {
             return;
         }
 
-        if (Game.FLAG_CHECK_PROP_COLLIDERS) {
-            passability = this.getParent().getLevelMap().getPassability(this);
-        }
+        passability = this.getParent().getLevelMap().getPassability(this);
 
         if (this.getBounds().getMinX() + dx >= 0
                 && Game.isDirectionActive(this.activeDirections, Game.DIR_LEFT)
