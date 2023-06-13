@@ -205,11 +205,8 @@ public class MainMenuScene implements GameScene {
 
         this.titleProp.draw(gc);
         previousButton.draw(gc);
-        previousButton.drawSelector(gc);
         actionButton.draw(gc);
-        actionButton.drawSelector(gc);
         nextButton.draw(gc);
-        nextButton.drawSelector(gc);
     }
 
     private void handleKeyPressEvent() {

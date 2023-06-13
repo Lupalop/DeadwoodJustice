@@ -166,7 +166,6 @@ public class CreditsScene implements GameScene {
         drawScrollingNodes(gc);
 
         backButton.draw(gc);
-        backButton.drawSelector(gc);
     }
 
     @Override

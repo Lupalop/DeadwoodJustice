@@ -147,7 +147,6 @@ public class HighScoresScene implements GameScene {
         UIUtils.drawMenuBackground(gc, 2, Tile.ALL_VERTICAL);
         this.headerProp.draw(gc);
         backButton.draw(gc);
-        backButton.drawSelector(gc);
     }
 
     @Override
