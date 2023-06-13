@@ -41,7 +41,6 @@ public final class Game {
 
     public static final boolean DEBUG_MODE = false;
     public static final boolean FLAG_DIRECTIONAL_SHOOTING = false;
-    public static final boolean FLAG_FIX_DRAW_ORDER = true;
     public static final boolean FLAG_CHECK_ALL_COLLIDERS = true;
     public static final boolean FLAG_CHECK_PROP_COLLIDERS = true;
     public static final boolean FLAG_MOBS_CAN_SHOOT = false;

@@ -179,9 +179,8 @@ public class LevelMap {
     }
 
     public void update(long now) {
-        if (Game.FLAG_FIX_DRAW_ORDER) {
-            Collections.sort(this.spritesLayer1);
-        }
+        // Ensure sprites are sorted by y-order.
+        Collections.sort(this.spritesLayer1);
 
         if (this.pendingSpriteAdds.size() > 0) {
             this.sprites.addAll(this.pendingSpriteAdds);
