@@ -133,7 +133,7 @@ public class MainMenuScene implements GameScene {
             }
         });
 
-        actionButton = new Button(Tile.SIZE_MID * 7, MENU_Y, 9);
+        actionButton = new Button(Tile.SIZE_MID * 7, MENU_Y, Tile.ALL_HORIZONTAL - (16));
         actionButton.attach(this);
         if (menuIndex != -1) {
             updateButton();
