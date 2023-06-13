@@ -182,8 +182,9 @@ public class LevelScene implements GameScene {
         this.levelTimer = actions.add(this.levelEndTime, false, new Callable<Boolean>() {
             @Override
             public Boolean call() {
-                if (!Game.FLAG_DELAY_IF_BOSS_IS_ALIVE || (bossMob != null
-                        && !bossMob.isAlive() && !bossMob.isDying())) {
+                if (bossMob != null
+                        && !bossMob.isAlive()
+                        && !bossMob.isDying()) {
                     markLevelDone();
                     return true;
                 }
