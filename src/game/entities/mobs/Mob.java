@@ -336,8 +336,7 @@ public abstract class Mob extends LevelSprite {
 
     protected boolean getShootingCapability() {
         // On higher difficulties, the mob's shooting capability is randomized.
-        boolean allowMobShooting =
-                (getParent().getDifficulty() >= LevelScene.DIFFICULTY_MEDIUM);
+        boolean allowMobShooting = !getParent().getRestrictedMode();
         return (allowMobShooting && Game.RNG.nextBoolean());
     }
 

@@ -133,8 +133,7 @@ public class Bullet extends LevelSprite {
         }
 
         // Props can consume bullets if we're in a higher difficulty.
-        boolean propsConsumeBullets =
-                (getParent().getDifficulty() >= LevelScene.DIFFICULTY_MEDIUM);
+        boolean propsConsumeBullets = !getParent().getRestrictedMode();
         boolean bulletCaught = false;
         Outlaw outlaw = this.getParent().getOutlaw();
 

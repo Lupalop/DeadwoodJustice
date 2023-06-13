@@ -155,8 +155,7 @@ public class LevelScene implements GameScene {
         // XXX: Hide props if we're checking for prop colliders and
         // the difficulty is set to easy. Keep it this way until
         // mob pathfinding becomes "acceptable".
-        boolean excludeProps = (this.getDifficulty() == DIFFICULTY_EASY);
-        this.levelMap = new LevelMap(excludeProps);
+        this.levelMap = new LevelMap(this.getRestrictedMode());
         this.levelMap.generate();
         this.levelMap.generateProps();
         this.levelMap.addSpriteOnUpdate(getOutlaw());
@@ -462,6 +461,10 @@ public class LevelScene implements GameScene {
 
     public int getDifficulty() {
         return this.difficulty;
+    }
+
+    public boolean getRestrictedMode() {
+        return this.difficulty == DIFFICULTY_EASY;
     }
 
     public int getScore() {
