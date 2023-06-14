@@ -28,7 +28,7 @@ public class Tile {
     }
 
     public Tile(String assetPath, int rows, int columns) {
-        this(assetPath, rows, columns, Sprite.DEFAULT_SCALE);
+        this(assetPath, rows, columns, Sprite.BASE_SCALE);
     }
 
     public void draw(GraphicsContext gc, int x, int y, int frameId,

@@ -6,11 +6,11 @@ import javafx.scene.image.Image;
 
 public class ImmortalityEffect extends Effect {
 
-    public static final Image FRAMESET = new Image(
+    private static final Image FRAMESET = new Image(
             Game.getAsset("fx_portal.png"));
 
-    public static final int FRAMESET_ROWS = 1;
-    public static final int FRAMESET_COLUMNS = 10;
+    private static final int FRAMESET_ROWS = 1;
+    private static final int FRAMESET_COLUMNS = 10;
 
     public ImmortalityEffect(int xPos, int yPos) {
         super(xPos, yPos);

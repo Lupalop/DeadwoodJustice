@@ -6,11 +6,11 @@ import javafx.scene.image.Image;
 
 public class TornadoEffect extends Effect {
 
-    public static final Image FRAMESET = new Image(
+    private static final Image FRAMESET = new Image(
             Game.getAsset("fx_tornado.png"));
 
-    public static final int FRAMESET_ROWS = 1;
-    public static final int FRAMESET_COLUMNS = 10;
+    private static final int FRAMESET_ROWS = 1;
+    private static final int FRAMESET_COLUMNS = 10;
 
     public TornadoEffect(int xPos, int yPos) {
         super(xPos, yPos);

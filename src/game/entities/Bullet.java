@@ -8,15 +8,15 @@ import javafx.scene.image.Image;
 
 public class Bullet extends Entity {
 
-    public static final Image BULLET_IMAGE = new Image(
-            Game.getAsset("bullet.png"),
-            Bullet.BULLET_WIDTH, Bullet.BULLET_WIDTH, false, false);
-    public static final Image BULLET_ALT_IMAGE = new Image(
-            Game.getAsset("bullet_alt.png"),
-            Bullet.BULLET_WIDTH, Bullet.BULLET_WIDTH, false, false);
-
     public static final String SFX_SHOOT = "sfx_shoot.wav";
     public static final String SFX_HIT = "sfx_hit.wav";
+
+    private static final Image BULLET_IMAGE = new Image(
+            Game.getAsset("bullet.png"),
+            Bullet.BULLET_WIDTH, Bullet.BULLET_WIDTH, false, false);
+    private static final Image BULLET_ALT_IMAGE = new Image(
+            Game.getAsset("bullet_alt.png"),
+            Bullet.BULLET_WIDTH, Bullet.BULLET_WIDTH, false, false);
 
     private static final int BULLET_SPEED = 20;
     private static final int BULLET_WIDTH = 20;

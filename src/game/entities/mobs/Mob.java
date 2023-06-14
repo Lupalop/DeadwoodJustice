@@ -20,10 +20,10 @@ public abstract class Mob extends Entity {
 
     public static final int TOTAL_MOBS = 3;
 
-    public static final int MIN_SPEED = 1;
-    public static final int MAX_SPEED = 5;
-    public static final int MAX_DAMAGE = 40;
-    public static final int MIN_DAMAGE = 30;
+    private static final int MIN_SPEED = 1;
+    private static final int MAX_SPEED = 5;
+    private static final int MAX_DAMAGE = 40;
+    private static final int MIN_DAMAGE = 30;
 
     private static final long FRAME_DEATH_INTERVAL =
             TimeUnit.MILLISECONDS.toNanos(300);

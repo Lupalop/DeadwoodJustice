@@ -17,22 +17,22 @@ import javafx.scene.input.KeyEvent;
 
 public class Outlaw extends Entity {
 
-    public static final Image FRAMESET_W = new Image(
+    private static final Image FRAMESET_W = new Image(
             Game.getAsset("player_sheet_w.png"));
-    public static final Image FRAMESET_SW = new Image(
+    private static final Image FRAMESET_SW = new Image(
             Game.getAsset("player_sheet_sw.png"));
-    public static final Image FRAMESET_N = new Image(
+    private static final Image FRAMESET_N = new Image(
             Game.getAsset("player_sheet_n.png"));
-    public static final Image FRAMESET_NW = new Image(
+    private static final Image FRAMESET_NW = new Image(
             Game.getAsset("player_sheet_nw.png"));
-    public static final Image FRAMESET_S = new Image(
+    private static final Image FRAMESET_S = new Image(
             Game.getAsset("player_sheet_s.png"));
 
-    public static final int FRAMESET_ROWS = 5;
-    public static final int FRAMESET_COLUMNS = 14;
-    public static final int[] FRAMESET_OFFSET =
+    private static final int FRAMESET_ROWS = 5;
+    private static final int FRAMESET_COLUMNS = 14;
+    private static final int[] FRAMESET_OFFSET =
             new int[] { 15, 17, 9, 3 };
-    public static final FrameRange FRAME_RANGE =
+    private static final FrameRange FRAME_RANGE =
             new FrameRange(14, 21,
                     56, 58,
                     56, 58,
@@ -40,7 +40,7 @@ public class Outlaw extends Entity {
                     56, 69,
                     0, 5);
 
-    public static final int OUTLAW_SPEED = 10;
+    private static final int BASE_SPEED = 10;
 
     private static final String SFX_DEAD_OUTLAW = "sfx_dead_outlaw.wav";
 
@@ -115,11 +115,11 @@ public class Outlaw extends Entity {
         if (this.getBounds().getMinX() + dx >= 0
                 && Game.isDirectionActive(this.activeDirections, Game.DIR_LEFT)
                 && passability[SIDE_LEFT]) {
-            this.dx = -OUTLAW_SPEED;
+            this.dx = -BASE_SPEED;
         } else if (this.getBounds().getMinX() + this.dx <= Game.WINDOW_MAX_WIDTH - this.getBounds().getWidth()
                 && Game.isDirectionActive(this.activeDirections, Game.DIR_RIGHT)
                 && passability[SIDE_RIGHT]) {
-            this.dx = OUTLAW_SPEED;
+            this.dx = BASE_SPEED;
         } else {
             this.dx = 0;
         }
@@ -127,11 +127,11 @@ public class Outlaw extends Entity {
         if (this.getBounds().getMinY() + dy >= 0
                 && Game.isDirectionActive(this.activeDirections, Game.DIR_UP)
                 && passability[SIDE_TOP]) {
-            this.dy = -OUTLAW_SPEED;
+            this.dy = -BASE_SPEED;
         } else if (this.getBounds().getMinY() + dy <= Game.WINDOW_MAX_HEIGHT - this.getBounds().getHeight()
                 && Game.isDirectionActive(this.activeDirections, Game.DIR_DOWN)
                 && passability[SIDE_BOTTOM]) {
-            this.dy = OUTLAW_SPEED;
+            this.dy = BASE_SPEED;
         } else {
             this.dy = 0;
         }

@@ -8,7 +8,7 @@ import javafx.scene.image.Image;
 
 public abstract class Sprite implements Comparable<Sprite> {
 
-    public static final int DEFAULT_SCALE = 2;
+    public static final int BASE_SCALE = 2;
 
     protected int dx, dy;
     protected boolean boundsDirty;
@@ -57,7 +57,7 @@ public abstract class Sprite implements Comparable<Sprite> {
         this.width = 0;
         this.height = 0;
         this.bounds = null;
-        this.scale = DEFAULT_SCALE;
+        this.scale = BASE_SCALE;
         this.visible = true;
         this.removed = false;
         this.flipHorizontal = false;

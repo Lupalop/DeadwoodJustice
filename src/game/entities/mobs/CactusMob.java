@@ -7,14 +7,14 @@ import javafx.scene.image.Image;
 
 public class CactusMob extends Mob {
 
-    public static final Image FRAMESET_W = new Image(
+    private static final Image FRAMESET_W = new Image(
             Game.getAsset("cactus_sheet_w.png"));
 
-    public static final int FRAMESET_ROWS = 4;
-    public static final int FRAMESET_COLUMNS = 11;
-    public static final int[] FRAMESET_OFFSET =
+    private static final int FRAMESET_ROWS = 4;
+    private static final int FRAMESET_COLUMNS = 11;
+    private static final int[] FRAMESET_OFFSET =
             new int[] { 10, 12, 10, 1 };
-    public static final FrameRange FRAME_RANGE =
+    private static final FrameRange FRAME_RANGE =
             new FrameRange(11, 19,
                     -1, -1,
                     -1, -1,

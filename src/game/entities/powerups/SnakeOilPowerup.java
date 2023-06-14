@@ -8,7 +8,7 @@ public class SnakeOilPowerup extends Powerup {
 
     public static final int ID = 3;
 
-    public static final Image FRAMESET = new Image(
+    private static final Image FRAMESET = new Image(
             Game.getAsset("pw_snakeoil.png"));
 
     public SnakeOilPowerup(int x, int y, LevelScene parent) {

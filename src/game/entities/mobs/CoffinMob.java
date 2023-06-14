@@ -7,14 +7,14 @@ import javafx.scene.image.Image;
 
 public class CoffinMob extends Mob {
 
-    public static final Image FRAMESET_W = new Image(
+    private static final Image FRAMESET_W = new Image(
             Game.getAsset("coffin_sheet_w.png"));
 
-    public static final int FRAMESET_ROWS = 4;
-    public static final int FRAMESET_COLUMNS = 18;
-    public static final int[] FRAMESET_OFFSET =
+    private static final int FRAMESET_ROWS = 4;
+    private static final int FRAMESET_COLUMNS = 18;
+    private static final int[] FRAMESET_OFFSET =
             new int[] { 9, 35, 14, 17 };
-    public static final FrameRange FRAME_RANGE =
+    private static final FrameRange FRAME_RANGE =
             new FrameRange(19, 32,
                     -1, -1,
                     -1, -1,

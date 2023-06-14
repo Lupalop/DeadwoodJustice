@@ -6,11 +6,11 @@ import javafx.scene.image.Image;
 
 public class SmokeEffect extends Effect {
 
-    public static final Image FRAMESET = new Image(
+    private static final Image FRAMESET = new Image(
             Game.getAsset("fx_smoke.png"));
 
-    public static final int FRAMESET_ROWS = 1;
-    public static final int FRAMESET_COLUMNS = 6;
+    private static final int FRAMESET_ROWS = 1;
+    private static final int FRAMESET_COLUMNS = 6;
 
     public SmokeEffect(int xPos, int yPos) {
         super(xPos, yPos);

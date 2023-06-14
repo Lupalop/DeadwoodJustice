@@ -7,14 +7,14 @@ import javafx.scene.image.Image;
 
 public class CowboyMob extends Mob {
 
-    public static final Image FRAMESET_W = new Image(
+    private static final Image FRAMESET_W = new Image(
             Game.getAsset("cowboy_sheet_w.png"));
 
-    public static final int FRAMESET_ROWS = 4;
-    public static final int FRAMESET_COLUMNS = 8;
-    public static final int[] FRAMESET_OFFSET =
+    private static final int FRAMESET_ROWS = 4;
+    private static final int FRAMESET_COLUMNS = 8;
+    private static final int[] FRAMESET_OFFSET =
             new int[] { 15, 14, 7, 0 };
-    public static final FrameRange FRAME_RANGE =
+    private static final FrameRange FRAME_RANGE =
             new FrameRange(0, 7,
                     8, 12,
                     16, 21,
@@ -22,7 +22,7 @@ public class CowboyMob extends Mob {
                     24, 27,
                     -1, -1);
 
-    private static final int MOB_SCALE = 3;
+    private static final int BASE_SCALE = 3;
 
     public CowboyMob(int x, int y, LevelScene parent) {
         super(x, y, 3000, 50, parent);
@@ -33,7 +33,7 @@ public class CowboyMob extends Mob {
         this.setFrameRange(FRAME_RANGE);
 
         super.initialize();
-        this.setScale(MOB_SCALE);
+        this.setScale(BASE_SCALE);
 
         if (this.isMovingRight()) {
             this.changeDirection();

@@ -12,7 +12,7 @@ public abstract class Powerup extends Entity {
 
     public static final int TOTAL_POWERUPS = 4;
 
-    public static final long POWERUP_TIMEOUT =
+    protected static final long POWERUP_TIMEOUT =
             TimeUnit.SECONDS.toNanos(5);
 
     private static final int POWERUP_BASE_SCORE = 100;

@@ -8,7 +8,7 @@ public class LampPowerup extends Powerup {
 
     public static final int ID = 0;
 
-    public static final Image FRAMESET = new Image(
+    private static final Image FRAMESET = new Image(
             Game.getAsset("pw_lamp.png"));
 
     private static final int STRENGTH_MAX_ON_HARD = 300;
@@ -20,15 +20,14 @@ public class LampPowerup extends Powerup {
 
     @Override
     public void applyPowerup() {
-        int outlawStrength = this.getParent().getOutlaw().getStrength();
+        int addedStrength = this.getParent().getOutlaw().getStrength();
         // Clamp gained strength for this power-up on hard difficulty.
         if (this.getParent().getDifficulty() == LevelScene.DIFFICULTY_HARD) {
-            outlawStrength = (outlawStrength > STRENGTH_MAX_ON_HARD)
+            addedStrength = (addedStrength > STRENGTH_MAX_ON_HARD)
                     ? STRENGTH_MAX_ON_HARD
-                    : outlawStrength;
+                    : addedStrength;
         }
-
-        this.getParent().getOutlaw().increaseStrength(outlawStrength);
+        this.getParent().getOutlaw().increaseStrength(addedStrength);
         this.getParent().consumePowerup(ID);
     }
 
