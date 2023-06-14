@@ -36,6 +36,9 @@ public class LevelScene implements GameScene {
     public static final int DIFFICULTY_MEDIUM = 1;
     public static final int DIFFICULTY_HARD = 2;
 
+    private static final int SCORE_DIVIDER = 3;
+    private static final int SCORE_BASE_DIVIDER = 2;
+
     public static final int NAME_MAX_LEN = 10;
 
     private static final int MOB_COUNT_AT_START = 7;
@@ -448,9 +451,10 @@ public class LevelScene implements GameScene {
     }
 
     public int getScore() {
-        return (this.score
-                + (this.score > 0 ? (this.getOutlaw().getStrength() / 2) : 0))
-                * (this.getDifficulty() + 1);
+        int difficultyMultiplier = this.getDifficulty() + 1;
+        int baseScore = (this.score > 0 ? (this.getOutlaw().getStrength() / SCORE_BASE_DIVIDER) : 0);
+        int computedScore = (this.score + baseScore) * difficultyMultiplier;
+        return computedScore;
     }
 
     public void addScore(int value) {
@@ -458,6 +462,9 @@ public class LevelScene implements GameScene {
         if (value < 0) {
             return;
         }
+
+        // Further reduce the added score by dividing it.
+        value /= SCORE_DIVIDER;
 
         // Fallback: Catch cases where the value is probably fractional
         // and was rounded to 0. Default them to 1.

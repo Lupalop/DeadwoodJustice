@@ -323,7 +323,7 @@ public abstract class Mob extends Entity {
             }
             outlaw.reduceStrength(this.damage);
             if (this.deadOnPlayerImpact) {
-                this.getParent().addScore(outlaw.getStrength() / 4);
+                this.getParent().addScore(outlaw.getStrength());
                 this.prepareDeath();
             } else {
                 this.frameRange.playImpact(this);
@@ -394,7 +394,7 @@ public abstract class Mob extends Entity {
             return;
         }
         this.health -= value;
-        this.getParent().addScore(value / 3);
+        this.getParent().addScore(value);
 
         byte moteType = Mote.TYPE_NEUTRAL;
         if (this.health <= 0) {
