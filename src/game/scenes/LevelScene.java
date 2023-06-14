@@ -135,8 +135,7 @@ public class LevelScene implements GameScene {
         this.actions = new TimedActionManager();
         this.initializeActions();
 
-        this.outlaw = new Outlaw(
-                "Going merry", OUTLAW_INITIAL_X, 0, this);
+        this.outlaw = new Outlaw(OUTLAW_INITIAL_X, 0, this);
         this.getOutlaw().setY(Game.RNG.nextInt(
                 (int) getOutlaw().getBounds().getHeight(),
                 Game.WINDOW_MAX_HEIGHT - (int) getOutlaw().getBounds().getHeight()));

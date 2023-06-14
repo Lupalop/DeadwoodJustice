@@ -44,7 +44,6 @@ public class Outlaw extends Entity {
 
     private static final String SFX_DEAD_OUTLAW = "sfx_dead_outlaw.wav";
 
-    private String name;
     private int strength;
 
     private boolean alive;
@@ -60,7 +59,7 @@ public class Outlaw extends Entity {
     private boolean[] passability;
     private FrameRange frameRange;
 
-    public Outlaw(String name, int x, int y, LevelScene parent) {
+    public Outlaw(int x, int y, LevelScene parent) {
         super(x, y, parent);
 
         this.setFrameSet(FRAMESET_W, FRAMESET_ROWS, FRAMESET_COLUMNS);
@@ -68,7 +67,6 @@ public class Outlaw extends Entity {
         this.setBoundsOffset(FRAMESET_OFFSET);
         this.frameRange.playIdle(this);
 
-        this.name = name;
         this.strength = Game.DEBUG_MODE
                 ? 1
                 : Game.RNG.nextInt(151) + 100;
@@ -343,10 +341,6 @@ public class Outlaw extends Entity {
 
     public void spawnPowerupEffect() {
         this.powerupEffect = new SmokeEffect(this);
-    }
-
-    public String getName() {
-        return this.name;
     }
 
     public int getStrength() {
