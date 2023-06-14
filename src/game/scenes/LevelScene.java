@@ -293,8 +293,8 @@ public final class LevelScene implements GameScene {
                     Game.WINDOW_MAX_WIDTH / 2,
                     Game.WINDOW_MAX_WIDTH - mobWidth));
             mob.setY(Game.RNG.nextInt(
-                    mobHeight,
-                    Game.WINDOW_MAX_HEIGHT - mobHeight * 2));
+                    0,
+                    Game.WINDOW_MAX_HEIGHT - mobHeight));
 
             this.levelMap.addEntity(mob);
         }
