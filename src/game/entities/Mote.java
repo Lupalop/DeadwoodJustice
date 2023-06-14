@@ -106,7 +106,7 @@ public class Mote extends Sprite {
         level.getActions().add(MOTE_DEATH_INTERVAL, false, new Callable<Boolean>() {
             @Override
             public Boolean call() {
-                level.getLevelMap().removeSpriteOnUpdate(Mote.this);
+                remove();
                 return true;
             }
         });

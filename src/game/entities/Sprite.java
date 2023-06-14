@@ -24,6 +24,7 @@ public abstract class Sprite implements Comparable<Sprite> {
     private Rectangle2D bounds;
     private int scale;
     private boolean visible;
+    private boolean removed;
     private boolean flipHorizontal;
     private boolean flipVertical;
 
@@ -58,6 +59,7 @@ public abstract class Sprite implements Comparable<Sprite> {
         this.bounds = null;
         this.scale = DEFAULT_SCALE;
         this.visible = true;
+        this.removed = false;
         this.flipHorizontal = false;
         this.flipVertical = false;
 
@@ -260,6 +262,10 @@ public abstract class Sprite implements Comparable<Sprite> {
         return this.visible;
     }
 
+    public boolean getRemoved() {
+        return this.removed;
+    }
+
     public boolean isFrameAutoReset() {
         return this.frameAutoReset;
     }
@@ -313,6 +319,10 @@ public abstract class Sprite implements Comparable<Sprite> {
 
     public void setVisible(boolean value) {
         this.visible = value;
+    }
+
+    public void remove() {
+        this.removed = true;
     }
 
     protected void setFlip(boolean value, boolean isVertical) {

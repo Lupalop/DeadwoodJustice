@@ -113,6 +113,7 @@ public abstract class Mob extends Entity {
         if (this.dying) {
             if (this.isFrameSequenceDone()) {
                 this.dying = false;
+                this.remove();
             }
         }
 
@@ -318,6 +319,7 @@ public abstract class Mob extends Entity {
     private void prepareDeath() {
         this.alive = false;
         this.dying = true;
+        this.getParent().incrementMobKillCount();
         this.setFrameAutoReset(false);
         this.setFrameInterval(FRAME_DEATH_INTERVAL);
         this.frameRange.playDeath(this);
@@ -347,7 +349,7 @@ public abstract class Mob extends Entity {
                 ? Game.DIR_RIGHT
                 : Game.DIR_LEFT;
         Bullet bullet = new Bullet(this, getParent(), activeDirections, true);
-        this.getParent().getLevelMap().addEntityOnUpdate(bullet);
+        this.getParent().getLevelMap().addEntity(bullet);
         this.frameRange.playShoot(this);
     }
 

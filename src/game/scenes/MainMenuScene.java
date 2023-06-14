@@ -183,9 +183,6 @@ public class MainMenuScene implements GameScene {
 
     @Override
     public void update(long now) {
-        for (Sprite sprite : this.levelMap.getEntities()) {
-            sprite.update(now);
-        }
         this.levelMap.update(now);
         this.actions.update(now);
 

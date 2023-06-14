@@ -8,7 +8,6 @@ import game.LevelMap;
 import game.TimedAction;
 import game.TimedActionManager;
 import game.UIUtils;
-import game.entities.Bullet;
 import game.entities.Button;
 import game.entities.Mote;
 import game.entities.Outlaw;
@@ -158,7 +157,7 @@ public class LevelScene implements GameScene {
         this.levelMap = new LevelMap(this.getRestrictedMode());
         this.levelMap.generate();
         this.levelMap.generateProps();
-        this.levelMap.addEntityOnUpdate(getOutlaw());
+        this.levelMap.addEntity(getOutlaw());
 
         if (Game.DEBUG_MODE) {
             scene.addEventHandler(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>() {
@@ -202,7 +201,7 @@ public class LevelScene implements GameScene {
                             LevelScene.this);
                     bossMob.addY((int) -bossMob.getBounds().getHeight() / 2);
                     bossMob.addX((int) -bossMob.getBounds().getWidth());
-                    levelMap.addEntityOnUpdate(bossMob);
+                    levelMap.addEntity(bossMob);
                 }
                 return true;
             }
@@ -249,7 +248,6 @@ public class LevelScene implements GameScene {
         if (this.levelDone || this.levelPaused) {
             return;
         }
-        this.updateSprites(now);
         this.levelMap.update(now);
     }
 
@@ -262,28 +260,9 @@ public class LevelScene implements GameScene {
         this.statusOverlay.draw(gc);
     }
 
-    private void updateSprites(long now) {
-        for (Sprite sprite : this.levelMap.getEntities()) {
-            if (sprite instanceof Mob) {
-                Mob mob = (Mob)sprite;
-                if (!mob.isAlive() && !mob.isDying()) {
-                    this.levelMap.removeSpriteOnUpdate(mob);
-                    this.mobKillCount++;
-                }
-            } else if (sprite instanceof Bullet) {
-                Bullet bullet = (Bullet) sprite;
-                if (!bullet.getVisible()) {
-                    this.levelMap.removeSpriteOnUpdate(bullet);
-                    continue;
-                }
-            }
-            sprite.update(now);
-        }
-    }
-
     public void spawnMote(Sprite target, int value, byte moteType) {
         Mote mote = new Mote(target, value, moteType);
-        this.getLevelMap().addSpriteOnUpdate(mote);
+        this.getLevelMap().addOverlay(mote);
         mote.show(this);
     }
 
@@ -315,7 +294,7 @@ public class LevelScene implements GameScene {
                     mobHeight,
                     Game.WINDOW_MAX_HEIGHT - mobHeight * 2));
 
-            this.levelMap.addEntityOnUpdate(mob);
+            this.levelMap.addEntity(mob);
         }
     }
 
@@ -349,7 +328,7 @@ public class LevelScene implements GameScene {
                 powerupHeight,
                 Game.WINDOW_MAX_HEIGHT - powerupHeight * 2));
 
-        this.levelMap.addEntityOnUpdate(powerup);
+        this.levelMap.addEntity(powerup);
     }
 
     private void replacePowerupAction(int id, TimedAction action) {
@@ -558,6 +537,13 @@ public class LevelScene implements GameScene {
         Game.addHighScore(value, this.getScore(), this.getDifficulty());
         MainMenuScene.handleReturnKeyPressEvent(this);
         this.statusOverlay.toggleGameEndVisibility();
+    }
+
+    public void incrementMobKillCount() {
+        if (this.levelDone) {
+            return;
+        }
+        this.mobKillCount++;
     }
 
 }

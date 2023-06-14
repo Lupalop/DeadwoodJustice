@@ -82,6 +82,7 @@ public class Bullet extends Entity {
 
         if (this.getX() > Game.WINDOW_MAX_WIDTH) {
             this.setVisible(false);
+            this.remove();
         }
 
         this.checkCollisions();
@@ -162,6 +163,7 @@ public class Bullet extends Entity {
 
         if (bulletCaught) {
             this.setVisible(false);
+            this.remove();
         }
     }
 

@@ -10,7 +10,6 @@ import game.LevelMap;
 import game.TimedActionManager;
 import game.UIUtils;
 import game.entities.Button;
-import game.entities.Sprite;
 import game.entities.Tile;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -148,9 +147,6 @@ public class CreditsScene implements GameScene {
 
     @Override
     public void update(long now) {
-        for (Sprite sprite : this.levelMap.getEntities()) {
-            sprite.update(now);
-        }
         this.levelMap.update(now);
         this.actions.update(now);
 

@@ -169,7 +169,7 @@ public class Outlaw extends Entity {
         Game.playSFX(Bullet.SFX_SHOOT, 0.3);
         Bullet bullet = new Bullet(this, getParent(), activeDirections,
                 Game.FLAG_DIRECTIONAL_SHOOTING);
-        this.getParent().getLevelMap().addEntityOnUpdate(bullet);
+        this.getParent().getLevelMap().addEntity(bullet);
     }
 
     public void increaseStrength(int value) {

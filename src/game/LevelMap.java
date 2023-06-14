@@ -3,6 +3,7 @@ package game;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.ListIterator;
 
 import game.entities.Bullet;
 import game.entities.Entity;
@@ -33,10 +34,11 @@ public class LevelMap {
     private int[] tileLayer2;
 
     private ArrayList<Entity> entities;
-    private ArrayList<Sprite> overlayLayer;
-    private ArrayList<Entity> pendingEntityAdds;
-    private ArrayList<Sprite> pendingSpriteRemoves;
+    private ArrayList<Sprite> overlays;
     private ArrayList<Prop> generatedProps;
+
+    private ListIterator<Entity> entityIterator;
+    private ListIterator<Sprite> overlayIterator;
 
     private boolean tilesGenerated;
     private boolean propsGenerated;
@@ -46,10 +48,11 @@ public class LevelMap {
         this.propsGenerated = excludeProps;
 
         this.entities = new ArrayList<Entity>();
-        this.overlayLayer = new ArrayList<Sprite>();
-        this.pendingEntityAdds = new ArrayList<Entity>();
-        this.pendingSpriteRemoves = new ArrayList<Sprite>();
+        this.overlays = new ArrayList<Sprite>();
         this.generatedProps = new ArrayList<Prop>();
+
+        this.entityIterator = this.entities.listIterator();
+        this.overlayIterator = this.overlays.listIterator();
     }
 
     public LevelMap() {
@@ -104,7 +107,9 @@ public class LevelMap {
         }
 
         if (regenerate) {
-            this.pendingSpriteRemoves.addAll(generatedProps);
+            for (Prop prop : this.generatedProps) {
+                prop.remove();
+            }
             generatedProps.clear();
         }
 
@@ -113,19 +118,21 @@ public class LevelMap {
                     Game.RNG.nextInt(1, 8) * Game.RNG.nextInt(1, 3) * 60,
                     Game.RNG.nextInt(2, 6) * Game.RNG.nextInt(1, 3) * 60);
             this.generatedProps.add(tree);
+            this.entityIterator.add(tree);
         }
 
         Prop wagon = new WagonProp(
                 Game.RNG.nextInt(50, Game.WINDOW_MAX_WIDTH / 2),
                 Game.RNG.nextInt(3, 6) * 100);
         this.generatedProps.add(wagon);
+        this.entityIterator.add(wagon);
 
         Prop house = new HouseProp(
                 Game.RNG.nextInt(Game.WINDOW_MAX_WIDTH / 2, Game.WINDOW_MAX_WIDTH),
                 -100);
         this.generatedProps.add(house);
+        this.entityIterator.add(house);
 
-        this.pendingEntityAdds.addAll(generatedProps);
         this.propsGenerated = true;
     }
 
@@ -136,16 +143,6 @@ public class LevelMap {
     public void draw(GraphicsContext gc) {
         this.drawTiles(gc);
         this.drawSprites(gc);
-    }
-
-    private void drawSprites(GraphicsContext gc) {
-        for (Entity entity : this.entities) {
-            entity.draw(gc);
-        }
-
-        for (Sprite sprite : this.overlayLayer) {
-            sprite.draw(gc);
-        }
     }
 
     private void drawTiles(GraphicsContext gc) {
@@ -175,19 +172,42 @@ public class LevelMap {
         }
     }
 
+    private void drawSprites(GraphicsContext gc) {
+        this.entityIterator = this.entities.listIterator();
+        while (this.entityIterator.hasNext()) {
+            Entity entity = this.entityIterator.next();
+            entity.draw(gc);
+        }
+
+        this.overlayIterator = this.overlays.listIterator();
+        while (this.overlayIterator.hasNext()) {
+            Sprite sprite = this.overlayIterator.next();
+            sprite.draw(gc);
+        }
+    }
+
     public void update(long now) {
         // Ensure sprites are sorted by y-order.
         Collections.sort(this.entities);
 
-        if (this.pendingEntityAdds.size() > 0) {
-            this.entities.addAll(this.pendingEntityAdds);
-            this.pendingEntityAdds.clear();
+        this.entityIterator = this.entities.listIterator();
+        while (this.entityIterator.hasNext()) {
+            Entity entity = this.entityIterator.next();
+            if (entity.getRemoved()) {
+                this.entityIterator.remove();
+            } else {
+                entity.update(now);
+            }
         }
 
-        if (this.pendingSpriteRemoves.size() > 0) {
-            this.entities.removeAll(this.pendingSpriteRemoves);
-            this.overlayLayer.removeAll(this.pendingSpriteRemoves);
-            this.pendingSpriteRemoves.clear();
+        this.overlayIterator = this.overlays.listIterator();
+        while (this.overlayIterator.hasNext()) {
+            Sprite sprite = this.overlayIterator.next();
+            if (sprite.getRemoved()) {
+                this.overlayIterator.remove();
+            } else {
+                sprite.update(now);
+            }
         }
     }
 
@@ -239,16 +259,12 @@ public class LevelMap {
         return Collections.unmodifiableList(this.entities);
     }
 
-    public void addSpriteOnUpdate(Sprite sprite) {
-        this.overlayLayer.add(sprite);
+    public void addOverlay(Sprite sprite) {
+        this.overlayIterator.add(sprite);
     }
 
-    public void addEntityOnUpdate(Entity entity) {
-        this.pendingEntityAdds.add(entity);
-    }
-
-    public void removeSpriteOnUpdate(Sprite sprite) {
-        this.pendingSpriteRemoves.add(sprite);
+    public void addEntity(Entity entity) {
+        this.entityIterator.add(entity);
     }
 
 }
