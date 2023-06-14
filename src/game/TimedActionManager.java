@@ -20,11 +20,15 @@ public class TimedActionManager {
         this.enabled = true;
     }
 
+    public synchronized void add(TimedAction action) {
+        this.pendingAdds.add(action);
+    }
+
     public synchronized TimedAction add(long interval, boolean autoReset,
             Callable<Boolean> elapsed) {
         TimedAction action = new TimedAction(
                 interval, autoReset, elapsed, this);
-        this.pendingAdds.add(action);
+        this.add(action);
         return action;
     }
 

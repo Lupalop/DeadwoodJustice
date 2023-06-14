@@ -6,18 +6,17 @@ import java.util.concurrent.TimeUnit;
 import game.Game;
 import game.UIUtils;
 import game.entities.Bullet;
+import game.entities.Entity;
 import game.entities.FrameRange;
-import game.entities.LevelSprite;
 import game.entities.Mote;
 import game.entities.Outlaw;
-import game.entities.Sprite;
 import game.entities.effects.Effect;
 import game.entities.effects.ExplosionEffect;
 import game.entities.effects.TornadoEffect;
 import game.scenes.LevelScene;
 import javafx.scene.canvas.GraphicsContext;
 
-public abstract class Mob extends LevelSprite {
+public abstract class Mob extends Entity {
 
     public static final int TOTAL_MOBS = 3;
 
@@ -192,7 +191,7 @@ public abstract class Mob extends LevelSprite {
         }
     }
 
-    private void tryMovingYToTarget(Sprite target, int speed) {
+    private void tryMovingYToTarget(Entity target, int speed) {
         if (target.intersects(this, true, false, true)) {
             this.dy = 0;
         } else if (target.getBounds().getMinY() > this.getBounds().getMinY()) {
@@ -348,7 +347,7 @@ public abstract class Mob extends LevelSprite {
                 ? Game.DIR_RIGHT
                 : Game.DIR_LEFT;
         Bullet bullet = new Bullet(this, getParent(), activeDirections, true);
-        this.getParent().getLevelMap().addSpriteOnUpdate(bullet);
+        this.getParent().getLevelMap().addEntityOnUpdate(bullet);
         this.frameRange.playShoot(this);
     }
 

@@ -4,11 +4,11 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
 import game.Game;
-import game.entities.LevelSprite;
+import game.entities.Entity;
 import game.scenes.LevelScene;
 import javafx.scene.canvas.GraphicsContext;
 
-public abstract class Powerup extends LevelSprite {
+public abstract class Powerup extends Entity {
 
     public static final int TOTAL_POWERUPS = 4;
 

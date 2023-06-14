@@ -148,7 +148,7 @@ public class CreditsScene implements GameScene {
 
     @Override
     public void update(long now) {
-        for (Sprite sprite : this.levelMap.getSprites()) {
+        for (Sprite sprite : this.levelMap.getEntities()) {
             sprite.update(now);
         }
         this.levelMap.update(now);

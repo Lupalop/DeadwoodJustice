@@ -5,10 +5,9 @@ import game.LevelMap;
 import game.TimedActionManager;
 import game.UIUtils;
 import game.entities.Button;
+import game.entities.HeaderSprite;
 import game.entities.Sprite;
 import game.entities.Tile;
-import game.entities.props.HeaderProp;
-import game.entities.props.Prop;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
@@ -45,7 +44,7 @@ public class HelpScene implements GameScene {
     }
 
     private Button backButton;
-    private Prop helpImage;
+    private Sprite helpImage;
 
     private void addMenuControls() {
         backButton = new Button(Tile.SIZE_MID, Tile.SIZE_MID,
@@ -58,13 +57,13 @@ public class HelpScene implements GameScene {
             }
         });
 
-        helpImage = new HeaderProp(0, 0, HeaderProp.HOW_TO_PLAY);
+        helpImage = new HeaderSprite(0, 0, HeaderSprite.HOW_TO_PLAY);
         helpImage.setScale(1);
     }
 
     @Override
     public void update(long now) {
-        for (Sprite sprite : this.levelMap.getSprites()) {
+        for (Sprite sprite : this.levelMap.getEntities()) {
             sprite.update(now);
         }
         this.levelMap.update(now);

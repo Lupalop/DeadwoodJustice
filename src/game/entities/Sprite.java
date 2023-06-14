@@ -2,7 +2,6 @@ package game.entities;
 
 import java.util.concurrent.TimeUnit;
 
-import game.Game;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
@@ -11,26 +10,18 @@ public abstract class Sprite implements Comparable<Sprite> {
 
     public static final int DEFAULT_SCALE = 2;
 
-    public static final int SIDE_LEFT = 0;
-    public static final int SIDE_RIGHT = 1;
-    public static final int SIDE_TOP = 2;
-    public static final int SIDE_BOTTOM = 3;
-    public static final int SIDE_INVALID = -1;
-
     protected int dx, dy;
     protected boolean boundsDirty;
     protected boolean hideWireframe;
 
     private static final long DEFAULT_FRAME_INTERVAL =
             TimeUnit.MILLISECONDS.toNanos(100);
-    private static final int BASE_DIVIDER = 4;
 
     private Image image;
     private int x, y;
     private double width;
     private double height;
     private Rectangle2D bounds;
-    private Rectangle2D collider;
     private int scale;
     private boolean visible;
     private boolean flipHorizontal;
@@ -65,7 +56,6 @@ public abstract class Sprite implements Comparable<Sprite> {
         this.width = 0;
         this.height = 0;
         this.bounds = null;
-        this.collider = null;
         this.scale = DEFAULT_SCALE;
         this.visible = true;
         this.flipHorizontal = false;
@@ -161,80 +151,6 @@ public abstract class Sprite implements Comparable<Sprite> {
                     this.getWidth() * this.getScale() * flipMultiplierWidth,
                     this.getHeight() * this.getScale() * flipMultiplierHeight);
         }
-
-        if (Game.DEBUG_MODE && !hideWireframe) {
-            gc.save();
-            gc.setStroke(javafx.scene.paint.Color.RED);
-            gc.strokeRect(
-                    this.getBounds().getMinX(), this.getBounds().getMinY(),
-                    this.getBounds().getWidth(), this.getBounds().getHeight());
-            gc.setStroke(javafx.scene.paint.Color.GREEN);
-            gc.strokeRect(
-                    this.getCollider().getMinX(), this.getCollider().getMinY(),
-                    this.getCollider().getWidth(), this.getCollider().getHeight());
-            gc.restore();
-        }
-    }
-
-    private boolean intersects(Rectangle2D r1, Rectangle2D r2,
-            boolean xIgnore, boolean yIgnore) {
-        if (xIgnore || yIgnore) {
-            r2 = new Rectangle2D(
-                    xIgnore ? r1.getMinX() : r2.getMinX(),
-                    yIgnore ? r1.getMinY() : r2.getMinY(),
-                    r2.getWidth(),
-                    r2.getHeight());
-        }
-
-        return r1.intersects(r2);
-    }
-
-    public boolean intersects(Sprite target,
-            boolean xIgnore, boolean yIgnore, boolean forCollider) {
-        return intersects(
-                forCollider ? this.getCollider() : this.getBounds(),
-                forCollider ? target.getCollider() : target.getBounds(),
-                xIgnore,
-                yIgnore);
-    }
-
-    public boolean intersects(Sprite target) {
-        return intersects(target, false, false, false);
-    }
-
-    private boolean[] intersectsSide(Rectangle2D r1, Rectangle2D r2) {
-        // Check if the rectangles intersect.
-        if (!r1.intersects(r2)) {
-            return null;
-        }
-
-        // Check which sides of the rectangles intersect.
-        boolean[] sides = new boolean[4];
-
-        // Left side of r1 intersects right side of r2.
-        if (r1.getMinX() < r2.getMaxX() && r1.getMinX() > r2.getMinX()) {
-            sides[SIDE_LEFT] = true;
-        }
-        // Right side of r1 intersects left side of r2.
-        if (r2.getMinX() < r1.getMaxX() && r2.getMinX() > r1.getMinX()) {
-            sides[SIDE_RIGHT] = true;
-        }
-        // Top side of r1 intersects bottom side of r2.
-        if (r1.getMinY() < r2.getMaxY() && r1.getMinY() > r2.getMinY()) {
-            sides[SIDE_TOP] = true;
-        }
-        // Bottom side of r1 intersects top side of r2.
-        if (r2.getMinY() < r1.getMaxY() && r2.getMinY() > r1.getMinY()) {
-            sides[SIDE_BOTTOM] = true;
-        }
-
-        return sides;
-    }
-
-    public boolean[] intersectsSide(Sprite target, boolean forCollider) {
-        return intersectsSide(
-                forCollider ? this.getCollider() : this.getBounds(),
-                forCollider ? target.getCollider() : target.getBounds());
     }
 
     protected void playFrames(int min, int max, Image frameSetOverride, long frameIntervalOverride) {
@@ -276,46 +192,41 @@ public abstract class Sprite implements Comparable<Sprite> {
 
     public Rectangle2D getBounds() {
         if (this.boundsDirty) {
-            double newX = this.getX();
-            double newY = this.getY();
-            double newWidth = this.getWidth();
-            double newHeight = this.getHeight();
-
-            if (this.boundsOffset != null) {
-                if (this.flipHorizontal) {
-                    newX += this.boundsOffset[1] * scale;
-                } else {
-                    newX += this.boundsOffset[0] * scale;
-                }
-                newWidth -= this.boundsOffset[0] + this.boundsOffset[1];
-
-                if (this.flipVertical) {
-                    newY += this.boundsOffset[3] * scale;
-                } else {
-                    newY += this.boundsOffset[2] * scale;
-                }
-                newHeight -= this.boundsOffset[2] + this.boundsOffset[3];
-            }
-            newWidth *= scale;
-            newHeight *= scale;
-
-            this.bounds = new Rectangle2D(
-                    newX, newY, newWidth, newHeight);
-
-            double baseHeight = newHeight / BASE_DIVIDER;
-            this.collider = new Rectangle2D(
-                    newX, newY + newHeight - baseHeight,
-                    newWidth, baseHeight);
+            this.resizeBounds();
+            this.boundsDirty = false;
         }
 
         return this.bounds;
     }
 
-    public Rectangle2D getCollider() {
-        if (this.boundsDirty) {
-            this.getBounds();
+    protected Rectangle2D resizeBounds() {
+        double newX = this.getX();
+        double newY = this.getY();
+        double newWidth = this.getWidth();
+        double newHeight = this.getHeight();
+
+        if (this.boundsOffset != null) {
+            if (this.flipHorizontal) {
+                newX += this.boundsOffset[1] * scale;
+            } else {
+                newX += this.boundsOffset[0] * scale;
+            }
+            newWidth -= this.boundsOffset[0] + this.boundsOffset[1];
+
+            if (this.flipVertical) {
+                newY += this.boundsOffset[3] * scale;
+            } else {
+                newY += this.boundsOffset[2] * scale;
+            }
+            newHeight -= this.boundsOffset[2] + this.boundsOffset[3];
         }
-        return this.collider;
+        newWidth *= scale;
+        newHeight *= scale;
+
+        this.bounds = new Rectangle2D(
+                newX, newY, newWidth, newHeight);
+
+        return this.bounds;
     }
 
     public Image getImage() {

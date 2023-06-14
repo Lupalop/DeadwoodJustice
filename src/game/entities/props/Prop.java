@@ -1,16 +1,16 @@
 package game.entities.props;
 
 import game.Game;
-import game.entities.Sprite;
+import game.entities.Entity;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.image.Image;
 
-public abstract class Prop extends Sprite {
+public abstract class Prop extends Entity {
 
     private Rectangle2D customCollider;
 
     public Prop(int xPos, int yPos, String assetPath) {
-        super(xPos, yPos);
+        super(xPos, yPos, null);
 
         this.setImage(new Image(Game.getAsset(assetPath)));
         this.customCollider = null;

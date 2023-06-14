@@ -15,7 +15,7 @@ import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 
-public class Outlaw extends LevelSprite {
+public class Outlaw extends Entity {
 
     public static final Image FRAMESET_W = new Image(
             Game.getAsset("player_sheet_w.png"));
@@ -169,7 +169,7 @@ public class Outlaw extends LevelSprite {
         Game.playSFX(Bullet.SFX_SHOOT, 0.3);
         Bullet bullet = new Bullet(this, getParent(), activeDirections,
                 Game.FLAG_DIRECTIONAL_SHOOTING);
-        this.getParent().getLevelMap().addSpriteOnUpdate(bullet);
+        this.getParent().getLevelMap().addEntityOnUpdate(bullet);
     }
 
     public void increaseStrength(int value) {

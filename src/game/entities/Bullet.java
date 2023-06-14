@@ -6,7 +6,7 @@ import game.entities.props.Prop;
 import game.scenes.LevelScene;
 import javafx.scene.image.Image;
 
-public class Bullet extends LevelSprite {
+public class Bullet extends Entity {
 
     public static final Image BULLET_IMAGE = new Image(
             Game.getAsset("bullet.png"),
@@ -137,17 +137,17 @@ public class Bullet extends LevelSprite {
         boolean bulletCaught = false;
         Outlaw outlaw = this.getParent().getOutlaw();
 
-        for (Sprite sprite : this.getParent().getLevelMap().getSprites()) {
-            if (this.fromOutlaw && sprite instanceof Mob) {
-                Mob mob = (Mob) sprite;
-                if (mob.isAlive() && this.intersects(sprite)) {
+        for (Entity entity : this.getParent().getLevelMap().getEntities()) {
+            if (this.fromOutlaw && entity instanceof Mob) {
+                Mob mob = (Mob) entity;
+                if (mob.isAlive() && this.intersects(entity)) {
                     mob.reduceHealth(outlaw.getStrength());
                     bulletCaught = true;
                     break;
                 }
             }
-            if (sprite instanceof Prop && propsConsumeBullets) {
-                if (this.intersects(sprite, false, false, true)) {
+            if (entity instanceof Prop && propsConsumeBullets) {
+                if (this.intersects(entity, false, false, true)) {
                     bulletCaught = true;
                     break;
                 }

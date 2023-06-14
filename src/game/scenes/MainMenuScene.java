@@ -8,10 +8,9 @@ import game.LevelMap;
 import game.TimedActionManager;
 import game.UIUtils;
 import game.entities.Button;
+import game.entities.HeaderSprite;
 import game.entities.Sprite;
 import game.entities.Tile;
-import game.entities.props.HeaderProp;
-import game.entities.props.Prop;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -55,7 +54,7 @@ public class MainMenuScene implements GameScene {
         this.handleKeyPressEvent();
     }
 
-    private Prop titleProp;
+    private Sprite titleProp;
     private Button previousButton;
     private Button actionButton;
     private Button nextButton;
@@ -119,7 +118,7 @@ public class MainMenuScene implements GameScene {
     };
 
     private void addMenuControls() {
-        titleProp = new HeaderProp(0, 0, HeaderProp.MENU_TITLE);
+        titleProp = new HeaderSprite(0, 0, HeaderSprite.MENU_TITLE);
         titleProp.setX((int) ((Game.WINDOW_MAX_WIDTH / 2) - (titleProp.getBounds().getWidth() / 2)));
         titleProp.setY((int) ((Game.WINDOW_MAX_HEIGHT / 2) - (titleProp.getBounds().getHeight() / 2)) - (Tile.SIZE_MID));
 
@@ -184,7 +183,7 @@ public class MainMenuScene implements GameScene {
 
     @Override
     public void update(long now) {
-        for (Sprite sprite : this.levelMap.getSprites()) {
+        for (Sprite sprite : this.levelMap.getEntities()) {
             sprite.update(now);
         }
         this.levelMap.update(now);

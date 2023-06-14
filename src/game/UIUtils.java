@@ -1,5 +1,6 @@
 package game;
 
+import game.entities.Entity;
 import game.entities.Sprite;
 import game.entities.Tile;
 import javafx.scene.canvas.GraphicsContext;
@@ -71,25 +72,25 @@ public final class UIUtils {
     public static void drawPassability(GraphicsContext gc, Sprite sprite, boolean[] passability) {
         gc.save();
         // Top
-        gc.setFill(passability[Sprite.SIDE_TOP] ? Color.GREEN : Color.RED);
+        gc.setFill(passability[Entity.SIDE_TOP] ? Color.GREEN : Color.RED);
         gc.fillRoundRect(
                 sprite.getBounds().getMinX(),
                 sprite.getBounds().getMinY() - 10,
                 10, 10, 100, 100);
         // Left
-        gc.setFill(passability[Sprite.SIDE_LEFT] ? Color.GREEN : Color.RED);
+        gc.setFill(passability[Entity.SIDE_LEFT] ? Color.GREEN : Color.RED);
         gc.fillRoundRect(
                 sprite.getBounds().getMinX() - 10,
                 sprite.getBounds().getMinY(),
                 10, 10, 100, 100);
         // Bottom
-        gc.setFill(passability[Sprite.SIDE_BOTTOM] ? Color.GREEN : Color.RED);
+        gc.setFill(passability[Entity.SIDE_BOTTOM] ? Color.GREEN : Color.RED);
         gc.fillRoundRect(
                 sprite.getBounds().getMaxX(),
                 sprite.getBounds().getMaxY() + 10,
                 10, 10, 100, 100);
         // Right
-        gc.setFill(passability[Sprite.SIDE_RIGHT] ? Color.GREEN : Color.RED);
+        gc.setFill(passability[Entity.SIDE_RIGHT] ? Color.GREEN : Color.RED);
         gc.fillRoundRect(
                 sprite.getBounds().getMaxX() + 10,
                 sprite.getBounds().getMaxY(),

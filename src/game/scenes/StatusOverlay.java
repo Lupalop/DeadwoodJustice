@@ -6,14 +6,14 @@ import java.util.concurrent.TimeUnit;
 import game.Game;
 import game.UIUtils;
 import game.entities.Button;
+import game.entities.HeaderSprite;
+import game.entities.Sprite;
 import game.entities.Tile;
 import game.entities.powerups.HayPowerup;
 import game.entities.powerups.LampPowerup;
 import game.entities.powerups.Powerup;
 import game.entities.powerups.SnakeOilPowerup;
 import game.entities.powerups.WheelPowerup;
-import game.entities.props.HeaderProp;
-import game.entities.props.Prop;
 import javafx.event.EventHandler;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
@@ -84,7 +84,7 @@ public class StatusOverlay {
 
     private int hudOffsetY;
 
-    private Prop headerProp;
+    private Sprite headerProp;
     private String nameInputValue;
     private Text nameInputText;
     private Text nameInputDescription;
@@ -351,7 +351,7 @@ public class StatusOverlay {
                 level.handleHighScore(nameInputValue);
             }
         });
-        headerProp = new HeaderProp(0, 0, HeaderProp.NAME_INPUT);
+        headerProp = new HeaderSprite(0, 0, HeaderSprite.NAME_INPUT);
         headerProp.setScale(1);
         nameInputText = new Text(nameInputValue);
         nameInputText.setFont(UIUtils.FONT_48);

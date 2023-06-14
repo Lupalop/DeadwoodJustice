@@ -158,7 +158,7 @@ public class LevelScene implements GameScene {
         this.levelMap = new LevelMap(this.getRestrictedMode());
         this.levelMap.generate();
         this.levelMap.generateProps();
-        this.levelMap.addSpriteOnUpdate(getOutlaw());
+        this.levelMap.addEntityOnUpdate(getOutlaw());
 
         if (Game.DEBUG_MODE) {
             scene.addEventHandler(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>() {
@@ -202,7 +202,7 @@ public class LevelScene implements GameScene {
                             LevelScene.this);
                     bossMob.addY((int) -bossMob.getBounds().getHeight() / 2);
                     bossMob.addX((int) -bossMob.getBounds().getWidth());
-                    levelMap.addSpriteOnUpdate(bossMob);
+                    levelMap.addEntityOnUpdate(bossMob);
                 }
                 return true;
             }
@@ -263,7 +263,7 @@ public class LevelScene implements GameScene {
     }
 
     private void updateSprites(long now) {
-        for (Sprite sprite : this.levelMap.getSprites()) {
+        for (Sprite sprite : this.levelMap.getEntities()) {
             if (sprite instanceof Mob) {
                 Mob mob = (Mob)sprite;
                 if (!mob.isAlive() && !mob.isDying()) {
@@ -282,8 +282,9 @@ public class LevelScene implements GameScene {
     }
 
     public void spawnMote(Sprite target, int value, byte moteType) {
-        this.getLevelMap().addSpriteOnUpdate(
-                new Mote(target, value, moteType, this));
+        Mote mote = new Mote(target, value, moteType);
+        this.getLevelMap().addSpriteOnUpdate(mote);
+        mote.show(this);
     }
 
     private void spawnMobs(int mobCount) {
@@ -314,7 +315,7 @@ public class LevelScene implements GameScene {
                     mobHeight,
                     Game.WINDOW_MAX_HEIGHT - mobHeight * 2));
 
-            this.levelMap.addSpriteOnUpdate(mob);
+            this.levelMap.addEntityOnUpdate(mob);
         }
     }
 
@@ -348,7 +349,7 @@ public class LevelScene implements GameScene {
                 powerupHeight,
                 Game.WINDOW_MAX_HEIGHT - powerupHeight * 2));
 
-        this.levelMap.addSpriteOnUpdate(powerup);
+        this.levelMap.addEntityOnUpdate(powerup);
     }
 
     private void replacePowerupAction(int id, TimedAction action) {

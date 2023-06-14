@@ -6,10 +6,9 @@ import game.PlayerScore;
 import game.TimedActionManager;
 import game.UIUtils;
 import game.entities.Button;
+import game.entities.HeaderSprite;
 import game.entities.Sprite;
 import game.entities.Tile;
-import game.entities.props.HeaderProp;
-import game.entities.props.Prop;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.scene.Group;
@@ -74,11 +73,11 @@ public class HighScoresScene implements GameScene {
         MainMenuScene.handleReturnKeyPressEvent(this);
     }
 
-    private Prop headerProp;
+    private Sprite headerProp;
     private Button backButton;
 
     private void addMenuControls() {
-        headerProp = new HeaderProp(0, Tile.SIZE_MID, HeaderProp.HIGH_SCORES);
+        headerProp = new HeaderSprite(0, Tile.SIZE_MID, HeaderSprite.HIGH_SCORES);
         headerProp.setScale(1);
         headerProp.setX((int) ((Game.WINDOW_MAX_WIDTH / 2) - (headerProp.getWidth() / 2)));
 
@@ -128,7 +127,7 @@ public class HighScoresScene implements GameScene {
 
     @Override
     public void update(long now) {
-        for (Sprite sprite : this.levelMap.getSprites()) {
+        for (Sprite sprite : this.levelMap.getEntities()) {
             sprite.update(now);
         }
         this.levelMap.update(now);

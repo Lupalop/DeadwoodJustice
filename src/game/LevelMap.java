@@ -5,7 +5,7 @@ import java.util.Collections;
 import java.util.List;
 
 import game.entities.Bullet;
-import game.entities.Mote;
+import game.entities.Entity;
 import game.entities.Outlaw;
 import game.entities.Sprite;
 import game.entities.Tile;
@@ -32,12 +32,11 @@ public class LevelMap {
     private int[] tileLayer1;
     private int[] tileLayer2;
 
-    private ArrayList<Sprite> sprites;
-    private ArrayList<Sprite> spritesLayer1;
-    private ArrayList<Sprite> spritesLayer2;
-    private ArrayList<Sprite> pendingSpriteAdds;
+    private ArrayList<Entity> entities;
+    private ArrayList<Sprite> overlayLayer;
+    private ArrayList<Entity> pendingEntityAdds;
     private ArrayList<Sprite> pendingSpriteRemoves;
-    private ArrayList<Sprite> generatedProps;
+    private ArrayList<Prop> generatedProps;
 
     private boolean tilesGenerated;
     private boolean propsGenerated;
@@ -46,12 +45,11 @@ public class LevelMap {
         this.tilesGenerated = false;
         this.propsGenerated = excludeProps;
 
-        this.sprites = new ArrayList<Sprite>();
-        this.spritesLayer1 = new ArrayList<Sprite>();
-        this.spritesLayer2 = new ArrayList<Sprite>();
-        this.pendingSpriteAdds = new ArrayList<Sprite>();
+        this.entities = new ArrayList<Entity>();
+        this.overlayLayer = new ArrayList<Sprite>();
+        this.pendingEntityAdds = new ArrayList<Entity>();
         this.pendingSpriteRemoves = new ArrayList<Sprite>();
-        this.generatedProps = new ArrayList<Sprite>();
+        this.generatedProps = new ArrayList<Prop>();
     }
 
     public LevelMap() {
@@ -127,8 +125,7 @@ public class LevelMap {
                 -100);
         this.generatedProps.add(house);
 
-        this.pendingSpriteAdds.addAll(generatedProps);
-        this.spritesLayer1.addAll(generatedProps);
+        this.pendingEntityAdds.addAll(generatedProps);
         this.propsGenerated = true;
     }
 
@@ -142,11 +139,11 @@ public class LevelMap {
     }
 
     private void drawSprites(GraphicsContext gc) {
-        for (Sprite sprite : this.spritesLayer1) {
-            sprite.draw(gc);
+        for (Entity entity : this.entities) {
+            entity.draw(gc);
         }
 
-        for (Sprite sprite : this.spritesLayer2) {
+        for (Sprite sprite : this.overlayLayer) {
             sprite.draw(gc);
         }
     }
@@ -180,54 +177,53 @@ public class LevelMap {
 
     public void update(long now) {
         // Ensure sprites are sorted by y-order.
-        Collections.sort(this.spritesLayer1);
+        Collections.sort(this.entities);
 
-        if (this.pendingSpriteAdds.size() > 0) {
-            this.sprites.addAll(this.pendingSpriteAdds);
-            this.pendingSpriteAdds.clear();
+        if (this.pendingEntityAdds.size() > 0) {
+            this.entities.addAll(this.pendingEntityAdds);
+            this.pendingEntityAdds.clear();
         }
 
         if (this.pendingSpriteRemoves.size() > 0) {
-            this.sprites.removeAll(this.pendingSpriteRemoves);
-            this.spritesLayer1.removeAll(this.pendingSpriteRemoves);
-            this.spritesLayer2.removeAll(this.pendingSpriteRemoves);
+            this.entities.removeAll(this.pendingSpriteRemoves);
+            this.overlayLayer.removeAll(this.pendingSpriteRemoves);
             this.pendingSpriteRemoves.clear();
         }
     }
 
-    public boolean[] getPassability(Sprite source) {
+    public boolean[] getPassability(Entity source) {
         boolean passability[] = new boolean[4];
-        passability[Sprite.SIDE_LEFT] =
+        passability[Entity.SIDE_LEFT] =
                 source.getBounds().getMinX() >= Game.WINDOW_MIN_WIDTH;
-        passability[Sprite.SIDE_RIGHT] =
+        passability[Entity.SIDE_RIGHT] =
                 source.getBounds().getMaxX() <= Game.WINDOW_MAX_WIDTH;
-        passability[Sprite.SIDE_TOP] =
+        passability[Entity.SIDE_TOP] =
                 source.getBounds().getMinY() >= Game.WINDOW_MIN_HEIGHT;
-        passability[Sprite.SIDE_BOTTOM] =
+        passability[Entity.SIDE_BOTTOM] =
                 source.getBounds().getMaxY() <= Game.WINDOW_MAX_HEIGHT;
 
-        for (Sprite sprite : this.sprites) {
-            if ((sprite instanceof Mob && !((Mob)sprite).isAlive())
-                    || sprite instanceof Powerup
-                    || sprite instanceof Outlaw
-                    || sprite instanceof Bullet
-                    || sprite == source) {
+        for (Entity entity : this.entities) {
+            if ((entity instanceof Mob && !((Mob)entity).isAlive())
+                    || entity instanceof Powerup
+                    || entity instanceof Outlaw
+                    || entity instanceof Bullet
+                    || entity == source) {
                 continue;
             }
 
-            boolean[] sides = source.intersectsSide(sprite, true);
+            boolean[] sides = source.intersectsSide(entity, true);
             if (sides != null) {
-                if (passability[Sprite.SIDE_LEFT] && sides[Sprite.SIDE_LEFT]) {
-                    passability[Sprite.SIDE_LEFT] = false;
+                if (passability[Entity.SIDE_LEFT] && sides[Entity.SIDE_LEFT]) {
+                    passability[Entity.SIDE_LEFT] = false;
                 }
-                if (passability[Sprite.SIDE_RIGHT] && sides[Sprite.SIDE_RIGHT]) {
-                    passability[Sprite.SIDE_RIGHT] = false;
+                if (passability[Entity.SIDE_RIGHT] && sides[Entity.SIDE_RIGHT]) {
+                    passability[Entity.SIDE_RIGHT] = false;
                 }
-                if (passability[Sprite.SIDE_TOP] && sides[Sprite.SIDE_TOP]) {
-                    passability[Sprite.SIDE_TOP] = false;
+                if (passability[Entity.SIDE_TOP] && sides[Entity.SIDE_TOP]) {
+                    passability[Entity.SIDE_TOP] = false;
                 }
-                if (passability[Sprite.SIDE_BOTTOM] && sides[Sprite.SIDE_BOTTOM]) {
-                    passability[Sprite.SIDE_BOTTOM] = false;
+                if (passability[Entity.SIDE_BOTTOM] && sides[Entity.SIDE_BOTTOM]) {
+                    passability[Entity.SIDE_BOTTOM] = false;
                 }
             }
         }
@@ -239,19 +235,16 @@ public class LevelMap {
         return tilesGenerated;
     }
 
-    public List<Sprite> getSprites() {
-        return Collections.unmodifiableList(this.sprites);
+    public List<Entity> getEntities() {
+        return Collections.unmodifiableList(this.entities);
     }
 
     public void addSpriteOnUpdate(Sprite sprite) {
-        if (sprite instanceof Powerup) {
-            this.spritesLayer2.add(0, sprite);
-        } else if (sprite instanceof Mote) {
-            this.spritesLayer2.add(sprite);
-        } else {
-            this.spritesLayer1.add(sprite);
-        }
-        this.pendingSpriteAdds.add(sprite);
+        this.overlayLayer.add(sprite);
+    }
+
+    public void addEntityOnUpdate(Entity entity) {
+        this.pendingEntityAdds.add(entity);
     }
 
     public void removeSpriteOnUpdate(Sprite sprite) {

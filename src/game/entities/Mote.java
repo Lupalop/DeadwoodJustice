@@ -8,7 +8,7 @@ import game.scenes.LevelScene;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
-public class Mote extends LevelSprite {
+public class Mote extends Sprite {
 
     public static final byte TYPE_NEUTRAL = 0x0;
     public static final byte TYPE_BAD = 0x1;
@@ -37,20 +37,18 @@ public class Mote extends LevelSprite {
 
     private byte type;
 
-    public Mote(Sprite target, String text, byte type, LevelScene parent) {
-        super(0, 0, parent);
+    public Mote(Sprite target, String text, byte type) {
+        super(0, 0);
         this.target = target;
         this.text = text;
         this.type = type;
 
         this.offsetY = OFFSET_Y_START;
         this.opacity = OPACITY_START;
-
-        show();
     }
 
-    public Mote(Sprite target, int number, byte type, LevelScene parent) {
-        this(target, Integer.toString(number), type, parent);
+    public Mote(Sprite target, int number, byte type) {
+        this(target, Integer.toString(number), type);
     }
 
     @Override
@@ -89,12 +87,12 @@ public class Mote extends LevelSprite {
         this.setY((int) this.target.getBounds().getMaxY() + OFFSET_FROM_SOURCE_Y);
     }
 
-    private void show() {
-        getParent().getActions().add(MOTE_POPUP_INTERVAL, false, new Callable<Boolean>() {
+    public void show(LevelScene level) {
+        level.getActions().add(MOTE_POPUP_INTERVAL, false, new Callable<Boolean>() {
             @Override
             public Boolean call() {
                 if (offsetY == OFFSET_Y_END) {
-                    kill();
+                    kill(level);
                     return true;
                 }
                 offsetY++;
@@ -104,11 +102,11 @@ public class Mote extends LevelSprite {
         });
     }
 
-    private void kill() {
-        getParent().getActions().add(MOTE_DEATH_INTERVAL, false, new Callable<Boolean>() {
+    private void kill(LevelScene level) {
+        level.getActions().add(MOTE_DEATH_INTERVAL, false, new Callable<Boolean>() {
             @Override
             public Boolean call() {
-                getParent().getLevelMap().removeSpriteOnUpdate(Mote.this);
+                level.getLevelMap().removeSpriteOnUpdate(Mote.this);
                 return true;
             }
         });
