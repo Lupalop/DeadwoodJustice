@@ -256,6 +256,9 @@ public abstract class Mob extends Entity {
     }
 
     private void wanderEdges() {
+        if (this.getParent().getRestrictedMode()) {
+            return;
+        }
         // Regular mobs are only allowed to move from left to right.
         if (this.dy != 0) {
             this.dy = 0;
