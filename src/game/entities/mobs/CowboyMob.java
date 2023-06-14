@@ -5,7 +5,7 @@ import game.entities.FrameRange;
 import game.scenes.LevelScene;
 import javafx.scene.image.Image;
 
-public class CowboyMob extends Mob {
+public final class CowboyMob extends Mob {
 
     private static final Image FRAMESET_W = new Image(
             Game.getAsset("cowboy_sheet_w.png"));

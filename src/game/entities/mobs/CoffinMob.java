@@ -5,7 +5,7 @@ import game.entities.FrameRange;
 import game.scenes.LevelScene;
 import javafx.scene.image.Image;
 
-public class CoffinMob extends Mob {
+public final class CoffinMob extends Mob {
 
     private static final Image FRAMESET_W = new Image(
             Game.getAsset("coffin_sheet_w.png"));

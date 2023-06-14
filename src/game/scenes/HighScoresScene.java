@@ -19,7 +19,7 @@ import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Text;
 
-public class HighScoresScene implements GameScene {
+public final class HighScoresScene implements GameScene {
 
     private Group root;
     private Scene scene;

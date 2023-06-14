@@ -19,7 +19,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 
-public class MainMenuScene implements GameScene {
+public final class MainMenuScene implements GameScene {
 
     private static final int MENU_Y =
             Game.WINDOW_MAX_HEIGHT + 8 - (Tile.SIZE_MID * 5);

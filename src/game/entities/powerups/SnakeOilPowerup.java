@@ -4,7 +4,7 @@ import game.Game;
 import game.scenes.LevelScene;
 import javafx.scene.image.Image;
 
-public class SnakeOilPowerup extends Powerup {
+public final class SnakeOilPowerup extends Powerup {
 
     public static final int ID = 3;
 

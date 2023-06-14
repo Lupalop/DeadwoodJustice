@@ -5,7 +5,7 @@ import game.entities.FrameRange;
 import game.scenes.LevelScene;
 import javafx.scene.image.Image;
 
-public class CoyoteMob extends Mob {
+public final class CoyoteMob extends Mob {
 
     private static final Image FRAMESET_W = new Image(
             Game.getAsset("coyote_sheet_w.png"));

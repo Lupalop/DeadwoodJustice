@@ -8,7 +8,7 @@ import game.scenes.LevelScene;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
-public class Mote extends Sprite {
+public final class Mote extends Sprite {
 
     public static final byte TYPE_NEUTRAL = 0x0;
     public static final byte TYPE_BAD = 0x1;

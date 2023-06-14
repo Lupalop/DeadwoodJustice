@@ -19,7 +19,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.StrokeType;
 import javafx.scene.text.Text;
 
-public class CreditsScene implements GameScene {
+public final class CreditsScene implements GameScene {
 
     private static final String PREFIX_SUBHEADING = "-";
     private static final String PREFIX_HEADING = "+";

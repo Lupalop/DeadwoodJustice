@@ -4,7 +4,7 @@ import java.util.concurrent.TimeUnit;
 
 import javafx.scene.image.Image;
 
-public class FrameRange {
+public final class FrameRange {
 
     private int[] ranges;
 

@@ -9,7 +9,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Text;
 
-public class Button extends Sprite {
+public final class Button extends Sprite {
 
     public static final String SFX_BUTTON = "sfx_button.wav";
 

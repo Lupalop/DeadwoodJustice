@@ -4,7 +4,7 @@ import game.Game;
 import game.entities.Sprite;
 import javafx.scene.image.Image;
 
-public class TornadoEffect extends Effect {
+public final class TornadoEffect extends Effect {
 
     private static final Image FRAMESET = new Image(
             Game.getAsset("fx_tornado.png"));

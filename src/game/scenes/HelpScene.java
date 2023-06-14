@@ -13,7 +13,7 @@ import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 
-public class HelpScene implements GameScene {
+public final class HelpScene implements GameScene {
 
     private Group root;
     private Scene scene;

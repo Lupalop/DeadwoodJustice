@@ -4,7 +4,7 @@ import game.Game;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 
-public class Tile {
+public final class Tile {
 
     public static final int SIZE = 16;
     public static final int SIZE_MID = SIZE * 2;

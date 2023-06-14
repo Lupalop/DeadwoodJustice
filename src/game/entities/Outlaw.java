@@ -15,7 +15,7 @@ import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 
-public class Outlaw extends Entity {
+public final class Outlaw extends Entity {
 
     private static final Image FRAMESET_W = new Image(
             Game.getAsset("player_sheet_w.png"));

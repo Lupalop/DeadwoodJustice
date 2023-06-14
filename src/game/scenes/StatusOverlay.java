@@ -22,7 +22,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.shape.StrokeType;
 import javafx.scene.text.Text;
 
-public class StatusOverlay {
+public final class StatusOverlay {
 
     private static final Image GAME_PAUSED =
             new Image(Game.getAsset("ui_paused.png"));

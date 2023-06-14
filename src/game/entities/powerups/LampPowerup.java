@@ -4,7 +4,7 @@ import game.Game;
 import game.scenes.LevelScene;
 import javafx.scene.image.Image;
 
-public class LampPowerup extends Powerup {
+public final class LampPowerup extends Powerup {
 
     public static final int ID = 0;
 

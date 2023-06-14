@@ -4,7 +4,7 @@ import game.Game;
 import game.entities.Sprite;
 import javafx.scene.image.Image;
 
-public class ExplosionEffect extends Effect {
+public final class ExplosionEffect extends Effect {
 
     private static final Image FRAMESET = new Image(
             Game.getAsset("fx_explode.png"));

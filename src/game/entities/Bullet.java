@@ -6,7 +6,7 @@ import game.entities.props.Prop;
 import game.scenes.LevelScene;
 import javafx.scene.image.Image;
 
-public class Bullet extends Entity {
+public final class Bullet extends Entity {
 
     public static final String SFX_SHOOT = "sfx_shoot.wav";
     public static final String SFX_HIT = "sfx_hit.wav";

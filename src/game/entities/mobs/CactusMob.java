@@ -5,7 +5,7 @@ import game.entities.FrameRange;
 import game.scenes.LevelScene;
 import javafx.scene.image.Image;
 
-public class CactusMob extends Mob {
+public final class CactusMob extends Mob {
 
     private static final Image FRAMESET_W = new Image(
             Game.getAsset("cactus_sheet_w.png"));

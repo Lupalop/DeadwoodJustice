@@ -4,7 +4,7 @@ import game.Game;
 import game.scenes.LevelScene;
 import javafx.scene.image.Image;
 
-public class HayPowerup extends Powerup {
+public final class HayPowerup extends Powerup {
 
     public static final int ID = 1;
 
