@@ -90,7 +90,7 @@ public abstract class Mob extends Entity {
             });
         }
 
-        if (this.getParent().getDifficulty() > LevelScene.DIFFICULTY_EASY) {
+        if (!this.getParent().getRestrictedMode()) {
             this.chasingPlayer = Game.RNG.nextBoolean();
         }
 
