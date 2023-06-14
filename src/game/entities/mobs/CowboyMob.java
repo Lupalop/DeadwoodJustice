@@ -5,6 +5,10 @@ import game.entities.FrameRange;
 import game.scenes.LevelScene;
 import javafx.scene.image.Image;
 
+/**
+ * The CowboyMob class represents the boss enemy.
+ * @author Francis Dominic Fajardo
+ */
 public final class CowboyMob extends Mob {
 
     private static final Image FRAMESET_W = new Image(

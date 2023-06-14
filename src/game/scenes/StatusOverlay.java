@@ -22,6 +22,10 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.shape.StrokeType;
 import javafx.scene.text.Text;
 
+/**
+ * Represents the status HUD shown in the level scene.
+ * @author Francis Dominic Fajardo
+ */
 public final class StatusOverlay {
 
     private static final Image GAME_PAUSED =

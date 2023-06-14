@@ -5,6 +5,10 @@ import game.entities.Entity;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.image.Image;
 
+/**
+ * The Prop represents props used in the level map.
+ * @author Francis Dominic Fajardo
+ */
 public abstract class Prop extends Entity {
 
     private Rectangle2D customCollider;

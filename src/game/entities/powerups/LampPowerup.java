@@ -4,6 +4,10 @@ import game.Game;
 import game.scenes.LevelScene;
 import javafx.scene.image.Image;
 
+/**
+ * The LampPowerup class represents double-life power-up.
+ * @author Francis Dominic Fajardo
+ */
 public final class LampPowerup extends Powerup {
 
     public static final int ID = 0;

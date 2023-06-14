@@ -16,6 +16,12 @@ import game.entities.effects.TornadoEffect;
 import game.scenes.LevelScene;
 import javafx.scene.canvas.GraphicsContext;
 
+/**
+ * The Mob class is the super class from which all enemies in the
+ * game inherit from. It provides common features that can be used
+ * by all mobs, ranging from health and damage handling to movement.
+ * @author Francis Dominic Fajardo
+ */
 public abstract class Mob extends Entity {
 
     public static final int TOTAL_MOBS = 3;

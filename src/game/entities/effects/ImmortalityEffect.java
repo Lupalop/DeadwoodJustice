@@ -4,6 +4,11 @@ import game.Game;
 import game.entities.Sprite;
 import javafx.scene.image.Image;
 
+/**
+ * The ImmortalityEffect class is used on illustrating the player's
+ * immortality state when triggered by a power-up.
+ * @author Francis Dominic Fajardo
+ */
 public final class ImmortalityEffect extends Effect {
 
     private static final Image FRAMESET = new Image(

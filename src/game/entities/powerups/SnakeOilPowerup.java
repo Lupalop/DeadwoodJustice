@@ -4,6 +4,10 @@ import game.Game;
 import game.scenes.LevelScene;
 import javafx.scene.image.Image;
 
+/**
+ * The SnakeOilPowerup class represents the freeze enemies power-up.
+ * @author Francis Dominic Fajardo
+ */
 public final class SnakeOilPowerup extends Powerup {
 
     public static final int ID = 3;

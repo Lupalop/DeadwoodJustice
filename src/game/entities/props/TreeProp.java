@@ -2,6 +2,10 @@ package game.entities.props;
 
 import javafx.geometry.Rectangle2D;
 
+/**
+ * The TreeProp is a prop used in the level map.
+ * @author Francis Dominic Fajardo
+ */
 public final class TreeProp extends Prop {
 
     private static final String TREE = "a_tree.png";

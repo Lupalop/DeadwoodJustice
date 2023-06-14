@@ -4,6 +4,10 @@ import game.Game;
 import game.entities.Sprite;
 import javafx.scene.image.Image;
 
+/**
+ * The SmokeEffect class is used when the player uses a power-up.
+ * @author Francis Dominic Fajardo
+ */
 public final class SmokeEffect extends Effect {
 
     private static final Image FRAMESET = new Image(

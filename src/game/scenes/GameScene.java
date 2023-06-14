@@ -9,6 +9,10 @@ import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 
+/**
+ * Base game scene.
+ * @author Francis Dominic Fajardo
+ */
 public abstract class GameScene {
 
     protected Group root;

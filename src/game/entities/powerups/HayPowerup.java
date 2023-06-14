@@ -4,6 +4,10 @@ import game.Game;
 import game.scenes.LevelScene;
 import javafx.scene.image.Image;
 
+/**
+ * The HayPowerup class represents the immortality power-up.
+ * @author Francis Dominic Fajardo
+ */
 public final class HayPowerup extends Powerup {
 
     public static final int ID = 1;

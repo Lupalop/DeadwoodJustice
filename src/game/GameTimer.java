@@ -4,15 +4,25 @@ import java.util.concurrent.TimeUnit;
 
 import javafx.animation.AnimationTimer;
 
+/**
+ * The GameTimer class is responsible for keeping track of the time and
+ * for calling the update and draw methods on the current scene.
+ * This allows the game to run at a consistent frame rate.
+ * @author Francis Dominic Fajardo
+ */
 public final class GameTimer extends AnimationTimer {
 
+    /** The target refresh rate. */
     private static final int REFRESH_RATE = 60;
+    /** The duration of each frame. */
     private static final long FRAME_DURATION =
             TimeUnit.SECONDS.toNanos(1) / REFRESH_RATE;
+    /** Keeps track of the time before the next frame draw/update. */
     private long nextFrameTime = 0;
 
     @Override
     public void handle(long now) {
+        // There's no game scene to draw/update.
         if (Game.getGameScene() == null) {
             return;
         }

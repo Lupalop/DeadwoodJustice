@@ -15,23 +15,36 @@ import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 
+/**
+ * The Outlaw class is a sprite representing the player's character
+ * in the game and is responsible for movement and shooting.
+ * @author Francis Dominic Fajardo
+ */
 public final class Outlaw extends Entity {
 
+    /** Frame set: facing west. */
     private static final Image FRAMESET_W = new Image(
             Game.getAsset("player_sheet_w.png"));
+    /** Frame set: facing south west. */
     private static final Image FRAMESET_SW = new Image(
             Game.getAsset("player_sheet_sw.png"));
+    /** Frame set: facing north. */
     private static final Image FRAMESET_N = new Image(
             Game.getAsset("player_sheet_n.png"));
+    /** Frame set: facing north west. */
     private static final Image FRAMESET_NW = new Image(
             Game.getAsset("player_sheet_nw.png"));
+    /** Frame set: facing south. */
     private static final Image FRAMESET_S = new Image(
             Game.getAsset("player_sheet_s.png"));
-
+    /** Frame set: rows. */
     private static final int FRAMESET_ROWS = 5;
+    /** Frame set: columns. */
     private static final int FRAMESET_COLUMNS = 14;
+    /** Frame set: offset from sides. */
     private static final int[] FRAMESET_OFFSET =
             new int[] { 15, 17, 9, 3 };
+    /** Frame set: range. */
     private static final FrameRange FRAME_RANGE =
             new FrameRange(14, 21,
                     56, 58,
@@ -39,26 +52,37 @@ public final class Outlaw extends Entity {
                     28, 33,
                     56, 69,
                     0, 5);
-
+    /** Movement speed. */
     private static final int BASE_SPEED = 10;
-
+    /** Path to the outlaw death sound effect. */
     private static final String SFX_DEAD_OUTLAW = "sfx_dead_outlaw.wav";
-
+    /** The outlaw's health/strength. */
     private int strength;
-
+    /** State: alive. */
     private boolean alive;
+    /** State: dying. */
     private boolean dying;
+    /** State: immortal (power-up). */
     private boolean immortal;
+    /** State: blocked from shooting (tried to shoot from non-LTR direction). */
     private boolean blockedFromShooting;
-
+    /** Active directions. */
     private byte activeDirections;
-
+    /** Effect: power-up. */
     private Effect powerupEffect;
+    /** Effect: immortality. */
     private Effect immortalityEffect;
-
+    /** Entity passability. */
     private boolean[] passability;
+    /** Sprite frame range. */
     private FrameRange frameRange;
 
+    /**
+     * Creates a new instance of the Outlaw class.
+     * @param x the x-coordinate position.
+     * @param y the y-coordinate position.
+     * @param parent the LevelScene object owning this entity.
+     */
     public Outlaw(int x, int y, LevelScene parent) {
         super(x, y, parent);
 
@@ -87,15 +111,14 @@ public final class Outlaw extends Entity {
     @Override
     public void update(long now) {
         super.update(now);
-
+        // Update running effects.
         if (immortalityEffect != null) {
             immortalityEffect.update(now);
         }
-
         if (powerupEffect != null) {
             powerupEffect.update(now);
         }
-
+        // Check if the dying frame sequence is done and update level state.
         if (this.dying) {
             if (this.isFrameSequenceDone()) {
                 this.dying = false;
@@ -103,13 +126,13 @@ public final class Outlaw extends Entity {
                 return;
             }
         }
-
+        // Don't update movement or passability if this entity is dead.
         if (!this.isAlive()) {
             return;
         }
-
+        // Update passability state.
         passability = this.getParent().getLevelMap().getPassability(this);
-
+        // Movement: horizontal directions.
         if (this.getBounds().getMinX() + dx >= 0
                 && Game.isDirectionActive(this.activeDirections, Game.DIR_LEFT)
                 && passability[SIDE_LEFT]) {
@@ -121,7 +144,7 @@ public final class Outlaw extends Entity {
         } else {
             this.dx = 0;
         }
-
+        // Movement: vertical directions.
         if (this.getBounds().getMinY() + dy >= 0
                 && Game.isDirectionActive(this.activeDirections, Game.DIR_UP)
                 && passability[SIDE_TOP]) {
@@ -133,52 +156,68 @@ public final class Outlaw extends Entity {
         } else {
             this.dy = 0;
         }
-
+        // Determine whether to play the walking or idle frame range.
         if (this.dx != 0 || this.dy != 0) {
             this.frameRange.playWalk(this);
         } else {
             this.frameRange.playIdle(this);
         }
-
+        // Update entity positions.
         this.addX(this.dx);
         this.addY(this.dy);
     }
 
     @Override
     public void draw(GraphicsContext gc) {
+        // Draw the immortality effect, if applicable.
         if (immortalityEffect != null) {
             immortalityEffect.draw(gc);
         }
+        // Draw the sprite.
         super.draw(gc);
+        // Draw the power-up effect, if applicable.
         if (powerupEffect != null) {
             powerupEffect.draw(gc);
         }
+        // Debug only: Draw passability overlay.
         if (Game.DEBUG_MODE && !hideWireframe) {
             UIUtils.drawPassability(gc, this, passability);
         }
     }
 
-    // method called if spacebar is pressed
+    /**
+     * Shoots with the gun.
+     */
     public void shoot() {
+        // Can't shoot if this entity is dead.
         if (!this.isAlive()) {
             return;
         }
-
+        // Play a sound effect and create the bullet.
         Game.playSFX(Bullet.SFX_SHOOT, 0.3);
         Bullet bullet = new Bullet(this, getParent(), activeDirections,
                 Game.FLAG_DIRECTIONAL_SHOOTING);
         this.getParent().getLevelMap().addEntity(bullet);
     }
 
+    /**
+     * Increases the outlaw's strength.
+     * @param value a positive integer.
+     */
     public void increaseStrength(int value) {
         // This must be a positive integer.
         if (value < 0) {
             return;
         }
         this.strength += value;
+        // Spawn a mote.
         this.getParent().spawnMote(this, value, Mote.TYPE_GOOD);
     }
 
+    /**
+     * Reduces the outlaw's strength.
+     * @param value a positive integer.
+     */
     public void reduceStrength(int value) {
         // This must be a positive integer.
         if (value < 0 || this.immortal || !this.alive) {
@@ -190,7 +229,7 @@ public final class Outlaw extends Entity {
         } else {
             this.strength -= value;
         }
-
+        // Spawn a mote.
         byte moteType = Mote.TYPE_NEUTRAL;
         if (this.strength == 0) {
             moteType = Mote.TYPE_BAD;
@@ -198,10 +237,12 @@ public final class Outlaw extends Entity {
         } else {
             this.frameRange.playDamage(this);
         }
-
         this.getParent().spawnMote(this, value, moteType);
     }
 
+    /**
+     * Prepares this entity for the death sequence.
+     */
     private void prepareDeath() {
         this.alive = false;
         this.dying = true;
@@ -210,7 +251,10 @@ public final class Outlaw extends Entity {
         Game.playSFX(SFX_DEAD_OUTLAW);
     }
 
-    // method that will listen and handle the key press events
+    /**
+     * Handles the key pressed/released events for movement.
+     * @param level the LevelScene object owning this entity.
+     */
     public void handleKeyPressEvent(LevelScene level) {
         Scene scene = level.getInner();
         scene.addEventHandler(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>() {
@@ -223,7 +267,6 @@ public final class Outlaw extends Entity {
                 startMoving(code);
             }
         });
-
         scene.addEventHandler(KeyEvent.KEY_RELEASED, new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent e) {
@@ -233,7 +276,10 @@ public final class Outlaw extends Entity {
         });
     }
 
-    // method that will move the outlaw depending on the key pressed
+    /**
+     * Starts movement or shooting.
+     * @param keyCode a KeyCode indicating the current action.
+     */
     private void startMoving(KeyCode keyCode) {
         if (!this.isAlive()) {
             return;
@@ -277,7 +323,10 @@ public final class Outlaw extends Entity {
         this.updateFrameSet();
     }
 
-    // method that will stop the outlaw's movement; set the outlaw's DX and DY to 0
+    /**
+     * Stops movement or shooting.
+     * @param keyCode a KeyCode indicating the current action.
+     */
     private void stopMoving(KeyCode keyCode) {
         switch (keyCode) {
         case UP:
@@ -311,6 +360,9 @@ public final class Outlaw extends Entity {
         this.updateFrameSet();
     }
 
+    /**
+     * Updates this entity's frame set.
+     */
     private void updateFrameSet() {
         this.setFlip(false, false);
         if (Game.isDirectionActive(this.activeDirections, Game.DIR_UP)) {
@@ -339,26 +391,49 @@ public final class Outlaw extends Entity {
         }
     }
 
+    /**
+     * Spawns the power-up effect.
+     */
     public void spawnPowerupEffect() {
         this.powerupEffect = new SmokeEffect(this);
     }
 
+    /**
+     * Gets the value of the strength property.
+     * @return an integer.
+     */
     public int getStrength() {
         return this.strength;
     }
 
+    /**
+     * Gets the value of the alive property.
+     * @return a boolean.
+     */
     public boolean isAlive() {
         return this.alive;
     }
 
+    /**
+     * Gets the value of the dying property.
+     * @return a boolean.
+     */
     public boolean isDying() {
         return this.dying;
     }
 
+    /**
+     * Gets the value of the immortal property.
+     * @return a boolean.
+     */
     public boolean isImmortal() {
         return this.immortal;
     }
 
+    /**
+     * Sets the value of the immortal property.
+     * @param immortal a boolean.
+     */
     public void setImmortal(boolean immortal) {
         if (immortal) {
             this.immortalityEffect = new ImmortalityEffect(this);
@@ -369,6 +444,10 @@ public final class Outlaw extends Entity {
         }
     }
 
+    /**
+     * Sets the frame range of this sprite.
+     * @param frameRange a FrameRange object.
+     */
     protected void setFrameRange(FrameRange frameRange) {
         this.frameRange = frameRange;
     }

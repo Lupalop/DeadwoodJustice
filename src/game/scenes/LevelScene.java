@@ -25,6 +25,10 @@ import javafx.event.EventHandler;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 
+/**
+ * The main level scene.
+ * @author Francis Dominic Fajardo
+ */
 public final class LevelScene extends GameScene {
 
     public static final int DIFFICULTY_EASY = 0;

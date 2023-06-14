@@ -4,6 +4,10 @@ import game.Game;
 import game.entities.Sprite;
 import javafx.scene.image.Image;
 
+/**
+ * The ExplosionEffect class is used on dying mobs.
+ * @author Francis Dominic Fajardo
+ */
 public final class ExplosionEffect extends Effect {
 
     private static final Image FRAMESET = new Image(

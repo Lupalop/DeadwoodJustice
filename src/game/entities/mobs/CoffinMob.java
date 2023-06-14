@@ -5,6 +5,10 @@ import game.entities.FrameRange;
 import game.scenes.LevelScene;
 import javafx.scene.image.Image;
 
+/**
+ * The CoffinMob class represents a walking Coffin enemy.
+ * @author Francis Dominic Fajardo
+ */
 public final class CoffinMob extends Mob {
 
     private static final Image FRAMESET_W = new Image(

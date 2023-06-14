@@ -18,6 +18,10 @@ import game.entities.props.TreeProp;
 import game.entities.props.WagonProp;
 import javafx.scene.canvas.GraphicsContext;
 
+/**
+ *
+ * @author Francis Dominic Fajardo
+ */
 public class LevelMap {
 
     private static final Tile TILE_DESERT =

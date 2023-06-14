@@ -13,6 +13,10 @@ import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Text;
 
+/**
+ * High Scores scene.
+ * @author Francis Dominic Fajardo
+ */
 public final class HighScoresScene extends GameScene {
 
     private GridPane scoresGrid;

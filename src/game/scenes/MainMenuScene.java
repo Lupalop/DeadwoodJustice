@@ -12,6 +12,10 @@ import javafx.event.EventHandler;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 
+/**
+ * Main Menu scene.
+ * @author Francis Dominic Fajardo
+ */
 public final class MainMenuScene extends GameScene {
 
     private static final long MAP_SWITCH_INTERVAL =

@@ -4,6 +4,12 @@ import game.Game;
 import game.entities.Sprite;
 import javafx.scene.image.Image;
 
+/**
+ * The TornadoEffect class is used on mobs when the freeze speed power-up
+ * is applied and used by the player.
+ * @author Francis Dominic Fajardo
+ *
+ */
 public final class TornadoEffect extends Effect {
 
     private static final Image FRAMESET = new Image(

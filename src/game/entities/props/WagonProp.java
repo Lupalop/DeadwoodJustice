@@ -2,6 +2,10 @@ package game.entities.props;
 
 import javafx.geometry.Rectangle2D;
 
+/**
+ * The WagonProp is a prop used in the level map.
+ * @author Francis Dominic Fajardo
+ */
 public final class WagonProp extends Prop {
 
     private static final String WAGON = "a_coveredwagon.png";

@@ -14,6 +14,10 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.StrokeType;
 import javafx.scene.text.Text;
 
+/**
+ * Credits scene.
+ * @author Francis Dominic Fajardo
+ */
 public final class CreditsScene extends GameScene {
 
     private static final String PREFIX_SUBHEADING = "-";

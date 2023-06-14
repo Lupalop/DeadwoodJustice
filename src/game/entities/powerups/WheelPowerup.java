@@ -4,6 +4,10 @@ import game.Game;
 import game.scenes.LevelScene;
 import javafx.scene.image.Image;
 
+/**
+ * The WheelPowerup class represents the slow enemies speed power-up.
+ * @author Francis Dominic Fajardo
+ */
 public final class WheelPowerup extends Powerup {
 
     public static final int ID = 2;

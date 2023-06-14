@@ -5,6 +5,10 @@ import game.entities.FrameRange;
 import game.scenes.LevelScene;
 import javafx.scene.image.Image;
 
+/**
+ * The CoyoteMob class represents the Coyote enemy.
+ * @author Francis Dominic Fajardo
+ */
 public final class CoyoteMob extends Mob {
 
     private static final Image FRAMESET_W = new Image(

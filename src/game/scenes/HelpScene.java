@@ -7,6 +7,10 @@ import game.entities.HeaderSprite;
 import game.entities.Sprite;
 import game.entities.Tile;
 
+/**
+ * Instructions scene.
+ * @author Francis Dominic Fajardo
+ */
 public final class HelpScene extends GameScene {
 
     private Button backButton;

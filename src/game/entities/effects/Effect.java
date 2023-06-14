@@ -2,6 +2,10 @@ package game.entities.effects;
 
 import game.entities.Sprite;
 
+/**
+ * The Effect class represents animated effects on in-game characters.
+ * @author Francis Dominic Fajardo
+ */
 public abstract class Effect extends Sprite {
 
     private Sprite spriteTarget;

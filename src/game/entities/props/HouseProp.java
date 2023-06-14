@@ -2,6 +2,10 @@ package game.entities.props;
 
 import javafx.geometry.Rectangle2D;
 
+/**
+ * The HouseProp is a prop used in the level map.
+ * @author Francis Dominic Fajardo
+ */
 public final class HouseProp extends Prop {
 
     private static final String HOUSE = "a_house.png";

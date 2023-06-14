@@ -8,6 +8,10 @@ import game.entities.Entity;
 import game.scenes.LevelScene;
 import javafx.scene.canvas.GraphicsContext;
 
+/**
+ * The Powerup class represents power-ups that can be collected in-game.
+ * @author Francis Dominic Fajardo
+ */
 public abstract class Powerup extends Entity {
 
     public static final int TOTAL_POWERUPS = 4;
