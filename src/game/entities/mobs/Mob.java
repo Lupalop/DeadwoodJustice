@@ -38,13 +38,14 @@ public abstract class Mob extends Entity {
 
     private boolean alive;
     private boolean dying;
+
     private boolean deadOnPlayerImpact;
     private boolean chasingPlayer;
     private boolean playerInMobBounds;
     private boolean movingStuck;
     private boolean movingRight;
-    private boolean shooter;
 
+    private boolean shooter;
     private boolean passability[];
     private FrameRange frameRange;
 
@@ -202,18 +203,95 @@ public abstract class Mob extends Entity {
         }
     }
 
-    private void moveMob() {
-        int currentSpeed = this.getParent().isMaxSpeed()
+    private int currentSpeed;
+
+    private boolean chasePlayer() {
+        Outlaw outlaw = this.getParent().getOutlaw();
+        if (!this.chasingPlayer || !outlaw.isAlive()) {
+            return false;
+        }
+
+        int sideX = this.movingRight
+                ? SIDE_RIGHT
+                : SIDE_LEFT;
+        boolean passableX = passability[sideX];
+        if (!passableX) {
+            this.dx = 0;
+        }
+
+        // This is a good-enough substitute for implementing a
+        // full-blown pathfinder. We check if we're steering in a
+        // certain direction and decide where to move accordingly.
+        if (this.steeringUp) {
+            tryMovingUp(passableX, currentSpeed);
+        } else if (this.steeringDown) {
+            tryMovingDown(passableX, currentSpeed);
+        } else if (!passableX) {
+            if (Game.RNG.nextBoolean()) {
+                tryMovingUp(passableX, currentSpeed);
+            } else {
+                tryMovingDown(passableX, currentSpeed);
+            }
+        } else {
+            tryMovingYToTarget(outlaw, currentSpeed);
+        }
+
+        if (!outlaw.intersects(this, false, true, false)) {
+            if (outlaw.getBounds().getMinX() > this.getBounds().getMinX()) {
+                if (!this.movingRight) {
+                    this.changeDirection();
+                }
+            } else if (this.movingRight) {
+                this.changeDirection();
+            }
+        }
+
+        if (this.getParent().isZeroSpeed()
+                || !passability[SIDE_TOP] && this.dy <= 0
+                || !passability[SIDE_BOTTOM] && this.dy >= 0) {
+            this.dy = 0;
+        }
+
+        return true;
+    }
+
+    private void wanderEdges() {
+        // Regular mobs are only allowed to move from left to right.
+        if (this.dy != 0) {
+            this.dy = 0;
+        }
+        // Check for passability if we're not stuck.
+        if (!this.movingStuck) {
+            if (!passability[SIDE_LEFT] && !passability[SIDE_RIGHT]) {
+                this.dx = 0;
+                this.movingStuck = true;
+            } else if (!passability[this.movingRight ? 1 : 0]) {
+                this.dx = 0;
+                this.changeDirection();
+                this.movingStuck = true;
+            }
+        // Stop marking as stuck if one side is now passable.
+        } else if (passability[SIDE_LEFT] && passability[SIDE_RIGHT]) {
+            this.movingStuck = false;
+        }
+    }
+
+    private void computeCurrentSpeed() {
+        this.currentSpeed = this.getParent().isMaxSpeed()
                 ? MAX_SPEED
                 : this.speed;
         if (this.getParent().isSlowSpeed()) {
-            currentSpeed = MIN_SPEED;
+            this.currentSpeed = MIN_SPEED;
         }
         // Zero speed power-up takes precedence over slow speed power-up.
         if (this.getParent().isZeroSpeed()) {
-            currentSpeed = 0;
+            this.currentSpeed = 0;
         }
-        this.dx = currentSpeed;
+        this.dx = this.currentSpeed;
+    }
+
+    private void moveMob() {
+        computeCurrentSpeed();
 
         int nextX = (int) (getBounds().getMinX() + dx);
         boolean changeFromRight = this.movingRight
@@ -224,67 +302,8 @@ public abstract class Mob extends Entity {
             this.changeDirection();
         }
 
-        Outlaw outlaw = this.getParent().getOutlaw();
-        if (this.chasingPlayer && outlaw.isAlive()) {
-            int sideX = this.movingRight
-                    ? SIDE_RIGHT
-                    : SIDE_LEFT;
-            boolean passableX = passability[sideX];
-            if (!passableX) {
-                this.dx = 0;
-            }
-
-            // This is a good-enough substitute for implementing a
-            // full-blown pathfinder. We check if we're steering in a
-            // certain direction and decide where to move accordingly.
-            if (this.steeringUp) {
-                tryMovingUp(passableX, currentSpeed);
-            } else if (this.steeringDown) {
-                tryMovingDown(passableX, currentSpeed);
-            } else if (!passableX) {
-                if (Game.RNG.nextBoolean()) {
-                    tryMovingUp(passableX, currentSpeed);
-                } else {
-                    tryMovingDown(passableX, currentSpeed);
-                }
-            } else {
-                tryMovingYToTarget(outlaw, currentSpeed);
-            }
-
-            if (!outlaw.intersects(this, false, true, false)) {
-                if (outlaw.getBounds().getMinX() > this.getBounds().getMinX()) {
-                    if (!this.movingRight) {
-                        this.changeDirection();
-                    }
-                } else if (this.movingRight) {
-                    this.changeDirection();
-                }
-            }
-
-            if (this.getParent().isZeroSpeed()
-                    || !passability[SIDE_TOP] && this.dy <= 0
-                    || !passability[SIDE_BOTTOM] && this.dy >= 0) {
-                this.dy = 0;
-            }
-        } else {
-            // Regular mobs are only allowed to move from left to right.
-            if (this.dy != 0) {
-                this.dy = 0;
-            }
-            // Check for passability if we're not stuck.
-            if (!this.movingStuck) {
-                if (!passability[SIDE_LEFT] && !passability[SIDE_RIGHT]) {
-                    this.dx = 0;
-                    this.movingStuck = true;
-                } else if (!passability[this.movingRight ? 1 : 0]) {
-                    this.dx = 0;
-                    this.changeDirection();
-                    this.movingStuck = true;
-                }
-            // Stop marking as stuck if one side is now passable.
-            } else if (passability[SIDE_LEFT] && passability[SIDE_RIGHT]) {
-                this.movingStuck = false;
-            }
+        if (!chasePlayer()) {
+            wanderEdges();
         }
 
         this.addX(this.movingRight ? this.dx : -this.dx);
