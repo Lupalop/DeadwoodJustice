@@ -259,11 +259,11 @@ public class LevelMap {
         return Collections.unmodifiableList(this.entities);
     }
 
-    public void addOverlay(Sprite sprite) {
+    public synchronized void addOverlay(Sprite sprite) {
         this.overlayIterator.add(sprite);
     }
 
-    public void addEntity(Entity entity) {
+    public synchronized void addEntity(Entity entity) {
         this.entityIterator.add(entity);
     }
 
