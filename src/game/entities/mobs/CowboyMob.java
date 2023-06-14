@@ -17,7 +17,7 @@ public final class CowboyMob extends Mob {
     private static final FrameRange FRAME_RANGE =
             new FrameRange(0, 7,
                     8, 12,
-                    16, 21,
+                    16, 17,
                     8, 12,
                     24, 27,
                     -1, -1);
