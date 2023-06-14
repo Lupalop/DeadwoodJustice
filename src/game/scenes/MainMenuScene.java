@@ -4,55 +4,20 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
 import game.Game;
-import game.LevelMap;
-import game.TimedActionManager;
-import game.UIUtils;
 import game.entities.Button;
 import game.entities.HeaderSprite;
 import game.entities.Sprite;
 import game.entities.Tile;
 import javafx.event.EventHandler;
-import javafx.scene.Group;
-import javafx.scene.Scene;
-import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 
-public final class MainMenuScene implements GameScene {
+public final class MainMenuScene extends GameScene {
 
     private static final int MENU_Y =
             Game.WINDOW_MAX_HEIGHT + 8 - (Tile.SIZE_MID * 5);
     private static final long MENU_BG_INTERVAL =
             TimeUnit.SECONDS.toNanos(3);
-
-    private Group root;
-    private Scene scene;
-    private Canvas canvas;
-    private GraphicsContext gc;
-
-    private TimedActionManager actions;
-    private LevelMap levelMap;
-
-    public MainMenuScene() {
-        this.root = new Group();
-        this.scene = new Scene(root, Game.WINDOW_MAX_WIDTH,
-                Game.WINDOW_MAX_HEIGHT, UIUtils.COLOR_PRIMARY);
-        this.canvas = new Canvas(Game.WINDOW_MAX_WIDTH,
-                Game.WINDOW_MAX_HEIGHT);
-        this.root.getChildren().add(canvas);
-        this.gc = canvas.getGraphicsContext2D();
-        this.gc.setImageSmoothing(false);
-
-        this.actions = new TimedActionManager();
-        this.addMenuControls();
-
-        this.levelMap = new LevelMap();
-        this.levelMap.generate();
-        this.levelMap.generateProps();
-
-        this.handleKeyPressEvent();
-    }
 
     private Sprite titleProp;
     private Button previousButton;
@@ -117,6 +82,12 @@ public final class MainMenuScene implements GameScene {
             },
     };
 
+    public MainMenuScene() {
+        super();
+        this.addMenuControls();
+        this.handleKeyPressEvent();
+    }
+
     private void addMenuControls() {
         titleProp = new HeaderSprite(0, 0, HeaderSprite.MENU_TITLE);
         titleProp.setX((int) ((Game.WINDOW_MAX_WIDTH / 2) - (titleProp.getBounds().getWidth() / 2)));
@@ -158,6 +129,11 @@ public final class MainMenuScene implements GameScene {
                 return true;
             }
         });
+
+        this.levelMap.addOverlay(this.titleProp);
+        this.levelMap.addOverlay(this.previousButton);
+        this.levelMap.addOverlay(this.actionButton);
+        this.levelMap.addOverlay(this.nextButton);
     }
 
     private void updateMenuIndex(boolean isNext) {
@@ -185,11 +161,6 @@ public final class MainMenuScene implements GameScene {
     public void update(long now) {
         this.levelMap.update(now);
         this.actions.update(now);
-
-        this.titleProp.update(now);
-        previousButton.update(now);
-        actionButton.update(now);
-        nextButton.update(now);
     }
 
     @Override
@@ -197,11 +168,6 @@ public final class MainMenuScene implements GameScene {
         this.gc.clearRect(0, 0, Game.WINDOW_MAX_WIDTH,
                 Game.WINDOW_MAX_HEIGHT);
         this.levelMap.draw(gc);
-
-        this.titleProp.draw(gc);
-        previousButton.draw(gc);
-        actionButton.draw(gc);
-        nextButton.draw(gc);
     }
 
     private void handleKeyPressEvent() {
@@ -225,43 +191,6 @@ public final class MainMenuScene implements GameScene {
                 }
             }
         });
-    }
-
-    public static void handleReturnKeyPressEvent(GameScene scene) {
-        scene.getInner().addEventHandler(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>() {
-            @Override
-            public void handle(KeyEvent e) {
-                KeyCode code = e.getCode();
-                switch (code) {
-                case BACK_SPACE:
-                case ESCAPE:
-                    Game.setGameScene(new MainMenuScene());
-                    Game.playSFX(Button.SFX_BUTTON);
-                    break;
-                default:
-                    break;
-                }
-            }
-        });
-    }
-
-    @Override
-    public Scene getInner() {
-        return this.scene;
-    }
-
-    @Override
-    public Group getRoot() {
-        return root;
-    }
-
-    @Override
-    public TimedActionManager getActions() {
-        return this.actions;
-    }
-
-    public LevelMap getLevelMap() {
-        return this.levelMap;
     }
 
     @Override

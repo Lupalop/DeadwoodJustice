@@ -6,7 +6,6 @@ import java.util.concurrent.TimeUnit;
 import game.Game;
 import game.LevelMap;
 import game.TimedAction;
-import game.TimedActionManager;
 import game.UIUtils;
 import game.entities.Button;
 import game.entities.Mote;
@@ -23,14 +22,10 @@ import game.entities.powerups.Powerup;
 import game.entities.powerups.SnakeOilPowerup;
 import game.entities.powerups.WheelPowerup;
 import javafx.event.EventHandler;
-import javafx.scene.Group;
-import javafx.scene.Scene;
-import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 
-public final class LevelScene implements GameScene {
+public final class LevelScene extends GameScene {
 
     public static final int DIFFICULTY_EASY = 0;
     public static final int DIFFICULTY_MEDIUM = 1;
@@ -67,13 +62,6 @@ public final class LevelScene implements GameScene {
     private static final String[] MUSIC_HARD =
             { "bgm_03.mp3", "bgm_05.mp3" };
 
-    private Group root;
-    private Scene scene;
-    private Canvas canvas;
-    private GraphicsContext gc;
-
-    private TimedActionManager actions;
-
     private Outlaw outlaw;
     private Mob bossMob;
     private StatusOverlay statusOverlay;
@@ -88,7 +76,6 @@ public final class LevelScene implements GameScene {
     private int mobKillCount;
     private int powerupsCount[];
     private TimedAction[] powerupsAction;
-
     private TimedAction levelTimer;
 
     private boolean maxSpeed;
@@ -96,8 +83,6 @@ public final class LevelScene implements GameScene {
     private boolean zeroSpeed;
     private boolean levelDone;
     private boolean levelPaused;
-
-    private LevelMap levelMap;
 
     public LevelScene(int difficulty) {
         this.difficulty = difficulty;
@@ -123,16 +108,10 @@ public final class LevelScene implements GameScene {
             break;
         }
 
-        this.root = new Group();
-        this.scene = new Scene(root, Game.WINDOW_MAX_WIDTH,
-                Game.WINDOW_MAX_HEIGHT, UIUtils.COLOR_PRIMARY);
-        this.canvas = new Canvas(Game.WINDOW_MAX_WIDTH,
-                Game.WINDOW_MAX_HEIGHT);
-        this.root.getChildren().add(canvas);
-        this.gc = canvas.getGraphicsContext2D();
-        this.gc.setImageSmoothing(false);
-
-        this.actions = new TimedActionManager();
+        // XXX: Hide props if we're checking for prop colliders and
+        // the difficulty is set to easy. Keep it this way until
+        // mob pathfinding becomes "acceptable".
+        this.initialize(this.getRestrictedMode());
         this.initializeActions();
 
         this.outlaw = new Outlaw(OUTLAW_INITIAL_X, 0, this);
@@ -153,12 +132,6 @@ public final class LevelScene implements GameScene {
         this.levelDone = false;
         this.levelPaused = false;
 
-        // XXX: Hide props if we're checking for prop colliders and
-        // the difficulty is set to easy. Keep it this way until
-        // mob pathfinding becomes "acceptable".
-        this.levelMap = new LevelMap(this.getRestrictedMode());
-        this.levelMap.generate();
-        this.levelMap.generateProps();
         this.levelMap.addEntity(getOutlaw());
 
         if (Game.DEBUG_MODE) {
@@ -422,23 +395,8 @@ public final class LevelScene implements GameScene {
                 KeyEvent.KEY_RELEASED, this.pauseEventHandler);
     }
 
-    @Override
-    public Scene getInner() {
-        return this.scene;
-    }
-
-    @Override
-    public Group getRoot() {
-        return root;
-    }
-
     public Outlaw getOutlaw() {
         return outlaw;
-    }
-
-    @Override
-    public TimedActionManager getActions() {
-        return this.actions;
     }
 
     public int getDifficulty() {
@@ -519,7 +477,7 @@ public final class LevelScene implements GameScene {
         if (Game.getHighScoreIndex(score) != -1) {
             this.statusOverlay.toggleNameInputVisibility();
         } else {
-            MainMenuScene.handleReturnKeyPressEvent(this);
+            UIUtils.handleReturnToMainMenu(this);
             this.statusOverlay.toggleGameEndVisibility();
         }
         this.levelDone = true;
@@ -541,7 +499,7 @@ public final class LevelScene implements GameScene {
 
     public void handleHighScore(String value) {
         Game.addHighScore(value, this.getScore(), this.getDifficulty());
-        MainMenuScene.handleReturnKeyPressEvent(this);
+        UIUtils.handleReturnToMainMenu(this);
         this.statusOverlay.toggleGameEndVisibility();
     }
 

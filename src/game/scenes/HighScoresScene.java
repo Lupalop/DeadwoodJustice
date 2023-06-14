@@ -1,9 +1,7 @@
 package game.scenes;
 
 import game.Game;
-import game.LevelMap;
 import game.PlayerScore;
-import game.TimedActionManager;
 import game.UIUtils;
 import game.entities.Button;
 import game.entities.HeaderSprite;
@@ -11,35 +9,24 @@ import game.entities.Sprite;
 import game.entities.Tile;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
-import javafx.scene.Group;
-import javafx.scene.Scene;
-import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Text;
 
-public final class HighScoresScene implements GameScene {
+public final class HighScoresScene extends GameScene {
 
-    private Group root;
-    private Scene scene;
-    private Canvas canvas;
-    private GraphicsContext gc;
     private GridPane scoresGrid;
-
-    private TimedActionManager actions;
-    private LevelMap levelMap;
+    private Sprite headerProp;
+    private Button backButton;
 
     public HighScoresScene() {
-        this.root = new Group();
-        this.scene = new Scene(root, Game.WINDOW_MAX_WIDTH,
-                Game.WINDOW_MAX_HEIGHT, UIUtils.COLOR_PRIMARY);
-        this.canvas = new Canvas(Game.WINDOW_MAX_WIDTH,
-                Game.WINDOW_MAX_HEIGHT);
-        this.root.getChildren().add(canvas);
-        this.gc = canvas.getGraphicsContext2D();
-        this.gc.setImageSmoothing(false);
+        super();
+        this.addScoresGrid();
+        this.addMenuControls();
+        UIUtils.handleReturnToMainMenu(this);
+    }
 
+    private void addScoresGrid() {
         this.scoresGrid = new GridPane();
         this.scoresGrid.setMaxSize(Game.WINDOW_MAX_WIDTH, Game.WINDOW_MAX_HEIGHT);
         this.scoresGrid.setHgap(10);
@@ -62,19 +49,7 @@ public final class HighScoresScene implements GameScene {
         scoresGrid.getColumnConstraints().add(cc);
 
         this.root.getChildren().add(scoresGrid);
-
-        this.actions = new TimedActionManager();
-        this.addMenuControls();
-
-        this.levelMap = new LevelMap();
-        this.levelMap.generate();
-        this.levelMap.generateProps();
-
-        MainMenuScene.handleReturnKeyPressEvent(this);
     }
-
-    private Sprite headerProp;
-    private Button backButton;
 
     private void addMenuControls() {
         headerProp = new HeaderSprite(0, Tile.SIZE_MID, HeaderSprite.HIGH_SCORES);
@@ -143,25 +118,6 @@ public final class HighScoresScene implements GameScene {
         UIUtils.drawMenuBackground(gc, 2, Tile.ALL_VERTICAL);
         this.headerProp.draw(gc);
         backButton.draw(gc);
-    }
-
-    @Override
-    public Scene getInner() {
-        return this.scene;
-    }
-
-    @Override
-    public Group getRoot() {
-        return root;
-    }
-
-    @Override
-    public TimedActionManager getActions() {
-        return this.actions;
-    }
-
-    public LevelMap getLevelMap() {
-        return this.levelMap;
     }
 
     @Override

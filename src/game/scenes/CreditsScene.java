@@ -6,58 +6,31 @@ import java.util.ArrayList;
 import java.util.List;
 
 import game.Game;
-import game.LevelMap;
-import game.TimedActionManager;
 import game.UIUtils;
 import game.entities.Button;
 import game.entities.Tile;
-import javafx.scene.Group;
-import javafx.scene.Scene;
-import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.StrokeType;
 import javafx.scene.text.Text;
 
-public final class CreditsScene implements GameScene {
+public final class CreditsScene extends GameScene {
 
     private static final String PREFIX_SUBHEADING = "-";
     private static final String PREFIX_HEADING = "+";
 
     private static final double SCROLL_SPEED = 0.02f;
 
-    private Group root;
-    private Scene scene;
-    private Canvas canvas;
-    private GraphicsContext gc;
-
-    private TimedActionManager actions;
-    private LevelMap levelMap;
-
-    public CreditsScene() {
-        this.root = new Group();
-        this.scene = new Scene(root, Game.WINDOW_MAX_WIDTH,
-                Game.WINDOW_MAX_HEIGHT, UIUtils.COLOR_PRIMARY);
-        this.canvas = new Canvas(Game.WINDOW_MAX_WIDTH,
-                Game.WINDOW_MAX_HEIGHT);
-        this.root.getChildren().add(canvas);
-        this.gc = canvas.getGraphicsContext2D();
-        this.gc.setImageSmoothing(false);
-
-        this.actions = new TimedActionManager();
-        this.addMenuControls();
-
-        this.levelMap = new LevelMap();
-        this.levelMap.generate();
-        this.levelMap.generateProps();
-
-        MainMenuScene.handleReturnKeyPressEvent(this);
-    }
-
     private Button backButton;
     private ArrayList<Text> textNodes;
     private double textNodesHeight;
     private double scrollPosition;
+
+    public CreditsScene() {
+        super();
+        this.addMenuControls();
+        UIUtils.handleReturnToMainMenu(this);
+    }
 
     private void addMenuControls() {
         backButton = new Button(Tile.SIZE_MID, Tile.SIZE_MID,
@@ -69,6 +42,7 @@ public final class CreditsScene implements GameScene {
                 Game.setGameScene(new MainMenuScene());
             }
         });
+        this.levelMap.addOverlay(backButton);
 
         List<String> creditsText;
         try {
@@ -150,7 +124,6 @@ public final class CreditsScene implements GameScene {
         this.levelMap.update(now);
         this.actions.update(now);
 
-        backButton.update(now);
     }
 
     @Override
@@ -158,29 +131,7 @@ public final class CreditsScene implements GameScene {
         this.gc.clearRect(0, 0, Game.WINDOW_MAX_WIDTH,
                 Game.WINDOW_MAX_HEIGHT);
         this.levelMap.draw(gc);
-
         drawScrollingNodes(gc);
-
-        backButton.draw(gc);
-    }
-
-    @Override
-    public Scene getInner() {
-        return this.scene;
-    }
-
-    @Override
-    public Group getRoot() {
-        return root;
-    }
-
-    @Override
-    public TimedActionManager getActions() {
-        return this.actions;
-    }
-
-    public LevelMap getLevelMap() {
-        return this.levelMap;
     }
 
     @Override

@@ -1,9 +1,15 @@
 package game;
 
+import game.entities.Button;
 import game.entities.Entity;
 import game.entities.Sprite;
 import game.entities.Tile;
+import game.scenes.GameScene;
+import game.scenes.MainMenuScene;
+import javafx.event.EventHandler;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
@@ -96,6 +102,24 @@ public final class UIUtils {
                 sprite.getBounds().getMaxY(),
                 10, 10, 100, 100);
         gc.restore();
+    }
+
+    public static void handleReturnToMainMenu(GameScene scene) {
+        scene.getInner().addEventHandler(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent e) {
+                KeyCode code = e.getCode();
+                switch (code) {
+                case BACK_SPACE:
+                case ESCAPE:
+                    Game.setGameScene(new MainMenuScene());
+                    Game.playSFX(Button.SFX_BUTTON);
+                    break;
+                default:
+                    break;
+                }
+            }
+        });
     }
 
 }
