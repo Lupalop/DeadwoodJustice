@@ -6,6 +6,7 @@ import java.util.concurrent.TimeUnit;
 import game.Game;
 import game.UIUtils;
 import game.entities.Bullet;
+import game.entities.FrameRange;
 import game.entities.LevelSprite;
 import game.entities.Mote;
 import game.entities.Outlaw;
@@ -46,7 +47,7 @@ public abstract class Mob extends LevelSprite {
     private boolean shooter;
 
     private boolean passability[];
-    private int[] frameRanges;
+    private FrameRange frameRange;
 
     private Effect deathEffect;
     private Effect zeroSpeedEffect;
@@ -72,7 +73,7 @@ public abstract class Mob extends LevelSprite {
         this.shooter = this.getShootingCapability();
 
         this.passability = new boolean[4];
-        this.frameRanges = null;
+        this.frameRange = null;
 
         if (this.shooter) {
             // Shoot every n seconds.
@@ -97,7 +98,7 @@ public abstract class Mob extends LevelSprite {
     }
 
     protected void initialize() {
-        this.setMinMaxFrame(frameRanges[0], frameRanges[1]);
+        this.frameRange.playWalk(this);
     }
 
     @Override
@@ -306,7 +307,7 @@ public abstract class Mob extends LevelSprite {
                 this.getParent().addScore(outlaw.getStrength() / 4);
                 this.prepareDeath();
             } else {
-                this.playFrames(frameRanges[2], frameRanges[3], null, 0);
+                this.frameRange.playImpact(this);
             }
             this.playerInMobBounds = true;
             return;
@@ -320,7 +321,7 @@ public abstract class Mob extends LevelSprite {
         this.dying = true;
         this.setFrameAutoReset(false);
         this.setFrameInterval(FRAME_DEATH_INTERVAL);
-        this.setMinMaxFrame(frameRanges[6], frameRanges[7]);
+        this.frameRange.playDeath(this);
         this.deathEffect = new ExplosionEffect(this);
         Game.playSFX(SFX_DEAD_MOB, 0.3);
     }
@@ -348,7 +349,7 @@ public abstract class Mob extends LevelSprite {
                 : Game.DIR_LEFT;
         Bullet bullet = new Bullet(this, getParent(), activeDirections, true);
         this.getParent().getLevelMap().addSpriteOnUpdate(bullet);
-        this.playFrames(frameRanges[8], frameRanges[9], null, TimeUnit.MILLISECONDS.toNanos(50));
+        this.frameRange.playShoot(this);
     }
 
     public int getDamage() {
@@ -380,7 +381,7 @@ public abstract class Mob extends LevelSprite {
             this.prepareDeath();
             moteType = Mote.TYPE_BAD;
         } else {
-            this.playFrames(frameRanges[4], frameRanges[5], null, 0);
+            this.frameRange.playDamage(this);
         }
 
         this.getParent().spawnMote(this, value, moteType);
@@ -394,8 +395,8 @@ public abstract class Mob extends LevelSprite {
         this.chasingPlayer = value;
     }
 
-    protected void setFrameRanges(int[] frameRanges) {
-        this.frameRanges = frameRanges;
+    protected void setFrameRange(FrameRange frameRange) {
+        this.frameRange = frameRange;
     }
 
 }

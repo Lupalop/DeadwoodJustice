@@ -1,7 +1,6 @@
 package game.entities;
 
 import java.util.Arrays;
-import java.util.concurrent.TimeUnit;
 
 import game.Game;
 import game.UIUtils;
@@ -33,6 +32,13 @@ public class Outlaw extends LevelSprite {
     public static final int FRAMESET_COLUMNS = 14;
     public static final int[] FRAMESET_OFFSET =
             new int[] { 15, 17, 9, 3 };
+    public static final FrameRange FRAME_RANGE =
+            new FrameRange(14, 21,
+                    56, 58,
+                    56, 58,
+                    28, 33,
+                    56, 69,
+                    0, 5);
 
     public static final int OUTLAW_SPEED = 10;
 
@@ -52,13 +58,15 @@ public class Outlaw extends LevelSprite {
     private Effect immortalityEffect;
 
     private boolean[] passability;
+    private FrameRange frameRange;
 
     public Outlaw(String name, int x, int y, LevelScene parent) {
         super(x, y, parent);
 
         this.setFrameSet(FRAMESET_W, FRAMESET_ROWS, FRAMESET_COLUMNS);
-        this.setMinMaxFrame(0, 5);
+        this.setFrameRange(FRAME_RANGE);
         this.setBoundsOffset(FRAMESET_OFFSET);
+        this.frameRange.playIdle(this);
 
         this.name = name;
         this.strength = Game.DEBUG_MODE
@@ -129,9 +137,9 @@ public class Outlaw extends LevelSprite {
         }
 
         if (this.dx != 0 || this.dy != 0) {
-            this.setMinMaxFrame(14, 21);
+            this.frameRange.playWalk(this);
         } else {
-            this.setMinMaxFrame(0,  5);
+            this.frameRange.playIdle(this);
         }
 
         this.addX(this.dx);
@@ -190,7 +198,7 @@ public class Outlaw extends LevelSprite {
             moteType = Mote.TYPE_BAD;
             this.prepareDeath();
         } else {
-            this.playFrames(56, 58, null, TimeUnit.MILLISECONDS.toNanos(400));
+            this.frameRange.playDamage(this);
         }
 
         this.getParent().spawnMote(this, value, moteType);
@@ -200,7 +208,7 @@ public class Outlaw extends LevelSprite {
         this.alive = false;
         this.dying = true;
         this.setFrameAutoReset(false);
-        this.setMinMaxFrame(56, 69);
+        this.frameRange.playDeath(this);
         Game.playSFX(SFX_DEAD_OUTLAW);
     }
 
@@ -261,11 +269,8 @@ public class Outlaw extends LevelSprite {
             // We can't shoot in other directions, following a limitation
             // imposed by the problem domain.
             this.blockedFromShooting = true;
-            if (Game.FLAG_DIRECTIONAL_SHOOTING) {
-                this.playFrames(28, 33, null, TimeUnit.MILLISECONDS.toNanos(50));
-            } else {
-                this.playFrames(28, 33, FRAMESET_W, TimeUnit.MILLISECONDS.toNanos(50));
-            }
+            this.frameRange.playShoot(this,
+                    Game.FLAG_DIRECTIONAL_SHOOTING ? null : FRAMESET_W);
             this.shoot();
             break;
         default:
@@ -368,6 +373,10 @@ public class Outlaw extends LevelSprite {
             this.immortalityEffect = null;
             this.immortal = false;
         }
+    }
+
+    protected void setFrameRange(FrameRange frameRange) {
+        this.frameRange = frameRange;
     }
 
 }

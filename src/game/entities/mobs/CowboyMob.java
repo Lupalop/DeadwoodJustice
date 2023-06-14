@@ -1,6 +1,7 @@
 package game.entities.mobs;
 
 import game.Game;
+import game.entities.FrameRange;
 import game.scenes.LevelScene;
 import javafx.scene.image.Image;
 
@@ -13,19 +14,13 @@ public class CowboyMob extends Mob {
     public static final int FRAMESET_COLUMNS = 8;
     public static final int[] FRAMESET_OFFSET =
             new int[] { 15, 14, 7, 0 };
-    public static final int[] FRAME_RANGES =
-            new int[] {
-                    // Walking
-                    0, 7,
-                    // On impact
+    public static final FrameRange FRAME_RANGE =
+            new FrameRange(0, 7,
                     8, 12,
-                    // On being damaged
                     16, 21,
-                    // Death
+                    8, 12,
                     24, 27,
-                    // On shoot
-                    16, 21
-            };
+                    -1, -1);
 
     private static final int MOB_SCALE = 3;
 
@@ -35,7 +30,7 @@ public class CowboyMob extends Mob {
         this.setDeadOnPlayerImpact(false);
         this.setFrameSet(FRAMESET_W, FRAMESET_ROWS, FRAMESET_COLUMNS);
         this.setBoundsOffset(FRAMESET_OFFSET);
-        this.setFrameRanges(FRAME_RANGES);
+        this.setFrameRange(FRAME_RANGE);
 
         super.initialize();
         this.setScale(MOB_SCALE);

@@ -260,6 +260,10 @@ public abstract class Sprite implements Comparable<Sprite> {
         }
     }
 
+    protected void playFrames(int min, int max) {
+        this.playFrames(min, max, null, 0);
+    }
+
     private void clearFrameOverride() {
         this.overrideMinFrame = -1;
         this.overrideMaxFrame = -1;
