@@ -14,18 +14,11 @@ import javafx.scene.input.KeyEvent;
 
 public final class MainMenuScene extends GameScene {
 
+    private static final long MAP_SWITCH_INTERVAL =
+            TimeUnit.SECONDS.toNanos(3);
     private static final int MENU_Y =
             Game.WINDOW_MAX_HEIGHT + 8 - (Tile.SIZE_MID * 5);
-    private static final long MENU_BG_INTERVAL =
-            TimeUnit.SECONDS.toNanos(3);
-
-    private Sprite titleProp;
-    private Button previousButton;
-    private Button actionButton;
-    private Button nextButton;
-
-    private static int menuIndex = -1;
-    private String[] menuLabels = {
+    private static final String[] MENU_LABELS = {
             "P: I'M TOO CHICKEN",
             "P: HURT ME PLENTY",
             "P: NIGHTMARE",
@@ -34,7 +27,7 @@ public final class MainMenuScene extends GameScene {
             "CREDITS",
             "EXIT",
     };
-    private Runnable[] menuActions = {
+    private static final Runnable[] MENU_ACTIONS = {
             new Runnable() {
                 @Override
                 public void run() {
@@ -82,6 +75,13 @@ public final class MainMenuScene extends GameScene {
             },
     };
 
+    private static int menuIndex = -1;
+
+    private Sprite titleProp;
+    private Button previousButton;
+    private Button actionButton;
+    private Button nextButton;
+
     public MainMenuScene() {
         super();
         this.addMenuControls();
@@ -121,7 +121,7 @@ public final class MainMenuScene extends GameScene {
             }
         });
 
-        this.actions.add(MENU_BG_INTERVAL, true, new Callable<Boolean>() {
+        this.actions.add(MAP_SWITCH_INTERVAL, true, new Callable<Boolean>() {
             @Override
             public Boolean call() {
                 levelMap.generate(true);
@@ -139,13 +139,13 @@ public final class MainMenuScene extends GameScene {
     private void updateMenuIndex(boolean isNext) {
         if (isNext) {
             menuIndex++;
-            if (menuIndex >= menuLabels.length) {
+            if (menuIndex >= MENU_LABELS.length) {
                 menuIndex = 0;
             }
         } else {
             menuIndex--;
             if (menuIndex < 0) {
-                menuIndex = menuLabels.length - 1;
+                menuIndex = MENU_LABELS.length - 1;
             }
         }
 
@@ -153,8 +153,8 @@ public final class MainMenuScene extends GameScene {
     }
 
     private void updateButton() {
-        actionButton.setText(menuLabels[menuIndex]);
-        actionButton.setClickAction(menuActions[menuIndex]);
+        actionButton.setText(MENU_LABELS[menuIndex]);
+        actionButton.setClickAction(MENU_ACTIONS[menuIndex]);
     }
 
     @Override
