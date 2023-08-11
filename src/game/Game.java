@@ -25,7 +25,7 @@ import javafx.scene.media.MediaPlayer;
 import javafx.stage.Stage;
 
 /**
- * The Game class handles the initialization and running of a game.
+ * This class handles the initialization and running of a game.
  * It is responsible for retrieving assets and user data, playing
  * music and sound effects, switching scenes, and executing the
  * game timer.
@@ -35,8 +35,8 @@ public final class Game {
 
     /** The game name. */
     public static final String GAME_NAME = "Deadwood Justice";
-    /** The location of the game's assets. */
-    public static final String GAME_ASSETS_PATH = "/game/assets/";
+    /** The base location for the game assets. */
+    public static final String GAME_ASSETS_BASE = "/game/assets/";
 
     /** The game window's minimum width. */
     public static final int WINDOW_MIN_WIDTH = 0;
@@ -78,7 +78,7 @@ public final class Game {
     /** A hashtable containing cached sound effects (AudioClip) objects. */
     private static Hashtable<String, AudioClip> cachedSFX;
     /** An array list containing stored player scores. */
-    private static ArrayList<PlayerScore> highScores;
+    private static ArrayList<GameScore> highScores;
 
     /** An instance of the primary stage or main window. */
     private static Stage primaryStage;
@@ -90,7 +90,7 @@ public final class Game {
     private static boolean initialized;
 
     /**
-     * Initialize and run the game.
+     * Initializes and runs the game.
      * @param primaryStage a Stage object.
      */
     public static void run(Stage primaryStage) {
@@ -101,7 +101,7 @@ public final class Game {
         Game.mediaPlayer = null;
         Game.cachedBGM = new Hashtable<String, Media>();
         Game.cachedSFX = new Hashtable<String, AudioClip>();
-        Game.highScores = new ArrayList<PlayerScore>(MAX_HIGH_SCORES);
+        Game.highScores = new ArrayList<GameScore>(MAX_HIGH_SCORES);
         Game.loadHighScores();
 
         Game.primaryStage = primaryStage;
@@ -121,7 +121,7 @@ public final class Game {
     }
 
     /**
-     * Gets the value of the primary stage property.
+     * Retrieves the primary stage.
      * @return a Stage object.
      */
     public static Stage getPrimaryStage() {
@@ -129,7 +129,7 @@ public final class Game {
     }
 
     /**
-     * Gets the value of the game scene property.
+     * Retrieves the current game scene.
      * @return a GameScene object.
      */
     public static GameScene getGameScene() {
@@ -137,7 +137,7 @@ public final class Game {
     }
 
     /**
-     * Sets the value of the game scene property.
+     * Specifies the current game scene.
      * @param gameScene a GameScene object.
      */
     public static void setGameScene(GameScene gameScene) {
@@ -147,24 +147,24 @@ public final class Game {
     }
 
     /**
-     * Gets the String representation of the asset URL at the given path.
+     * Retrieves the {@code String} representation of the given asset URL.
      * @param path a String containing the asset path.
      * @return a String object.
      */
     public static String getAsset(String path) {
         return Game.class.getResource(
-                GAME_ASSETS_PATH + path).toExternalForm();
+                GAME_ASSETS_BASE + path).toExternalForm();
     }
 
     /**
-     * Gets the Path representation of the asset URL at the given path.
+     * Retrieves the {@code Path} representation of the given asset URL.
      * @param path a String containing the asset path.
      * @return a Path object.
      */
     public static Path getAssetAsPath(String path) {
         try {
             return Path.of(Game.class.getResource(
-                    GAME_ASSETS_PATH + path).toURI());
+                    GAME_ASSETS_BASE + path).toURI());
         } catch (URISyntaxException e) {
             return null;
         } catch (FileSystemNotFoundException e) {
@@ -175,17 +175,19 @@ public final class Game {
     }
 
     /**
-     * Extracts the asset in the given path (if available) and gets the
-     * String representation of the URL to the extracted asset.
+     * Extracts the asset in the given path (if it exists) and
+     * retrieves the {@code String} representation of the URL
+     * pointing to the extracted asset.
      *
-     * This is used only if the game is stored inside a JAR file.
+     * This is only used if the game is stored inside a JAR file.
      * @param path a String containing the asset path.
      * @return a Path object.
      */
     private static Path getAssetFromTemporaryPath(String path) {
         try {
             InputStream in = Game.class.getResourceAsStream(
-                    GAME_ASSETS_PATH + path);
+                    GAME_ASSETS_BASE + path);
+            // Create a temporary file and write the resource.
             Path tempPath = Files.createTempFile("", "");
             File tempFile = new File(tempPath.toString());
             OutputStream out = new FileOutputStream(tempFile);
@@ -199,25 +201,26 @@ public final class Game {
     }
 
     /**
-     * Gets a list containing high scores.
+     * Retrieves the list containing high scores.
      * @return a List<PlayerScore> object.
      */
-    public static List<PlayerScore> getHighScores() {
+    public static List<GameScore> getHighScores() {
+        // Limit the number of high scores to the maximum.
         return (Game.highScores.size() > MAX_HIGH_SCORES)
                 ? Game.highScores.subList(0, MAX_HIGH_SCORES)
                 : Game.highScores;
     }
 
     /**
-     * Gets the potential index where the provided score will be inserted.
-     * @param score the player's score.
+     * Retrieves the possible index where the high score will be inserted.
+     * @param score the player's high score.
      * @return an integer.
      */
     public static int getHighScoreIndex(int score) {
         // We need the index, so use an iterator.
-        ListIterator<PlayerScore> iter = Game.highScores.listIterator();
+        ListIterator<GameScore> iter = Game.highScores.listIterator();
         while (iter.hasNext()) {
-            PlayerScore other = iter.next();
+            GameScore other = iter.next();
             if (other == null) {
                 continue;
             }
@@ -236,8 +239,8 @@ public final class Game {
     }
 
     /**
-     * Adds the given name, score, and difficulty to the list of high scores
-     * if applicable.
+     * Adds the given name, score, and difficulty to the list of
+     * high scores if applicable.
      * @param name the player name.
      * @param score the player score.
      * @param difficulty the game difficulty.
@@ -246,10 +249,12 @@ public final class Game {
     public static boolean addHighScore(String name, int score,
             int difficulty) {
         int index = Game.getHighScoreIndex(score);
+        // Return early if we can't add the given score.
         if (index == -1) {
             return false;
         }
-        Game.highScores.add(index, new PlayerScore(
+        // Create a new player score object and save to file.
+        Game.highScores.add(index, new GameScore(
                 name, score, difficulty));
         Game.saveHighScores();
         return true;
@@ -273,7 +278,7 @@ public final class Game {
                     continue;
                 }
                 // Create a new player score object and add to the list.
-                PlayerScore score = new PlayerScore(
+                GameScore score = new GameScore(
                         lineParts[0],
                         Integer.parseInt(lineParts[1]),
                         Integer.parseInt(lineParts[2]));
@@ -296,7 +301,7 @@ public final class Game {
             PrintWriter writer = new PrintWriter(new FileWriter(output));
             // Iterate through all the player score objects in the list and
             // write them to the high scores file.
-            for (PlayerScore score : getHighScores()) {
+            for (GameScore score : getHighScores()) {
                 writer.printf("%s,%s,%s%n",
                         score.getName(),
                         score.getScore(),
@@ -314,7 +319,7 @@ public final class Game {
     }
 
     /**
-     * Sets the currently playing media player.
+     * Specifies the currently playing media player.
      * @param assetName the BGM asset name.
      * @param volume the volume at which the media will be played.
      */

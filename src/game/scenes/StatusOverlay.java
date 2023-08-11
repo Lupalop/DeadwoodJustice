@@ -23,81 +23,134 @@ import javafx.scene.shape.StrokeType;
 import javafx.scene.text.Text;
 
 /**
- * Represents the status HUD shown in the level scene.
+ * This class represents the status HUD shown in the level scene.
  * @author Francis Dominic Fajardo
  */
 public final class StatusOverlay {
 
+    /* UI images. */
+    /** Image: game paused. */
     private static final Image GAME_PAUSED =
             new Image(Game.getAsset("ui_paused.png"));
+    /** Image: game over. */
     private static final Image GAME_END_BAD =
             new Image(Game.getAsset("ui_game_end_bad.png"));
+    /** Image: game win. */
     private static final Image GAME_END_GOOD =
             new Image(Game.getAsset("ui_game_end_good.png"));
+    /** Image: play another game standee. */
     private static final Image STANDEE_PLAY =
             new Image(Game.getAsset("ui_game_end_standee_play.png"));
+    /** Image: exit level scene standee. */
     private static final Image STANDEE_EXIT =
             new Image(Game.getAsset("ui_game_end_standee_exit.png"));
 
-    private static final int HUD_MAX_SCORE = 9999999;
-
+    /* HUD sizes and positions (except offsets) are in tiles. */
+    /** Tuning: base HUD size. */
     private static final int HUD_BASE_SIZE = 13;
+    /** Tuning: base HUD position. */
     private static final int HUD_BASE_POS = 2;
+    /** Tuning: health icon position. */
     private static final int HUD_BASE_POS_HP = 2;
+    /** Tuning: mob kill count icon position. */
     private static final int HUD_BASE_POS_MOB = 5;
+    /** Tuning: time left icon position. */
     private static final int HUD_BASE_POS_TIME = 8;
+    /** Tuning: score text position. */
     private static final int HUD_BASE_POS_SCORE = 11;
+    /** Tuning: power-up icons position. */
     private static final int HUD_POWERUP_POS = 16;
-
+    /** Tuning: starting y-coordinate position of the HUD. */
     private static final int HUD_OFFSET_Y = -Tile.SIZE_MID;
+    /** Tuning: starting y-coordinate position of HUD text. */
     private static final int HUD_TEXT_OFFSET_Y = (Tile.SIZE_MID / 2) + 3;
+    /** Tuning: the maximum score number that can fit in the HUD. */
+    private static final int HUD_MAX_SCORE = 9999999;
+    /** Tuning: the maximum number that can fit in other HUD parts. */
     private static final int HUD_MAX_NUM = 9999;
 
+    /* Texture indexes. */
+    /** TX: Base HUD starting box. */
     private static final int TX_BASE_START = 0;
+    /** TX: Base HUD repeating middle. */
     private static final int TX_BASE_MID = 1;
+    /** TX: Base HUD ending box. */
     private static final int TX_BASE_END = 2;
-
+    /** TX: Power-up HUD starting box. */
     private static final int TX_POWERUP_START = 3;
+    /** TX: Power-up HUD repeating middle. */
     private static final int TX_POWERUP_MID = 4;
+    /** TX: Power-up HUD ending box. */
     private static final int TX_POWERUP_END = 5;
-
+    /** TX: Outlaw icon. */
     private static final int TX_OUTLAW = 9;
+    /** TX: Infinity icon. */
     private static final int TX_INFINITY = 10;
+    /** TX: Mob icon. */
     private static final int TX_MOB = 11;
+    /** TX: Time left icon. */
     private static final int TX_TIME = 12;
+    /** TX: Score icon. */
     private static final int TX_SCORE = 13;
-
+    /** TX: Lamp power-up icon. */
     private static final int TX_POWERUP_LAMP = 14;
+    /** TX: Hay power-up icon. */
     private static final int TX_POWERUP_HAY = 15;
+    /** TX: Wheel power-up icon. */
     private static final int TX_POWERUP_WHEEL = 16;
+    /** TX: Snake Oil power-up icon. */
     private static final int TX_POWERUP_SNAKEOIL = 17;
 
+    /** Duration of HUD slide animation in milliseconds. */
     private static final long UI_SLIDE_INTERVAL =
             TimeUnit.MILLISECONDS.toNanos(100);
 
+    /** The level associated with this overlay. */
     private LevelScene level;
-
+    /** Whether the paused level overlay is visible. */
     private boolean isPausedVisible;
+    /** Whether the game end overlay is visible. */
     private boolean isGameEndVisible;
+    /** Whether the player name input overlay is visible. */
     private boolean isNameInputVisible;
-
-    private Button playButton;
-    private Button exitButton;
-    private Button resumeButton;
-    private Button goButton;
-
+    /** Current HUD y-coordinate offset. */
     private int hudOffsetY;
 
+    /* Shared controls. */
+    /** Control: overlay header. */
     private Sprite headerProp;
-    private String nameInputValue;
-    private Text nameInputText;
-    private Text nameInputDescription;
-    private Text nameInputTip;
-    private EventHandler<KeyEvent> nameInputEventHandler;
-
-    private EventHandler<KeyEvent> selectorEventHandler;
+    /** Currently selected button tracker. */
     private Button selectedButton;
 
+    /* Game end controls. */
+    /** Control: play button. */
+    private Button playButton;
+    /** Control: exit button. */
+    private Button exitButton;
+    /** Control: resume button. */
+    private Button resumeButton;
+
+    /* New high score name input controls. */
+    /** Current value of the player name input. */
+    private String nameInputValue;
+    /** Control: where the name input appears. */
+    private Text nameInputText;
+    /** Control: new high score greeting for the player. */
+    private Text nameInputDescription;
+    /** Control: tip text placed on the name input if empty. */
+    private Text nameInputTip;
+    /** Control: go button (save name input). */
+    private Button goButton;
+
+    /** Handles text input for the player name. */
+    private EventHandler<KeyEvent> nameInputEventHandler;
+    /** Handles keyboard navigation for button controls. */
+    private EventHandler<KeyEvent> selectorEventHandler;
+
+    /**
+     * Constructs an instance of StatusOverlay.
+     * @param scene the Scene to be associated with this overlay.
+     */
     public StatusOverlay(LevelScene scene) {
         this.level = scene;
 
@@ -110,6 +163,7 @@ public final class StatusOverlay {
         this.goButton = null;
 
         this.hudOffsetY = HUD_OFFSET_Y;
+        // Prepare HUD slide animation.
         scene.getActions().add(UI_SLIDE_INTERVAL, false, new Callable<Boolean>() {
             @Override
             public Boolean call() {
@@ -134,6 +188,10 @@ public final class StatusOverlay {
         initializeControls();
     }
 
+    /**
+     * Updates this overlay's state.
+     * @param now The timestamp of the current frame given in nanoseconds.
+     */
     public void update(long now) {
         if (this.isGameEndVisible) {
             exitButton.update(now);
@@ -146,6 +204,10 @@ public final class StatusOverlay {
         }
     }
 
+    /**
+     * Draws this overlay.
+     * @param gc a GraphicsContext object.
+     */
     public void draw(GraphicsContext gc) {
         gc.save();
         gc.setFont(UIUtils.FONT_32);
@@ -171,6 +233,10 @@ public final class StatusOverlay {
         gc.restore();
     }
 
+    /**
+     * Draws the HUD.
+     * @param gc a GraphicsContext object.
+     */
     private void drawHUD(GraphicsContext gc) {
         this.drawHUDBase(gc);
 
@@ -190,6 +256,11 @@ public final class StatusOverlay {
                 TX_POWERUP_SNAKEOIL, powerupSnakeOilCount, SnakeOilPowerup.ID);
     }
 
+    /**
+     * Draws the base HUD which contains the indicators for strength,
+     * mob kill count, remaining level time, and score.
+     * @param gc a GraphicsContext object.
+     */
     private void drawHUDBase(GraphicsContext gc) {
         int strength = level.getOutlaw().getStrength();
         int mobKillCount = level.getMobKillCount();
@@ -246,6 +317,15 @@ public final class StatusOverlay {
                 hudOffsetY + HUD_TEXT_OFFSET_Y);
     }
 
+    /**
+     * Draws a part of the power-ups HUD.
+     * @param gc a GraphicsContext object.
+     * @param tileOffset the tile index to start drawing.
+     * @param iconIndex icon texture ID (constant).
+     * @param value the number to be drawn beside the icon
+     * @param powerupIndex the power-up ID (constant).
+     * @return the updated tile offset as an integer.
+     */
     private int drawHUDPowerup(GraphicsContext gc,
             int tileOffset, int iconIndex, int value, int powerupIndex) {
         String valueText = Integer.toString(value);
@@ -266,6 +346,10 @@ public final class StatusOverlay {
         return tileOffset += 1;
     }
 
+    /**
+     * Draws game end overlay controls.
+     * @param gc a GraphicsContext object.
+     */
     private void drawGameEnd(GraphicsContext gc) {
         UIUtils.drawMenuBackground(gc, Tile.ALL_VERTICAL / 3, 5);
 
@@ -296,6 +380,10 @@ public final class StatusOverlay {
         exitButton.draw(gc);
     }
 
+    /**
+     * Draws paused game overlay controls.
+     * @param gc a GraphicsContext object.
+     */
     private void drawPaused(GraphicsContext gc) {
         UIUtils.drawMenuBackground(gc, Tile.ALL_VERTICAL - 4, 1);
 
@@ -310,6 +398,10 @@ public final class StatusOverlay {
         exitButton.draw(gc);
     }
 
+    /**
+     * Draws high score player name input overlay controls.
+     * @param gc a GraphicsContext object.
+     */
     private void drawNameInput(GraphicsContext gc) {
         UIUtils.drawMenuBackground(gc, (Tile.ALL_VERTICAL / 2), 1);
 
@@ -317,6 +409,9 @@ public final class StatusOverlay {
         headerProp.draw(gc);
     }
 
+    /**
+     * Initializes all overlay controls.
+     */
     private void initializeControls() {
         playButton = new Button(0, 0, 3);
         playButton.setText("PLAY");
@@ -379,6 +474,9 @@ public final class StatusOverlay {
                 - (nameInputTip.getBoundsInLocal().getWidth() / 2));
     }
 
+    /**
+     * Toggles the visibility of the game end overlay.
+     */
     public void toggleGameEndVisibility() {
         this.isGameEndVisible = !this.isGameEndVisible;
         if (this.isGameEndVisible) {
@@ -396,10 +494,13 @@ public final class StatusOverlay {
         } else {
             exitButton.detach(level);
             playButton.detach(level);
-            this.detachButtonSelector(playButton, exitButton, false);
+            this.detachButtonSelector(false);
         }
     }
 
+    /**
+     * Toggles the visibility of the paused game overlay.
+     */
     public void togglePausedVisibility() {
         this.isPausedVisible = !this.isPausedVisible;
         if (this.isPausedVisible) {
@@ -418,10 +519,13 @@ public final class StatusOverlay {
         } else {
             exitButton.detach(level);
             resumeButton.detach(level);
-            this.detachButtonSelector(resumeButton, exitButton, false);
+            this.detachButtonSelector(false);
         }
     }
 
+    /**
+     * Toggles the high score player name input overlay visibility.
+     */
     public void toggleNameInputVisibility() {
         this.isNameInputVisible = !this.isNameInputVisible;
 
@@ -468,7 +572,7 @@ public final class StatusOverlay {
             this.level.getRoot().getChildren().add(nameInputTip);
         } else {
             goButton.detach(level);
-            this.detachButtonSelector(goButton, null, true);
+            this.detachButtonSelector(true);
             this.level.getInner().removeEventHandler(KeyEvent.KEY_TYPED, this.nameInputEventHandler);
             this.level.getRoot().getChildren().remove(nameInputText);
             this.level.getRoot().getChildren().remove(nameInputDescription);
@@ -477,6 +581,13 @@ public final class StatusOverlay {
         }
     }
 
+    /**
+     * Attaches the two-button tracker for selection via keyboard input.
+     * @param leftButton the first button.
+     * @param rightButton the second button (can be null).
+     * @param onRelease whether the event should listen to the
+     *        key released event instead of the key pressed event.
+     */
     private void attachButtonSelector(Button leftButton, Button rightButton, boolean onRelease) {
         if (this.selectorEventHandler != null) {
             return;
@@ -517,7 +628,14 @@ public final class StatusOverlay {
                 this.selectorEventHandler);
     }
 
-    private void detachButtonSelector(Button a, Button b, boolean onRelease) {
+    /**
+     * Detaches destructively the two-button tracker.
+     * @param onRelease whether the event should be removed from the
+     *        key released event instead of the key pressed event.
+     */
+    private void detachButtonSelector(boolean onRelease) {
+        // Either we were called early or the selector event handler
+        // was incorrectly nulled out.
         if (this.selectorEventHandler == null) {
             return;
         }
@@ -528,6 +646,10 @@ public final class StatusOverlay {
         this.selectedButton = null;
     }
 
+    /**
+     * Retrieves a formatted display of the remaining level time.
+     * @return the time in {@code mm:ss} display as a string.
+     */
     private String getLevelTimeLeftText() {
         String formatString = "%s:%s";
         if (level.getLevelTimeLeft() <= 0) {

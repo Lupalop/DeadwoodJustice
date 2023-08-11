@@ -5,27 +5,39 @@ import game.entities.Sprite;
 import javafx.scene.image.Image;
 
 /**
- * The ExplosionEffect class is used on dying mobs.
+ * This class represents the effect applied on explosions (e.g., dying mobs).
  * @author Francis Dominic Fajardo
  */
 public final class ExplosionEffect extends Effect {
 
+    /** Frame set: effect. */
     private static final Image FRAMESET = new Image(
             Game.getAsset("fx_explode.png"));
-
+    /** Frame set: rows. */
     private static final int FRAMESET_ROWS = 1;
+    /** Frame set: columns. */
     private static final int FRAMESET_COLUMNS = 8;
 
-    public ExplosionEffect(int xPos, int yPos) {
-        super(xPos, yPos);
+    /**
+     * Constructs an instance of ExplosionEffect.
+     * @param x the x-coordinate position.
+     * @param y the y-coordinate position.
+     */
+    public ExplosionEffect(int x, int y) {
+        super(x, y);
     }
 
+    /**
+     * Constructs an instance of ExplosionEffect that follows
+     * the specified Sprite.
+     * @param spriteTarget the sprite to be followed.
+     */
     public ExplosionEffect(Sprite spriteTarget) {
         super(spriteTarget);
     }
 
     @Override
-    public void initialize() {
+    protected void initialize() {
         this.setFrameAutoReset(false);
         this.setFrameSet(FRAMESET, FRAMESET_ROWS, FRAMESET_COLUMNS);
         this.setMinMaxFrame(0, 7);

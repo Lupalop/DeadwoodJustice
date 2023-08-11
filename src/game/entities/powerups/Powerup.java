@@ -9,28 +9,36 @@ import game.scenes.LevelScene;
 import javafx.scene.canvas.GraphicsContext;
 
 /**
- * The Powerup class represents power-ups that can be collected in-game.
+ * This class represents power-ups that can be collected in-game.
  * @author Francis Dominic Fajardo
  */
 public abstract class Powerup extends Entity {
 
+    /** The total number of known power-ups. */
     public static final int TOTAL_POWERUPS = 4;
-
+    /** The duration before a power-up disappears. */
     protected static final long POWERUP_TIMEOUT =
             TimeUnit.SECONDS.toNanos(5);
-
+    /** Tuning: the number of points added for each collected power-up. */
     private static final int POWERUP_BASE_SCORE = 100;
+    /** Path to the power-up collected sound effect. */
     private static final String SFX_POWERUP_COLLECT = "sfx_powerup_collect.wav";
+    /** Whether this power-up was collected. */
+    private boolean collected;
 
-    private boolean consumed;
-
+    /**
+     * Constructs an instance of Powerup.
+     * @param x the x-coordinate position.
+     * @param y the y-coordinate position.
+     * @param parent the LevelScene object owning this entity.
+     */
     public Powerup(int x, int y, LevelScene parent) {
         super(x, y, parent);
 
         parent.getActions().add(POWERUP_TIMEOUT, false, new Callable<Boolean>() {
             @Override
             public Boolean call() {
-                consumed = true;
+                collected = true;
                 return true;
             }
         });
@@ -38,7 +46,7 @@ public abstract class Powerup extends Entity {
 
     @Override
     public void update(long now) {
-        if (this.consumed) {
+        if (this.collected) {
             return;
         }
 
@@ -46,7 +54,7 @@ public abstract class Powerup extends Entity {
 
         if (this.getParent().getOutlaw().isAlive()) {
             if (this.intersects(this.getParent().getOutlaw())) {
-                this.consumed = true;
+                this.collected = true;
                 this.applyPowerup();
                 this.getParent().getOutlaw().spawnPowerupEffect();
                 this.getParent().addScore(POWERUP_BASE_SCORE);
@@ -57,17 +65,24 @@ public abstract class Powerup extends Entity {
 
     @Override
     public void draw(GraphicsContext gc) {
-        if (this.consumed) {
+        if (this.collected) {
             return;
         }
 
         super.draw(gc);
     }
 
+    /**
+     * Applies the effects associated with this power-up.
+     */
     public abstract void applyPowerup();
 
-    public boolean getConsumed() {
-        return this.consumed;
+    /**
+     * Retrieves whether this power-up was collected.
+     * @return a boolean.
+     */
+    public boolean getCollected() {
+        return this.collected;
     }
 
 }

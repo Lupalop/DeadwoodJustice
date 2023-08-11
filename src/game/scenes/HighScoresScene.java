@@ -1,7 +1,7 @@
 package game.scenes;
 
 import game.Game;
-import game.PlayerScore;
+import game.GameScore;
 import game.UIUtils;
 import game.entities.Button;
 import game.entities.HeaderSprite;
@@ -14,15 +14,21 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.text.Text;
 
 /**
- * High Scores scene.
+ * This class handles the High Scores scene logic.
  * @author Francis Dominic Fajardo
  */
 public final class HighScoresScene extends GameScene {
 
+    /** Control: grid that stores scores. */
     private GridPane scoresGrid;
+    /** Control: scene header. */
     private Sprite headerProp;
+    /** Control: back button. */
     private Button backButton;
 
+    /**
+     * Constructs an empty instance of HighScoresScene.
+     */
     public HighScoresScene() {
         super();
         this.addScoresGrid();
@@ -30,6 +36,9 @@ public final class HighScoresScene extends GameScene {
         UIUtils.handleReturnToMainMenu(this);
     }
 
+    /**
+     * Adds the scores grid and prepares its constraints.
+     */
     private void addScoresGrid() {
         this.scoresGrid = new GridPane();
         this.scoresGrid.setMaxSize(Game.WINDOW_MAX_WIDTH, Game.WINDOW_MAX_HEIGHT);
@@ -55,6 +64,9 @@ public final class HighScoresScene extends GameScene {
         this.root.getChildren().add(scoresGrid);
     }
 
+    /**
+     * Adds menu controls.
+     */
     private void addMenuControls() {
         headerProp = new HeaderSprite(0, Tile.SIZE_MID, HeaderSprite.HIGH_SCORES);
         headerProp.setScale(1);
@@ -70,8 +82,9 @@ public final class HighScoresScene extends GameScene {
             }
         });
 
+        // Process the high scores list and add them to the grid.
         for (int i = 0; i < Game.getHighScores().size(); i++) {
-            PlayerScore score = Game.getHighScores().get(i);
+            GameScore score = Game.getHighScores().get(i);
             Text nameText = new Text(score.getName());
             nameText.setFill(UIUtils.COLOR_PRIMARY);
             nameText.setFont(UIUtils.FONT_48);

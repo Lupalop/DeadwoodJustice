@@ -5,7 +5,7 @@ import java.util.concurrent.TimeUnit;
 import javafx.animation.AnimationTimer;
 
 /**
- * The GameTimer class is responsible for keeping track of the time and
+ * This class is responsible for keeping track of the time and
  * for calling the update and draw methods on the current scene.
  * This allows the game to run at a consistent frame rate.
  * @author Francis Dominic Fajardo

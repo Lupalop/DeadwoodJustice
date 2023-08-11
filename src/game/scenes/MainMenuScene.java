@@ -13,15 +13,19 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 
 /**
- * Main Menu scene.
+ * This class handles the Main Menu scene logic.
  * @author Francis Dominic Fajardo
  */
 public final class MainMenuScene extends GameScene {
 
+    /** Tuning: duration before generating another background map. */
     private static final long MAP_SWITCH_INTERVAL =
             TimeUnit.SECONDS.toNanos(3);
+    /** Tuning: initial y-position of the menu. */
     private static final int MENU_Y =
             Game.WINDOW_MAX_HEIGHT + 8 - (Tile.SIZE_MID * 5);
+
+    /** Main menu labels. */
     private static final String[] MENU_LABELS = {
             "P: I'M TOO CHICKEN",
             "P: HURT ME PLENTY",
@@ -31,6 +35,7 @@ public final class MainMenuScene extends GameScene {
             "CREDITS",
             "EXIT",
     };
+    /** Main menu actions. These should match the index of each label. */
     private static final Runnable[] MENU_ACTIONS = {
             new Runnable() {
                 @Override
@@ -78,26 +83,40 @@ public final class MainMenuScene extends GameScene {
                 }
             },
     };
-
+    /** Currently selected menu item index. */
     private static int menuIndex = -1;
 
+    /** Control: scene header. */
     private Sprite titleProp;
+    /** Control: previous menu item button. */
     private Button previousButton;
+    /** Control: selected menu item button. */
     private Button actionButton;
+    /** Control: next menu item button. */
     private Button nextButton;
 
+    /**
+     * Constructs an empty instance of MainMenuScene.
+     */
     public MainMenuScene() {
         super();
         this.addMenuControls();
         this.handleKeyPressEvent();
     }
 
+    /**
+     * Adds menu controls.
+     */
     private void addMenuControls() {
         titleProp = new HeaderSprite(0, 0, HeaderSprite.MENU_TITLE);
-        titleProp.setX((int) ((Game.WINDOW_MAX_WIDTH / 2) - (titleProp.getBounds().getWidth() / 2)));
-        titleProp.setY((int) ((Game.WINDOW_MAX_HEIGHT / 2) - (titleProp.getBounds().getHeight() / 2)) - (Tile.SIZE_MID));
+        titleProp.setX((int) ((Game.WINDOW_MAX_WIDTH / 2)
+                - (titleProp.getBounds().getWidth() / 2)));
+        titleProp.setY((int) ((Game.WINDOW_MAX_HEIGHT / 2)
+                - (titleProp.getBounds().getHeight() / 2))
+                - (Tile.SIZE_MID));
 
-        previousButton = new Button(Tile.SIZE_MID * 5, MENU_Y,
+        previousButton = new Button(Tile.SIZE_MID * 5,
+                MENU_Y,
                 Button.SIZE_ARROW_LEFT);
         previousButton.attach(this);
         previousButton.setClickAction(new Runnable() {
@@ -107,15 +126,18 @@ public final class MainMenuScene extends GameScene {
             }
         });
 
-        actionButton = new Button(Tile.SIZE_MID * 7, MENU_Y, Tile.ALL_HORIZONTAL - (16));
+        actionButton = new Button(Tile.SIZE_MID * 7,
+                MENU_Y,
+                Tile.ALL_HORIZONTAL - (16));
         actionButton.attach(this);
         if (menuIndex != -1) {
-            updateButton();
+            updateMenuButton();
         } else {
             updateMenuIndex(true);
         }
 
-        nextButton = new Button(Game.WINDOW_MAX_WIDTH - (Tile.SIZE_MID * 6), MENU_Y,
+        nextButton = new Button(Game.WINDOW_MAX_WIDTH - (Tile.SIZE_MID * 6),
+                MENU_Y,
                 Button.SIZE_ARROW_RIGHT);
         nextButton.attach(this);
         nextButton.setClickAction(new Runnable() {
@@ -125,6 +147,7 @@ public final class MainMenuScene extends GameScene {
             }
         });
 
+        // Change the background level map every X seconds.
         this.actions.add(MAP_SWITCH_INTERVAL, true, new Callable<Boolean>() {
             @Override
             public Boolean call() {
@@ -140,6 +163,10 @@ public final class MainMenuScene extends GameScene {
         this.levelMap.addOverlay(this.nextButton);
     }
 
+    /**
+     * Updates the currently selected menu item and index.
+     * @param isNext whether the index moves forward or backward.
+     */
     private void updateMenuIndex(boolean isNext) {
         if (isNext) {
             menuIndex++;
@@ -153,10 +180,13 @@ public final class MainMenuScene extends GameScene {
             }
         }
 
-        this.updateButton();
+        this.updateMenuButton();
     }
 
-    private void updateButton() {
+    /**
+     * Updates the currently selected menu item.
+     */
+    private void updateMenuButton() {
         actionButton.setText(MENU_LABELS[menuIndex]);
         actionButton.setClickAction(MENU_ACTIONS[menuIndex]);
     }
@@ -174,6 +204,9 @@ public final class MainMenuScene extends GameScene {
         this.levelMap.draw(gc);
     }
 
+    /**
+     * Handles the key press events for this scene.
+     */
     private void handleKeyPressEvent() {
         this.scene.addEventHandler(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>() {
             @Override

@@ -26,68 +26,100 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 
 /**
- * The main level scene.
+ * This class represents the Level scene logic.
  * @author Francis Dominic Fajardo
  */
 public final class LevelScene extends GameScene {
 
+    /** Difficulty: easy. */
     public static final int DIFFICULTY_EASY = 0;
+    /** Difficulty: medium. */
     public static final int DIFFICULTY_MEDIUM = 1;
+    /** Difficulty: hard. */
     public static final int DIFFICULTY_HARD = 2;
 
+    /** Tuning: number to divide the added score. */
     private static final int SCORE_DIVIDER = 3;
+    /** Tuning: number to divide the actual base score. */
     private static final int SCORE_BASE_DIVIDER = 2;
-
+    /** Tuning: maximum number of characters for the player name. */
     public static final int NAME_MAX_LEN = 10;
-
+    /** Tuning: number of mobs to spawn at the start of the level. */
     private static final int MOB_COUNT_AT_START = 7;
+    /** Tuning: number of mobs to spawn at the end of the spawn interval. */
     private static final int MOB_COUNT_PER_INTERVAL = 3;
-
+    /** Tuning: interval before mobs are spawned. */
     private static final long MOB_SPAWN_INTERVAL =
             TimeUnit.SECONDS.toNanos(5);
+    /** Tuning: interval before a max mob speed event is applied. */
     private static final long MOB_MAX_SPEED_INTERVAL =
             TimeUnit.SECONDS.toNanos(15);
+    /** Tuning: duration of the max mob speed event. */
     private static final long MOB_MAX_SPEED_END_INTERVAL =
             TimeUnit.SECONDS.toNanos(3);
-
+    /** Tuning: interval before power-ups are spawned. */
     private static final long POWERUP_SPAWN_INTERVAL =
             TimeUnit.SECONDS.toNanos(10);
-
+    /** Tuning: seconds to wait before the boss mob is spawned. */
     private static final long LEVEL_BOSS_TIME =
             TimeUnit.SECONDS.toNanos(30);
+    /** Tuning: seconds to wait before the level is completed. */
     private static final long LEVEL_END_TIME =
             TimeUnit.SECONDS.toNanos(60);
-
+    /** Tuning: player character's initial x-coordinate position. */
     private static final int OUTLAW_INITIAL_X = 100;
 
+    /** Path to available background music tracks. */
     private static final String[] MUSIC_REGULAR =
             { "bgm_01.mp3", "bgm_02.mp3", "bgm_04.mp3" };
-
+    /** Path to available background music tracks in hard difficulty. */
     private static final String[] MUSIC_HARD =
             { "bgm_03.mp3", "bgm_05.mp3" };
 
+    /** The player character. */
     private Outlaw outlaw;
+    /** The boss mob. */
     private Mob bossMob;
+    /** The status overlay. */
     private StatusOverlay statusOverlay;
 
+    /** State: level difficulty. */
     private int difficulty;
+    /** State: number of mobs to spawn at the start of the level. */
     private int mobCountAtStart;
+    /** State: number of mobs to spawn at the end of the spawn interval. */
     private int mobCountPerInterval;
+    /** State: seconds to wait before the level is completed. */
     private long levelEndTime;
+    /** State: interval before power-ups are spawned. */
     private long powerupSpawnInterval;
 
+    /** State: base (not actual) player score. */
     private int score;
+    /** State: number of killed mobs. */
     private int mobKillCount;
+    /** State: number of collected power-ups. */
     private int powerupsCount[];
+    /** State: action array for keeping track of active power-ups. */
     private TimedAction[] powerupsAction;
+    /** State: action handling how long a level is. */
     private TimedAction levelTimer;
 
+    /** Event: mobs move at maximum speed. */
     private boolean maxSpeed;
+    /** Event: mobs move at a reduced speed. */
     private boolean slowSpeed;
+    /** Event: mobs move at zero speed (can't move). */
     private boolean zeroSpeed;
+    /** Event: level is done. */
     private boolean levelDone;
+    /** Event: level is paused. */
     private boolean levelPaused;
 
+    /**
+     * Constructs an instance of LevelScene.
+     * @param difficulty an integer indicating the starting difficulty.
+     */
     public LevelScene(int difficulty) {
         this.difficulty = difficulty;
         switch (this.difficulty) {
@@ -154,6 +186,9 @@ public final class LevelScene extends GameScene {
         this.addPauseHandler();
     }
 
+    /**
+     * Initializes level-related actions.
+     */
     private void initializeActions() {
         // Action: mark level done if time's up.
         this.levelTimer = actions.add(this.levelEndTime, false, new Callable<Boolean>() {
@@ -239,12 +274,23 @@ public final class LevelScene extends GameScene {
         this.statusOverlay.draw(gc);
     }
 
+    /**
+     * Spawns a mote at the specified target sprite.
+     * @param target the Sprite from which the mote originated.
+     * @param value an integer.
+     * @param moteType the type of mote (constant).
+     */
     public void spawnMote(Sprite target, int value, byte moteType) {
         Mote mote = new Mote(target, value, moteType);
         this.getLevelMap().addOverlay(mote);
         mote.show(this);
     }
 
+    /**
+     * Spawns one or more mobs at a random location past
+     * the middle of the viewport.
+     * @param mobCount the number of mobs to be spawned.
+     */
     private void spawnMobs(int mobCount) {
         for (int i = 0; i < mobCount; i++) {
             Mob mob = null;
@@ -277,6 +323,10 @@ public final class LevelScene extends GameScene {
         }
     }
 
+    /**
+     * Spawns a single power-up at a random location past
+     * the middle of the viewport.
+     */
     private void spawnPowerups() {
         Powerup powerup = null;
         switch (Game.RNG.nextInt(0, Powerup.TOTAL_POWERUPS)) {
@@ -310,14 +360,25 @@ public final class LevelScene extends GameScene {
         this.levelMap.addEntity(powerup);
     }
 
+    /**
+     * Applies the specified power-up action and replaces the existing
+     * tracked power-up action if it already exists to avoid conflicts.
+     * @param id the power-up ID (constant).
+     * @param action a TimedAction from a power-up.
+     */
     private void replacePowerupAction(int id, TimedAction action) {
         TimedAction previousAction = this.powerupsAction[id];
+        // Close the previous same power-up action if it still exists.
         if (previousAction != null) {
             previousAction.close();
         }
         this.powerupsAction[id] = action;
     }
 
+    /**
+     * Applies the immortality power-up event.
+     * @param powerupTimeout duration of the power-up's effect.
+     */
     public void applyImmortality(long powerupTimeout) {
         replacePowerupAction(HayPowerup.ID,
                 actions.add(powerupTimeout, false, new Callable<Boolean>() {
@@ -330,6 +391,10 @@ public final class LevelScene extends GameScene {
         getOutlaw().setImmortal(true);
     }
 
+    /**
+     * Applies the slow all mobs speed power-up event.
+     * @param powerupTimeout duration of the power-up's effect.
+     */
     public void applySlowMobSpeed(long powerupTimeout) {
         replacePowerupAction(WheelPowerup.ID,
                 actions.add(powerupTimeout, false, new Callable<Boolean>() {
@@ -342,6 +407,10 @@ public final class LevelScene extends GameScene {
         this.slowSpeed = true;
     }
 
+    /**
+     * Applies the zero all mobs speed power-up event.
+     * @param powerupTimeout duration of the power-up's effect.
+     */
     public void applyZeroMobSpeed(long powerupTimeout) {
         replacePowerupAction(SnakeOilPowerup.ID,
                 actions.add(powerupTimeout, false, new Callable<Boolean>() {
@@ -354,7 +423,11 @@ public final class LevelScene extends GameScene {
         this.zeroSpeed = true;
     }
 
-    public void consumePowerup(int id) {
+    /**
+     * Increments the counter for the specified power-up.
+     * @param id the power-up ID (constant).
+     */
+    public void trackCollectedPowerup(int id) {
         if (id < 0 || id >= Powerup.TOTAL_POWERUPS) {
             return;
         }
@@ -362,6 +435,9 @@ public final class LevelScene extends GameScene {
         this.powerupsCount[id]++;
     }
 
+    /**
+     * Toggles the paused state event of this level.
+     */
     public void togglePaused() {
         if (!levelPaused) {
             getActions().stopAll();
@@ -373,6 +449,7 @@ public final class LevelScene extends GameScene {
         Game.playSFX(Button.SFX_BUTTON);
     }
 
+    /** Paused state event handler. */
     private final EventHandler<KeyEvent> pauseEventHandler =
             new EventHandler<KeyEvent>() {
                 @Override
@@ -389,28 +466,50 @@ public final class LevelScene extends GameScene {
                 }
             };
 
+    /**
+     * Adds the paused state event handler to the inner JavaFX scene.
+     */
     private void addPauseHandler() {
         getInner().addEventHandler(
                 KeyEvent.KEY_RELEASED, this.pauseEventHandler);
     }
 
+    /**
+     * Removes the paused state event handler from the inner JavaFX scene.
+     */
     private void removePauseHandler() {
         getInner().removeEventHandler(
                 KeyEvent.KEY_RELEASED, this.pauseEventHandler);
     }
 
+    /**
+     * Retrieves the player character entity.
+     * @return an Outlaw object.
+     */
     public Outlaw getOutlaw() {
         return outlaw;
     }
 
+    /**
+     * Retrieves the current level difficulty.
+     * @return an integer.
+     */
     public int getDifficulty() {
         return this.difficulty;
     }
 
+    /**
+     * Retrieves whether the current level is in restricted mode.
+     * @return a boolean.
+     */
     public boolean getRestrictedMode() {
         return this.difficulty == DIFFICULTY_EASY;
     }
 
+    /**
+     * Retrieves the player's current score.
+     * @return an integer.
+     */
     public int getScore() {
         int difficultyMultiplier = this.getDifficulty() + 1;
         int baseScore = (this.score > 0 ? (this.getOutlaw().getStrength() / SCORE_BASE_DIVIDER) : 0);
@@ -418,6 +517,10 @@ public final class LevelScene extends GameScene {
         return computedScore;
     }
 
+    /**
+     * Adds the specified value to the player's current score.
+     * @param value a non-negative number.
+     */
     public void addScore(int value) {
         // This must be a non-negative number.
         if (value < 0) {
@@ -436,10 +539,19 @@ public final class LevelScene extends GameScene {
         this.score += value;
     }
 
+    /**
+     * Retrieves the total number of killed mobs.
+     * @return an integer.
+     */
     public int getMobKillCount() {
         return this.mobKillCount;
     }
 
+    /**
+     * Retrieves the number of collected power-ups.
+     * @param id the power-up to be checked (constant).
+     * @return an integer.
+     */
     public int getPowerupCount(int id) {
         if (id < 0 || id >= Powerup.TOTAL_POWERUPS) {
             return -1;
@@ -448,30 +560,57 @@ public final class LevelScene extends GameScene {
         return this.powerupsCount[id];
     }
 
+    /**
+     * Retrieves the remaining time in this level.
+     * @return a long containing the remaining time.
+     */
     public long getLevelTimeLeft() {
         return (this.levelEndTime - this.levelTimer.getElapsedTime());
     }
 
+    /**
+     * Retrieves whether mobs are moving at maximum speed.
+     * @return a boolean.
+     */
     public boolean isMaxSpeed() {
         return this.maxSpeed;
     }
 
+    /**
+     * Retrieves whether mobs are moving at a reduced speed.
+     * @return a boolean.
+     */
     public boolean isSlowSpeed() {
         return this.slowSpeed;
     }
 
+    /**
+     * Retrieves whether mobs are moving at zero speed.
+     * @return a boolean.
+     */
     public boolean isZeroSpeed() {
         return this.zeroSpeed;
     }
 
+    /**
+     * Retrieves whether the level is done.
+     * @return a boolean.
+     */
     public boolean isLevelDone() {
         return this.levelDone;
     }
 
+    /**
+     * Retrieves whether the level state is paused.
+     * @return a boolean.
+     */
     public boolean isLevelPaused() {
         return this.levelPaused;
     }
 
+    /**
+     * Marks the level as done.
+     */
     public void markLevelDone() {
         if (this.levelDone) {
             return;
@@ -487,6 +626,10 @@ public final class LevelScene extends GameScene {
         this.levelDone = true;
     }
 
+    /**
+     * Retrieves the level map associated with this scene.
+     * @return a LevelMap.
+     */
     public LevelMap getLevelMap() {
         return this.levelMap;
     }
@@ -501,12 +644,20 @@ public final class LevelScene extends GameScene {
         return MUSIC_REGULAR[index];
     }
 
+    /**
+     * Handles and receives the specified name from the player, which will
+     * be used to save their high score in this level.
+     * @param value the player name.
+     */
     public void handleHighScore(String value) {
         Game.addHighScore(value, this.getScore(), this.getDifficulty());
         UIUtils.handleReturnToMainMenu(this);
         this.statusOverlay.toggleGameEndVisibility();
     }
 
+    /**
+     * Increments the number of killed mobs.
+     */
     public void incrementMobKillCount() {
         if (this.levelDone) {
             return;

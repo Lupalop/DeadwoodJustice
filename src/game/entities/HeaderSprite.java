@@ -4,8 +4,8 @@ import game.Game;
 import javafx.scene.image.Image;
 
 /**
- * The HeaderSprite class is a sprite that represents images
- * used in the UI often as headers in different scenes.
+ * This class is a sprite that represents images used as headers
+ * in the user interface (e.g., in-game menus).
  * @author Francis Dominic Fajardo
  */
 public final class HeaderSprite extends Sprite {
@@ -20,7 +20,7 @@ public final class HeaderSprite extends Sprite {
     public static final String NAME_INPUT = "ui_name.png";
 
     /**
-     * Creates a new instance of the HeaderSprite class.
+     * Constructs an instance of HeaderSprite.
      * @param x the x-coordinate position.
      * @param y the y-coordinate position.
      * @param assetPath path to an image asset (constant).

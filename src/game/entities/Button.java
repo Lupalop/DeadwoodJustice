@@ -10,7 +10,8 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Text;
 
 /**
- * The Button class represents a UI control implemented as a sprite.
+ * This class represents a button with a sprite selection
+ * and configurable mouse click actions.
  * @author Francis Dominic Fajardo
  */
 public final class Button extends Sprite {
@@ -58,7 +59,7 @@ public final class Button extends Sprite {
     private EventHandler<MouseEvent> mouseReleasedEventHandler;
 
     /**
-     * Creates a new instance of the Button object.
+     * Constructs an instance of Button.
      * @param x the x-coordinate position.
      * @param y the y-coordinate position.
      * @param size the size of this button (horizontal or special).
@@ -246,7 +247,7 @@ public final class Button extends Sprite {
     }
 
     /**
-     * Gets the value of the text property.
+     * Retrieves the text displayed.
      * @return a String.
      */
     public String getText() {
@@ -254,7 +255,7 @@ public final class Button extends Sprite {
     }
 
     /**
-     * Sets the value of the text property.
+     * Specifies the text displayed.
      * @param text a String.
      */
     public void setText(String text) {
@@ -264,7 +265,7 @@ public final class Button extends Sprite {
     }
 
     /**
-     * Sets the click action property.
+     * Specifies the click action.
      * @param clickAction a Runnable object.
      */
     public void setClickAction(Runnable clickAction) {
@@ -272,7 +273,7 @@ public final class Button extends Sprite {
     }
 
     /**
-     * Invokes the click action of this button.
+     * Invokes the click action.
      */
     public void click() {
         this.clickAction.run();

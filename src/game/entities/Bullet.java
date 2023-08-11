@@ -7,8 +7,8 @@ import game.scenes.LevelScene;
 import javafx.scene.image.Image;
 
 /**
- * The Bullet class is an entity representing bullets shot by
- * both the player and mobs in the game.
+ * This class is an entity representing bullets shot by both
+ * the player and mobs in the game.
  * @author Francis Dominic Fajardo
  */
 public final class Bullet extends Entity {
@@ -59,7 +59,7 @@ public final class Bullet extends Entity {
     private Mob mobSource;
 
     /**
-     * Creates a new instance of the Bullet class (Mob source).
+     * Constructs an instance of Bullet from a Mob source.
      * @param source the Mob source of this bullet.
      * @param parent the LevelScene object owning this entity.
      * @param activeDirections the active directions when this bullet was shot.
@@ -73,7 +73,7 @@ public final class Bullet extends Entity {
     }
 
     /**
-     * Creates a new instance of the Bullet class (Outlaw source).
+     * Constructs an instance of Bullet from an Outlaw source.
      * @param source the Outlaw source of this bullet.
      * @param parent the LevelScene object owning this entity.
      * @param activeDirections the active directions when this bullet was shot.
@@ -86,7 +86,7 @@ public final class Bullet extends Entity {
     }
 
     /**
-     * Initializes this object.
+     * Initializes this bullet.
      * @param source the Outlaw source of this bullet.
      * @param activeDirections the active directions when this bullet was shot.
      * @param isDirectional whether this bullet was shot from a non-LTR direction.
@@ -131,7 +131,7 @@ public final class Bullet extends Entity {
     }
 
     /**
-     * Compute for the bullet's destination.
+     * Computes for this bullet's destination.
      * @param activeDirections the active directions when this bullet was shot.
      */
     private void computeDestination(byte activeDirections) {
@@ -188,7 +188,8 @@ public final class Bullet extends Entity {
     }
 
     /**
-     * Checks if this bullet has collided with another entity.
+     * Updates this entity's collision state and determines if it
+     * has collided with another entity.
      */
     private void checkCollisions() {
         // Don't bother checking collisions if we're invisible.

@@ -9,8 +9,8 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
 /**
- * The Mote class is a sprite representing small text pop-ups
- * that appear for a short period.
+ * This class is a sprite representing small text pop-ups that appear
+ * on the screen for a short period of time (e.g., damage indicators).
  * @author Francis Dominic Fajardo
  */
 public final class Mote extends Sprite {
@@ -56,7 +56,7 @@ public final class Mote extends Sprite {
     private byte type;
 
     /**
-     * Creates a new instance of the Mote class.
+     * Constructs an instance of Mote with text.
      * @param target the Sprite from which the mote originated.
      * @param text the text contained by the mote.
      * @param type the type of the mote (constant).
@@ -72,7 +72,7 @@ public final class Mote extends Sprite {
     }
 
     /**
-     * Creates a new instance of the Mote class.
+     * Constructs an instance of Mote with an integer.
      * @param target the Sprite from which the mote originated.
      * @param text the number contained by the mote.
      * @param type the type of the mote (constant).
@@ -99,6 +99,7 @@ public final class Mote extends Sprite {
         gc.fillText(this.text,
                 this.getX(), this.getY() + OFFSET_STROKE + offsetY);
 
+        // Change the mote's text color depending on its type.
         if (this.type == TYPE_NEUTRAL) {
             gc.setFill(Color.WHITE);
         } else if (this.type == TYPE_BAD) {
@@ -125,10 +126,13 @@ public final class Mote extends Sprite {
         level.getActions().add(MOTE_POPUP_INTERVAL, false, new Callable<Boolean>() {
             @Override
             public Boolean call() {
+                // Schedule the removal of this mote once we're fully
+                // shown on the screen.
                 if (offsetY == OFFSET_Y_END) {
                     kill(level);
                     return true;
                 }
+                // Gradually increase opacity and y-position offset.
                 offsetY++;
                 opacity += OPACITY_DELTA;
                 return false;

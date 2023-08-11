@@ -8,20 +8,28 @@ import game.entities.Sprite;
 import game.entities.Tile;
 
 /**
- * Instructions scene.
+ * This class handles the Help scene logic.
  * @author Francis Dominic Fajardo
  */
 public final class HelpScene extends GameScene {
 
+    /** Control: back button. */
     private Button backButton;
+    /** Control: scene header. */
     private Sprite helpImage;
 
+    /**
+     * Constructs an empty instance of HelpScene.
+     */
     public HelpScene() {
         super();
         this.addMenuControls();
         UIUtils.handleReturnToMainMenu(this);
     }
 
+    /**
+     * Adds menu controls.
+     */
     private void addMenuControls() {
         backButton = new Button(Tile.SIZE_MID, Tile.SIZE_MID,
                 Button.SIZE_ARROW_LEFT);

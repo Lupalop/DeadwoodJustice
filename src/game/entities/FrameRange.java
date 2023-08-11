@@ -5,9 +5,9 @@ import java.util.concurrent.TimeUnit;
 import javafx.scene.image.Image;
 
 /**
- * The FrameRange class holds the frame ranges for the different states
- * of a mob/outlaw and sets the appropriate minimum or maximum values
- * or plays the requested frames.
+ * This class holds the frame ranges for the different states of a
+ * mob or outlaw and sets the appropriate minimum and maximum values
+ * or plays the requested frames on a target sprite.
  * @author Francis Dominic Fajardo
  */
 public final class FrameRange {
@@ -52,7 +52,7 @@ public final class FrameRange {
             TimeUnit.MILLISECONDS.toNanos(400);
 
     /**
-     * Creates a new instance of the FrameRange class.
+     * Constructs an instance of FrameRange.
      * @param walkStart start range: walk.
      * @param walkEnd end range: walk.
      * @param impactStart start range: impact.

@@ -7,8 +7,8 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 
 /**
- * The Sprite class is responsible for all the graphics drawn
- * on the game canvas.
+ * This class is responsible for graphics drawn on the game canvas.
+ * @implNote Comparison is based on the maximum y-coordinate value.
  * @author Francis Dominic Fajardo
  */
 public abstract class Sprite implements Comparable<Sprite> {
@@ -82,7 +82,7 @@ public abstract class Sprite implements Comparable<Sprite> {
     private int[] boundsOffset;
 
     /**
-     * Creates a new instance of the Sprite class.
+     * Constructs an instance of Sprite.
      * @param x the x-coordinate position.
      * @param y the y-coordinate position.
      */
@@ -121,7 +121,7 @@ public abstract class Sprite implements Comparable<Sprite> {
     }
 
     /**
-     * Creates an instance of the Sprite class at position (0, 0).
+     * Constructs an instance of Sprite positioned at the origin.
      */
     public Sprite() {
         this(0, 0);
@@ -204,7 +204,7 @@ public abstract class Sprite implements Comparable<Sprite> {
     }
 
     /**
-     * Plays the given frame sequence.
+     * Plays the specified frame sequence.
      * @param min the frame sequence start range.
      * @param max the frame sequence end range.
      * @param frameSetOverride the custom frame set image.
@@ -234,7 +234,7 @@ public abstract class Sprite implements Comparable<Sprite> {
     }
 
     /**
-     * Plays the given frame sequence.
+     * Plays the specified frame sequence.
      * @param min the frame sequence start range.
      * @param max the frame sequence end range.
      */
@@ -243,7 +243,7 @@ public abstract class Sprite implements Comparable<Sprite> {
     }
 
     /**
-     * Clears overrides imposed on this sprite.
+     * Removes the overrides imposed on this sprite.
      */
     private void clearFrameOverride() {
         this.overrideMinFrame = -1;
@@ -256,7 +256,7 @@ public abstract class Sprite implements Comparable<Sprite> {
     }
 
     /**
-     * Gets the value of the bounds property.
+     * Retrieves the bounds.
      * @return a Rectangle2D object.
      */
     public Rectangle2D getBounds() {
@@ -303,7 +303,7 @@ public abstract class Sprite implements Comparable<Sprite> {
     }
 
     /**
-     * Gets the value of the image property.
+     * Retrieves the associated image.
      * @return an Image object.
      */
     public Image getImage() {
@@ -314,7 +314,7 @@ public abstract class Sprite implements Comparable<Sprite> {
     }
 
     /**
-     * Gets the value of the x-coordinate position property.
+     * Retrieves the x-coordinate position.
      * @return an integer.
      */
     public int getX() {
@@ -322,7 +322,7 @@ public abstract class Sprite implements Comparable<Sprite> {
     }
 
     /**
-     * Gets the value of the y-coordinate position property.
+     * Retrieves the y-coordinate position.
      * @return an integer.
      */
     public int getY() {
@@ -330,7 +330,7 @@ public abstract class Sprite implements Comparable<Sprite> {
     }
 
     /**
-     * Gets the value of the width property.
+     * Retrieves the frame width.
      * @return a double.
      */
     public double getWidth() {
@@ -338,7 +338,7 @@ public abstract class Sprite implements Comparable<Sprite> {
     }
 
     /**
-     * Gets the value of the height property.
+     * Retrieves the frame height.
      * @return a double.
      */
     public double getHeight() {
@@ -346,7 +346,7 @@ public abstract class Sprite implements Comparable<Sprite> {
     }
 
     /**
-     * Gets the value of the scale property.
+     * Retrieves the frame scale.
      * @return an integer.
      */
     public int getScale() {
@@ -354,7 +354,7 @@ public abstract class Sprite implements Comparable<Sprite> {
     }
 
     /**
-     * Gets the value of the visible property.
+     * Retrieves whether this sprite should be visible.
      * @return a boolean.
      */
     public boolean getVisible() {
@@ -362,7 +362,7 @@ public abstract class Sprite implements Comparable<Sprite> {
     }
 
     /**
-     * Gets the value of the marked for removal property.
+     * Retrieves whether this sprite is marked for removal.
      * @return a boolean.
      */
     public boolean getRemoved() {
@@ -370,7 +370,7 @@ public abstract class Sprite implements Comparable<Sprite> {
     }
 
     /**
-     * Gets the value of the auto-reset frame sequence property.
+     * Retrieves whether the frame sequence resets automatically.
      * @return a boolean.
      */
     public boolean isFrameAutoReset() {
@@ -378,7 +378,8 @@ public abstract class Sprite implements Comparable<Sprite> {
     }
 
     /**
-     * Gets the value of the frame sequence done property.
+     * Retrieves whether the frame sequence is done.
+     * @implNote This is never true if this sprite resets automatically.
      * @return a boolean.
      */
     public boolean isFrameSequenceDone() {
@@ -386,7 +387,7 @@ public abstract class Sprite implements Comparable<Sprite> {
     }
 
     /**
-     * Sets the value of the x-coordinate position property.
+     * Specifies the value of the x-coordinate position property.
      * @param x an integer.
      */
     public void setX(int x) {
@@ -395,7 +396,7 @@ public abstract class Sprite implements Comparable<Sprite> {
     }
 
     /**
-     * Sets the value of the y-coordinate position property.
+     * Specifies the value of the y-coordinate position property.
      * @param y an integer.
      */
     public void setY(int y) {
@@ -420,7 +421,7 @@ public abstract class Sprite implements Comparable<Sprite> {
     }
 
     /**
-     * Sets the value of the image property.
+     * Specifies the associated image.
      * @param image an Image object.
      */
     protected void setImage(Image image) {
@@ -434,7 +435,7 @@ public abstract class Sprite implements Comparable<Sprite> {
     }
 
     /**
-     * Sets the value of the width property.
+     * Specifies the frame width.
      * @param val a double.
      */
     public void setWidth(double val) {
@@ -443,7 +444,7 @@ public abstract class Sprite implements Comparable<Sprite> {
     }
 
     /**
-     * Sets the value of the height property.
+     * Specifies the frame height.
      * @param val a double.
      */
     public void setHeight(double val) {
@@ -452,7 +453,7 @@ public abstract class Sprite implements Comparable<Sprite> {
     }
 
     /**
-     * Sets the value of the scale property.
+     * Specifies the frame scale.
      * @param scale an integer.
      */
     public void setScale(int scale) {
@@ -461,7 +462,7 @@ public abstract class Sprite implements Comparable<Sprite> {
     }
 
     /**
-     * Sets the value of the visible property.
+     * Specifies whether this sprite should be visible.
      * @param value a boolean.
      */
     public void setVisible(boolean value) {
@@ -491,7 +492,7 @@ public abstract class Sprite implements Comparable<Sprite> {
     }
 
     /**
-     * Sets the sprite's frame set.
+     * Specifies the frame set in use.
      * @param frameSet an Image object.
      * @param rows number of rows.
      * @param columns number of columns.
@@ -529,7 +530,8 @@ public abstract class Sprite implements Comparable<Sprite> {
     }
 
     /**
-     * Sets the sprite's frame set.
+     * Specifies the frame set in use and automatically computes for
+     * the source rectangle of each frame.
      * @param frameSet an Image object.
      * @param rows number of rows.
      * @param columns number of columns.
@@ -539,7 +541,7 @@ public abstract class Sprite implements Comparable<Sprite> {
     }
 
     /**
-     * Sets the sprite's frame set.
+     * Specifies the frame set in use (single frame only).
      * @param frameSet an Image object.
      */
     protected void setFrameSet(Image frameSet) {
@@ -547,7 +549,7 @@ public abstract class Sprite implements Comparable<Sprite> {
     }
 
     /**
-     * Sets the currently displayed frame.
+     * Specifies the index of the currently displayed frame.
      * @param frame an integer.
      */
     protected void setFrame(int frame) {
@@ -555,7 +557,7 @@ public abstract class Sprite implements Comparable<Sprite> {
     }
 
     /**
-     * Sets the value of the frame interval property.
+     * Specifies the interval between each frame.
      * @param interval a long.
      */
     protected void setFrameInterval(long interval) {
@@ -563,7 +565,7 @@ public abstract class Sprite implements Comparable<Sprite> {
     }
 
     /**
-     * Sets the ranges of the frame sequence.
+     * Specifies the ranges of the frame sequence.
      * @param min start range.
      * @param max end range.
      */
@@ -580,7 +582,7 @@ public abstract class Sprite implements Comparable<Sprite> {
     }
 
     /**
-     * Sets the value of the frame auto-reset property.
+     * Specifies whether the frame sequence resets automatically.
      * @param frameAutoReset a boolean.
      */
     protected void setFrameAutoReset(boolean frameAutoReset) {
@@ -588,7 +590,8 @@ public abstract class Sprite implements Comparable<Sprite> {
     }
 
     /**
-     * Sets the value of the bounds offset property.
+     * Specifies how the bounds should be adjusted, taking the frame
+     * sequence's base bounds into account.
      * @param boundsOffset an integer array.
      */
     protected void setBoundsOffset(int boundsOffset[]) {

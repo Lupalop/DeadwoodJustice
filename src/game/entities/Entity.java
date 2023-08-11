@@ -6,8 +6,8 @@ import javafx.geometry.Rectangle2D;
 import javafx.scene.canvas.GraphicsContext;
 
 /**
- * The abstract Entity class is a sprite that is linked to a level scene
- * and provides methods for handling collisions.
+ * This abstract class provides methods for checking collisions
+ * and association with a single level scene.
  * @author Francis Dominic Fajardo
  */
 public abstract class Entity extends Sprite {
@@ -33,7 +33,7 @@ public abstract class Entity extends Sprite {
     protected boolean hideWireframe;
 
     /**
-     * Creates an instance of the Entity class.
+     * Constructs an instance of Entity.
      * @param x the x-coordinate position.
      * @param y the y-coordinate position.
      * @param parent the LevelScene object owning this entity.
@@ -46,7 +46,7 @@ public abstract class Entity extends Sprite {
     }
 
     /**
-     * Creates an instance of the Entity class at position (0, 0).
+     * Constructs an instance of Entity positioned at the origin.
      * @param parent the LevelScene object owning this entity.
      */
     public Entity(LevelScene parent) {
@@ -181,7 +181,7 @@ public abstract class Entity extends Sprite {
     }
 
     /**
-     * Gets the level scene owning this entity.
+     * Retrieves the level scene owning this entity.
      * @return a LevelScene object.
      */
     protected LevelScene getParent() {
@@ -189,7 +189,7 @@ public abstract class Entity extends Sprite {
     }
 
     /**
-     * Gets the value of the collider property.
+     * Retrieves the rectangle representing the collider.
      */
     public Rectangle2D getCollider() {
         if (this.boundsDirty) {

@@ -15,28 +15,43 @@ import javafx.scene.shape.StrokeType;
 import javafx.scene.text.Text;
 
 /**
- * Credits scene.
+ * This class handles the Credits scene logic.
  * @author Francis Dominic Fajardo
  */
 public final class CreditsScene extends GameScene {
 
-    private static final String PREFIX_SUBHEADING = "-";
+    /** Script: heading prefix. */
     private static final String PREFIX_HEADING = "+";
+    /** Script: subheading prefix. */
+    private static final String PREFIX_SUBHEADING = "-";
+    /** The speed of the rolling credits text. */
+    private static final double ROLL_SPEED = 0.02f;
 
-    private static final double SCROLL_SPEED = 0.02f;
-
+    /** Control: back button. */
     private Button backButton;
-    private ArrayList<Text> textNodes;
-    private double textNodesHeight;
-    private double scrollPosition;
 
+    /** Dummy JavaFX Text nodes. */
+    private ArrayList<Text> textNodes;
+    /** Total height of all Text nodes. */
+    private double textNodesHeight;
+    /** Current position of the rolling credits text. */
+    private double rollPosition;
+
+    /**
+     * Constructs an empty instance of CreditsScene.
+     */
     public CreditsScene() {
         super();
         this.addMenuControls();
         UIUtils.handleReturnToMainMenu(this);
     }
 
+    /**
+     * Adds menu controls, processes the credits text file, and creates
+     * dummy text nodes for drawing.
+     */
     private void addMenuControls() {
+        // Create a back button.
         backButton = new Button(Tile.SIZE_MID, Tile.SIZE_MID,
                 Button.SIZE_ARROW_LEFT);
         backButton.attach(this);
@@ -47,7 +62,7 @@ public final class CreditsScene extends GameScene {
             }
         });
         this.levelMap.addOverlay(backButton);
-
+        // Read the credits text from file.
         List<String> creditsText;
         try {
             creditsText = Files.readAllLines(Game.getAssetAsPath("credits.txt"));
@@ -57,7 +72,8 @@ public final class CreditsScene extends GameScene {
             }
             return;
         }
-
+        // Process the credits text, create Text nodes, and determine
+        // their display features based on the prefix.
         textNodesHeight = 0;
         textNodes = new ArrayList<Text>();
         for (String textString : creditsText) {
@@ -90,14 +106,18 @@ public final class CreditsScene extends GameScene {
         }
     }
 
+    /**
+     * Draws the rolling credits text on the specified context.
+     * @param gc a GraphicsContext object.
+     */
     private void drawScrollingNodes(GraphicsContext gc) {
         double distanceFromTop = Game.WINDOW_MAX_HEIGHT;
 
         for (Text node : textNodes) {
-            scrollPosition -= SCROLL_SPEED;
+            rollPosition -= ROLL_SPEED;
             double x = (Game.WINDOW_MAX_WIDTH / 2)
                     - (node.getBoundsInLocal().getWidth() / 2);
-            double y = (distanceFromTop + scrollPosition);
+            double y = (distanceFromTop + rollPosition);
             // XXX: Setting the x/y coordinates of text nodes repeatedly
             // seems to cause performance issues, even with a fairly
             // capable PC. To workaround that, we'll just draw the text
@@ -118,8 +138,9 @@ public final class CreditsScene extends GameScene {
             distanceFromTop += node.getBoundsInLocal().getHeight();
         }
 
-        if (scrollPosition <= -(Game.WINDOW_MAX_HEIGHT + textNodesHeight)) {
-            scrollPosition = 0;
+        // Reset the roll position if we've reached the end.
+        if (rollPosition <= -(Game.WINDOW_MAX_HEIGHT + textNodesHeight)) {
+            rollPosition = 0;
         }
     }
 

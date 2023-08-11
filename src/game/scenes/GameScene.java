@@ -10,22 +10,38 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 
 /**
- * Base game scene.
+ * This abstract class provides common features for handling
+ * custom game scene logic, such as automatic creation of the
+ * inner JavaFX scene and canvas.
  * @author Francis Dominic Fajardo
  */
 public abstract class GameScene {
 
-    protected Group root;
+    /** JFX: Inner scene. */
     protected Scene scene;
+    /** JFX: root group node. */
+    protected Group root;
+    /** JFX: main canvas. */
     protected Canvas canvas;
+    /** JFX: graphics context from the main canvas. */
     protected GraphicsContext gc;
+    /** Timed action manager for actions associated with this scene. */
     protected TimedActionManager actions;
+    /** The game level map. */
     protected LevelMap levelMap;
 
+    /**
+     * Constructs an empty instance of GameScene.
+     */
     protected GameScene() {
         this.initialize(false);
     }
 
+    /**
+     * Initializes this game scene.
+     * @param excludeProps whether props should not be generated
+     *        in the associated level map.
+     */
     protected void initialize(boolean excludeProps) {
         this.root = new Group();
         this.scene = new Scene(root, Game.WINDOW_MAX_WIDTH,
@@ -42,21 +58,47 @@ public abstract class GameScene {
         this.levelMap.generateProps();
     }
 
+    /**
+     * Updates this scene's state.
+     * @param now The timestamp of the current frame given in nanoseconds.
+     */
     public abstract void update(long now);
+
+    /**
+     * Draws this scene.
+     * @param now
+     */
     public abstract void draw(long now);
 
+    /**
+     * Retrieves the inner JavaFX scene.
+     * @return a Scene object.
+     */
     public Scene getInner() {
         return this.scene;
     }
 
+    /**
+     * Retrieves the root node of the inner JavaFX scene.
+     * @return a Group object.
+     */
     public Group getRoot() {
         return this.root;
     }
 
+    /**
+     * Retrieves the timed action manager associated with this scene.
+     * @return a TimedActionManager object.
+     */
     public TimedActionManager getActions() {
         return this.actions;
     }
 
+    /**
+     * Retrieves the background music to be played when the game
+     * switches to this scene.
+     * @return a String object.
+     */
     public abstract String getBGM();
 
 }

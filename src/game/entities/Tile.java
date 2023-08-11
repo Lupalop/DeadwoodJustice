@@ -5,7 +5,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 
 /**
- * The Tile class is used for drawing tiles with the provided
+ * This class is used for drawing tiles with the specified
  * tileset on the game canvas.
  * @author Francis Dominic Fajardo
  */
@@ -30,7 +30,7 @@ public final class Tile {
     private Sprite tileset;
 
     /**
-     * Creates a new instance of the Tile class.
+     * Constructs an instance of Tile.
      * @param tilesetPath a String path to the tileset asset.
      * @param rows number of rows.
      * @param columns number of columns.
@@ -45,7 +45,7 @@ public final class Tile {
     }
 
     /**
-     * Creates a new instance of the Tile class.
+     * Constructs an instance of Tile at the default scale.
      * @param tilesetPath a String path to the tileset asset.
      * @param rows number of rows.
      * @param columns number of columns.

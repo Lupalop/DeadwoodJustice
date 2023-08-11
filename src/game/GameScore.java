@@ -1,11 +1,11 @@
 package game;
 
 /**
- * The PlayerScore class stores information on the current high score
- * entry, which includes the name, score, and game difficulty.
+ * This class stores information on the current high score entry,
+ * which includes the name, score, and game difficulty.
  * @author Francis Dominic Fajardo
  */
-public class PlayerScore {
+public class GameScore {
 
     /** The player's name. */
     private String name;
@@ -15,19 +15,19 @@ public class PlayerScore {
     private int difficulty;
 
     /**
-     * Creates a new instance of the PlayerScore class.
+     * Constructs an instance of PlayerScore.
      * @param name the player's name.
      * @param score the player's score.
      * @param difficulty the game difficulty.
      */
-    public PlayerScore(String name, int score, int difficulty) {
+    public GameScore(String name, int score, int difficulty) {
         this.name = name;
         this.score = score;
         this.difficulty = difficulty;
     }
 
     /**
-     * Gets the value of the name property.
+     * Retrieves the player name assigned to this entry.
      * @return a String.
      */
     public String getName() {
@@ -35,7 +35,7 @@ public class PlayerScore {
     }
 
     /**
-     * Gets the value of the score property.
+     * Retrieves the score assigned to this entry.
      * @return an integer.
      */
     public int getScore() {
@@ -43,7 +43,7 @@ public class PlayerScore {
     }
 
     /**
-     * Gets the value of the difficulty property.
+     * Retrieves the difficulty assigned to this entry.
      * @return an integer representing difficulty.
      */
     public int getDifficulty() {

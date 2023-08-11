@@ -5,18 +5,25 @@ import game.scenes.LevelScene;
 import javafx.scene.image.Image;
 
 /**
- * The LampPowerup class represents double-life power-up.
+ * This class represents the double-life power-up.
  * @author Francis Dominic Fajardo
  */
 public final class LampPowerup extends Powerup {
 
+    /** Power-up ID. */
     public static final int ID = 0;
-
+    /** Frame set: power-up. */
     private static final Image FRAMESET = new Image(
             Game.getAsset("pw_lamp.png"));
-
+    /** Tuning: strength cap on hard difficulty. */
     private static final int STRENGTH_MAX_ON_HARD = 300;
 
+    /**
+     * Constructs an instance of LampPowerup.
+     * @param x the x-coordinate position.
+     * @param y the y-coordinate position.
+     * @param parent the LevelScene object owning this entity.
+     */
     public LampPowerup(int x, int y, LevelScene parent) {
         super(x, y, parent);
         this.setImage(FRAMESET);
@@ -32,7 +39,7 @@ public final class LampPowerup extends Powerup {
                     : addedStrength;
         }
         this.getParent().getOutlaw().increaseStrength(addedStrength);
-        this.getParent().consumePowerup(ID);
+        this.getParent().trackCollectedPowerup(ID);
     }
 
 }

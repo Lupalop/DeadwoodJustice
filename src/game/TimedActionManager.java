@@ -5,8 +5,8 @@ import java.util.Collection;
 import java.util.concurrent.Callable;
 
 /**
- * The TimedActionManager class is responsible for adding,
- * removing, updating, starting, and stopping timed actions.
+ * This class is responsible for adding, removing, updating,
+ * starting, and stopping timed actions.
  * @author Francis Dominic Fajardo
  */
 public class TimedActionManager {
@@ -23,7 +23,7 @@ public class TimedActionManager {
     private boolean enabled;
 
     /**
-     * Creates a new instance of the TimedActionManager class.
+     * Constructs an empty instance of TimedActionManager.
      */
     public TimedActionManager() {
         this.actions = new ArrayList<TimedAction>();

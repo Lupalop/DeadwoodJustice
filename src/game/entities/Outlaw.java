@@ -16,7 +16,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 
 /**
- * The Outlaw class is a sprite representing the player's character
+ * This class is a sprite representing the player's character
  * in the game and is responsible for movement and shooting.
  * @author Francis Dominic Fajardo
  */
@@ -52,11 +52,14 @@ public final class Outlaw extends Entity {
                     28, 33,
                     56, 69,
                     0, 5);
-    /** Movement speed. */
+
+    /** Tuning: base movement speed. */
     private static final int BASE_SPEED = 10;
+
     /** Path to the outlaw death sound effect. */
     private static final String SFX_DEAD_OUTLAW = "sfx_dead_outlaw.wav";
-    /** The outlaw's health/strength. */
+
+    /** State: health/strength. */
     private int strength;
     /** State: alive. */
     private boolean alive;
@@ -68,17 +71,18 @@ public final class Outlaw extends Entity {
     private boolean blockedFromShooting;
     /** Active directions. */
     private byte activeDirections;
+
+    /** Passability of surrounding tiles. */
+    private boolean[] passability;
+    /** Sprite frame range. */
+    private FrameRange frameRange;
     /** Effect: power-up. */
     private Effect powerupEffect;
     /** Effect: immortality. */
     private Effect immortalityEffect;
-    /** Entity passability. */
-    private boolean[] passability;
-    /** Sprite frame range. */
-    private FrameRange frameRange;
 
     /**
-     * Creates a new instance of the Outlaw class.
+     * Constructs an instance of Outlaw.
      * @param x the x-coordinate position.
      * @param y the y-coordinate position.
      * @param parent the LevelScene object owning this entity.
@@ -186,7 +190,7 @@ public final class Outlaw extends Entity {
     }
 
     /**
-     * Shoots with the gun.
+     * Induces this character to shoot with a gun.
      */
     public void shoot() {
         // Can't shoot if this entity is dead.
@@ -201,7 +205,7 @@ public final class Outlaw extends Entity {
     }
 
     /**
-     * Increases the outlaw's strength.
+     * Increases this character's strength.
      * @param value a positive integer.
      */
     public void increaseStrength(int value) {
@@ -215,7 +219,7 @@ public final class Outlaw extends Entity {
     }
 
     /**
-     * Reduces the outlaw's strength.
+     * Reduces this character's strength.
      * @param value a positive integer.
      */
     public void reduceStrength(int value) {
@@ -399,7 +403,7 @@ public final class Outlaw extends Entity {
     }
 
     /**
-     * Gets the value of the strength property.
+     * Retrieves the value of this character's strength.
      * @return an integer.
      */
     public int getStrength() {
@@ -407,7 +411,7 @@ public final class Outlaw extends Entity {
     }
 
     /**
-     * Gets the value of the alive property.
+     * Retrieves whether this character is alive.
      * @return a boolean.
      */
     public boolean isAlive() {
@@ -415,7 +419,7 @@ public final class Outlaw extends Entity {
     }
 
     /**
-     * Gets the value of the dying property.
+     * Retrieves whether this character is dying.
      * @return a boolean.
      */
     public boolean isDying() {
@@ -423,7 +427,7 @@ public final class Outlaw extends Entity {
     }
 
     /**
-     * Gets the value of the immortal property.
+     * Retrieves whether this character is immortal.
      * @return a boolean.
      */
     public boolean isImmortal() {
@@ -431,7 +435,7 @@ public final class Outlaw extends Entity {
     }
 
     /**
-     * Sets the value of the immortal property.
+     * Specifies whether this character is immortal.
      * @param immortal a boolean.
      */
     public void setImmortal(boolean immortal) {
@@ -445,7 +449,7 @@ public final class Outlaw extends Entity {
     }
 
     /**
-     * Sets the frame range of this sprite.
+     * Specifies the frame range of this sprite.
      * @param frameRange a FrameRange object.
      */
     protected void setFrameRange(FrameRange frameRange) {

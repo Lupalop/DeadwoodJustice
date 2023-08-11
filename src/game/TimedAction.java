@@ -3,8 +3,8 @@ package game;
 import java.util.concurrent.Callable;
 
 /**
- * The TimedAction class represents tasks scheduled to be executed
- * once or more than one time in a set interval.
+ * This class represents tasks scheduled to be executed once
+ * or more than one time in a set interval.
  * @author Francis Dominic Fajardo
  */
 public class TimedAction {
@@ -25,7 +25,7 @@ public class TimedAction {
     private TimedActionManager owner;
 
     /**
-     * Creates a new instance of the TimedAction class.
+     * Constructs an instance of TimedAction.
      * @param interval the time to wait before the task is invoked.
      * @param autoReset determines if the timer should reset after completion.
      * @param elapsed task invoked when time is up.
@@ -116,7 +116,7 @@ public class TimedAction {
     }
 
     /**
-     * Gets the value of the closed property.
+     * Returns whether the timer was already closed.
      * @return a boolean.
      */
     public boolean isClosed() {

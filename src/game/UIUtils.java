@@ -15,8 +15,8 @@ import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
 
 /**
- * The UIUtils is a utility class containing static features that are
- * useful for everything UI-related.
+ * This utility class contains static features that are useful for
+ * managing the game's user interface, from standard colors to fonts.
  * @author Francis Dominic Fajardo
  */
 public final class UIUtils {

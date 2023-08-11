@@ -19,34 +19,56 @@ import game.entities.props.WagonProp;
 import javafx.scene.canvas.GraphicsContext;
 
 /**
- *
+ * This class represents the maps used for each level and stores
+ * information about tiles, props, and entities, as well as the
+ * randomized generation of each map.
  * @author Francis Dominic Fajardo
  */
 public class LevelMap {
 
+    /** Tile: desert tile map. */
     private static final Tile TILE_DESERT =
             new Tile("tilemap_desert.png", 3, 4, 1);
 
+    /** Tile Map Generator constants. **/
+    /** Used to determine if a certain map feature should be present. */
     private static final int TILEGEN_MATCH = 1;
+    /** Frequency: current tile has either grass or rock. */
     private static final int TILEGEN_FREQ_GRASS_OR_ROCK = 6;
+    /** Frequency: current tile has a cactus. */
     private static final int TILEGEN_FREQ_CACTUS = 50;
+    /** Frequency: current tile has a prop. */
     private static final int TILEGEN_FREQ_PROPS = 150;
 
+    /** Transparency of Layer 1. */
     private static final double TILE_LAYER1_ALPHA = 0.5;
 
+    /** Tile map information: Layer 1 */
     private int[] tileLayer1;
+    /** Tile map information: Layer 2 */
     private int[] tileLayer2;
 
+    /** Entities in the current level. */
     private ArrayList<Entity> entities;
+    /** Overlay sprites in the current level. */
     private ArrayList<Sprite> overlays;
+    /** Generated props in the current level. */
     private ArrayList<Prop> generatedProps;
 
+    /** List iterator for entities. */
     private ListIterator<Entity> entityIterator;
+    /** List iterator for overlay sprites. */
     private ListIterator<Sprite> overlayIterator;
 
+    /** Indicates if tile generation is done. */
     private boolean tilesGenerated;
+    /** Indicates if prop generation is done. */
     private boolean propsGenerated;
 
+    /**
+     * Constructs an instance of LevelMap.
+     * @param excludeProps whether props should not be generated.
+     */
     public LevelMap(boolean excludeProps) {
         this.tilesGenerated = false;
         this.propsGenerated = excludeProps;
@@ -59,10 +81,17 @@ public class LevelMap {
         this.overlayIterator = this.overlays.listIterator();
     }
 
+    /**
+     * Constructs an instance of LevelMap with randomly-generated props.
+     */
     public LevelMap() {
         this(false);
     }
 
+    /**
+     * Generates map tiles.
+     * @param regenerate whether to discard previously generated tiles.
+     */
     public void generate(boolean regenerate) {
         if (this.tilesGenerated && !regenerate) {
             return;
@@ -101,10 +130,17 @@ public class LevelMap {
         this.tilesGenerated = true;
     }
 
+    /**
+     * Generates map tiles.
+     */
     public void generate() {
         generate(false);
     }
 
+    /**
+     * Generates map props.
+     * @param regenerate whether to discard previously generated props.
+     */
     public void generateProps(boolean regenerate) {
         if (this.propsGenerated && !regenerate) {
             return;
@@ -140,56 +176,17 @@ public class LevelMap {
         this.propsGenerated = true;
     }
 
+    /**
+     * Generates map props.
+     */
     public void generateProps() {
         generateProps(false);
     }
 
-    public void draw(GraphicsContext gc) {
-        this.drawTiles(gc);
-        this.drawSprites(gc);
-    }
-
-    private void drawTiles(GraphicsContext gc) {
-        if (!this.tilesGenerated) {
-            return;
-        }
-
-        int tileX = 0;
-        int tileY = 0;
-        int tileId = 0;
-        for (int i = 0; i < Tile.ALL_VERTICAL; i++) {
-            tileY = Tile.SIZE_MID * i;
-            for (int j = 0; j < Tile.ALL_HORIZONTAL; j++) {
-                tileX = Tile.SIZE_MID * j;
-                // Draw from the desert tileset.
-                gc.save();
-                gc.setGlobalAlpha(TILE_LAYER1_ALPHA);
-                TILE_DESERT.draw(
-                        gc, tileX, tileY, tileLayer1[tileId]);
-                gc.restore();
-                if (tileLayer2[tileId] != 0) {
-                    TILE_DESERT.draw(
-                            gc, tileX, tileY, tileLayer2[tileId]);
-                }
-                tileId++;
-            }
-        }
-    }
-
-    private void drawSprites(GraphicsContext gc) {
-        this.entityIterator = this.entities.listIterator();
-        while (this.entityIterator.hasNext()) {
-            Entity entity = this.entityIterator.next();
-            entity.draw(gc);
-        }
-
-        this.overlayIterator = this.overlays.listIterator();
-        while (this.overlayIterator.hasNext()) {
-            Sprite sprite = this.overlayIterator.next();
-            sprite.draw(gc);
-        }
-    }
-
+    /**
+     * Updates entities and overlay sprites.
+     * @param now The timestamp of the current frame given in nanoseconds.
+     */
     public void update(long now) {
         // Ensure sprites are sorted by y-order.
         Collections.sort(this.entities);
@@ -215,6 +212,54 @@ public class LevelMap {
         }
     }
 
+    /**
+     * Draws tile layers, entities, and overlay sprites.
+     * @param gc a GraphicsContext object.
+     */
+    public void draw(GraphicsContext gc) {
+        // Draw the tile layers only if they're available.
+        if (this.tilesGenerated) {
+            int tileX = 0;
+            int tileY = 0;
+            int tileId = 0;
+            for (int i = 0; i < Tile.ALL_VERTICAL; i++) {
+                tileY = Tile.SIZE_MID * i;
+                for (int j = 0; j < Tile.ALL_HORIZONTAL; j++) {
+                    tileX = Tile.SIZE_MID * j;
+                    // Draw from the desert tileset.
+                    gc.save();
+                    gc.setGlobalAlpha(TILE_LAYER1_ALPHA);
+                    TILE_DESERT.draw(
+                            gc, tileX, tileY, tileLayer1[tileId]);
+                    gc.restore();
+                    if (tileLayer2[tileId] != 0) {
+                        TILE_DESERT.draw(
+                                gc, tileX, tileY, tileLayer2[tileId]);
+                    }
+                    tileId++;
+                }
+            }
+        }
+        // Draw all entities.
+        this.entityIterator = this.entities.listIterator();
+        while (this.entityIterator.hasNext()) {
+            Entity entity = this.entityIterator.next();
+            entity.draw(gc);
+        }
+        // Draw all overlay sprites.
+        this.overlayIterator = this.overlays.listIterator();
+        while (this.overlayIterator.hasNext()) {
+            Sprite sprite = this.overlayIterator.next();
+            sprite.draw(gc);
+        }
+    }
+
+    /**
+     * Retrieves the passability state of each side bordering the entity
+     * at its current position.
+     * @param source an Entity object.
+     * @return a boolean array indicating the passability state.
+     */
     public boolean[] getPassability(Entity source) {
         boolean passability[] = new boolean[4];
         passability[Entity.SIDE_LEFT] =
@@ -255,18 +300,34 @@ public class LevelMap {
         return passability;
     }
 
+    /**
+     * Retrieves the value of the done generating property.
+     * @return a boolean indicating if tile generation is done.
+     */
     public boolean isDoneGenerating() {
         return tilesGenerated;
     }
 
+    /**
+     * Retrieves the list of entities tracked by this level map.
+     * @return a list of entities.
+     */
     public List<Entity> getEntities() {
         return Collections.unmodifiableList(this.entities);
     }
 
+    /**
+     * Adds an overlay sprite.
+     * @param sprite a Sprite object.
+     */
     public synchronized void addOverlay(Sprite sprite) {
         this.overlayIterator.add(sprite);
     }
 
+    /**
+     * Adds an entity.
+     * @param entity an Entity object.
+     */
     public synchronized void addEntity(Entity entity) {
         this.entityIterator.add(entity);
     }

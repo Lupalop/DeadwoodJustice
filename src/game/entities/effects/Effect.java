@@ -3,25 +3,40 @@ package game.entities.effects;
 import game.entities.Sprite;
 
 /**
- * The Effect class represents animated effects on in-game characters.
+ * This class represents an animated sprite that either follows
+ * another Sprite object or is at a fixed position.
  * @author Francis Dominic Fajardo
  */
 public abstract class Effect extends Sprite {
 
+    /** The sprite followed by this effect. */
     private Sprite spriteTarget;
 
-    public Effect(int xPos, int yPos) {
-        super(xPos, yPos);
+    /**
+     * Constructs an instance of Effect.
+     * @param x the x-coordinate position.
+     * @param y the y-coordinate position.
+     */
+    public Effect(int x, int y) {
+        super(x, y);
         initialize();
     }
 
+    /**
+     * Constructs an instance of Effect that follows
+     * the specified Sprite.
+     * @param spriteTarget the sprite to be followed.
+     */
     public Effect(Sprite spriteTarget) {
         super();
         this.spriteTarget = spriteTarget;
         initialize();
     }
 
-    public abstract void initialize();
+    /**
+     * Initializes this Effect.
+     */
+    protected abstract void initialize();
 
     @Override
     public int getX() {
