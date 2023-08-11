@@ -121,12 +121,12 @@ public abstract class Mob extends Entity {
         this.deathEffect = null;
         this.zeroSpeedEffect = null;
 
-        // Set-up timed shooting action if this mob is allowed to shoot.
+        // Create an action timer for shooting if it's allowed.
         if (this.shooter) {
             // Shoot every X seconds.
             long shootInterval = TimeUnit.SECONDS.toNanos(Game.RNG.nextInt(
                     MOB_SHOOT_INTERVAL_MIN, MOB_SHOOT_INTERVAL_MAX + 1));
-            this.getParent().getActions().add(shootInterval, true, new Callable<Boolean>() {
+            this.getParent().getTimers().add(shootInterval, true, new Callable<Boolean>() {
                 @Override
                 public Boolean call() {
                     if (isAlive() && !getParent().isZeroSpeed()) {

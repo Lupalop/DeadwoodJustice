@@ -164,7 +164,7 @@ public final class StatusOverlay {
 
         this.hudOffsetY = HUD_OFFSET_Y;
         // Prepare HUD slide animation.
-        scene.getActions().add(UI_SLIDE_INTERVAL, false, new Callable<Boolean>() {
+        scene.getTimers().add(UI_SLIDE_INTERVAL, false, new Callable<Boolean>() {
             @Override
             public Boolean call() {
                 if (hudOffsetY == 0) {

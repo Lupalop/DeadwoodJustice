@@ -3,9 +3,9 @@ package game.scenes;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
+import game.ActionTimer;
 import game.Game;
 import game.LevelMap;
-import game.TimedAction;
 import game.UIUtils;
 import game.entities.Button;
 import game.entities.Mote;
@@ -99,11 +99,11 @@ public final class LevelScene extends GameScene {
     /** State: number of killed mobs. */
     private int mobKillCount;
     /** State: number of collected power-ups. */
-    private int powerupsCount[];
-    /** State: action array for keeping track of active power-ups. */
-    private TimedAction[] powerupsAction;
-    /** State: action handling how long a level is. */
-    private TimedAction levelTimer;
+    private int powerupCount[];
+    /** State: action timer array for keeping track of active power-ups. */
+    private ActionTimer[] powerupTimers;
+    /** State: action timer handling how long a level is. */
+    private ActionTimer levelTimer;
 
     /** Event: mobs move at maximum speed. */
     private boolean maxSpeed;
@@ -159,8 +159,8 @@ public final class LevelScene extends GameScene {
         this.statusOverlay = new StatusOverlay(this);
 
         this.mobKillCount = 0;
-        this.powerupsCount = new int[Powerup.TOTAL_POWERUPS];
-        this.powerupsAction = new TimedAction[Powerup.TOTAL_POWERUPS];
+        this.powerupCount = new int[Powerup.TOTAL_POWERUPS];
+        this.powerupTimers = new ActionTimer[Powerup.TOTAL_POWERUPS];
 
         this.maxSpeed = false;
         this.slowSpeed = false;
@@ -191,7 +191,7 @@ public final class LevelScene extends GameScene {
      */
     private void initializeActions() {
         // Action: mark level done if time's up.
-        this.levelTimer = actions.add(this.levelEndTime, false, new Callable<Boolean>() {
+        this.levelTimer = timers.add(this.levelEndTime, false, new Callable<Boolean>() {
             @Override
             public Boolean call() {
                 if (bossMob != null
@@ -205,7 +205,7 @@ public final class LevelScene extends GameScene {
         });
         // Action: spawn boss.
         boolean spawnBossMultiple = (this.difficulty == DIFFICULTY_HARD);
-        actions.add(LEVEL_BOSS_TIME, spawnBossMultiple, new Callable<Boolean>() {
+        timers.add(LEVEL_BOSS_TIME, spawnBossMultiple, new Callable<Boolean>() {
             @Override
             public Boolean call() {
                 if (bossMob == null || !bossMob.isAlive()) {
@@ -221,7 +221,7 @@ public final class LevelScene extends GameScene {
             }
         });
         // Action: spawn mobs every 3 seconds.
-        actions.add(MOB_SPAWN_INTERVAL, true, new Callable<Boolean>() {
+        timers.add(MOB_SPAWN_INTERVAL, true, new Callable<Boolean>() {
             @Override
             public Boolean call() {
                 spawnMobs(mobCountPerInterval);
@@ -229,13 +229,13 @@ public final class LevelScene extends GameScene {
             }
         });
         // Speed up mob movement every 15 seconds.
-        actions.add(MOB_MAX_SPEED_INTERVAL, true, new Callable<Boolean>() {
+        timers.add(MOB_MAX_SPEED_INTERVAL, true, new Callable<Boolean>() {
             @Override
             public Boolean call() {
                 maxSpeed = true;
                 // Reset back to normal speed after 3 seconds if we've
                 // sped up mob movement.
-                actions.add(MOB_MAX_SPEED_END_INTERVAL, false, new Callable<Boolean>() {
+                timers.add(MOB_MAX_SPEED_END_INTERVAL, false, new Callable<Boolean>() {
                     @Override
                     public Boolean call() {
                         maxSpeed = false;
@@ -246,7 +246,7 @@ public final class LevelScene extends GameScene {
             }
         });
         // Spawn power-ups every 10 seconds.
-        actions.add(this.powerupSpawnInterval, true, new Callable<Boolean>() {
+        timers.add(this.powerupSpawnInterval, true, new Callable<Boolean>() {
             @Override
             public Boolean call() {
                 spawnPowerups();
@@ -257,7 +257,7 @@ public final class LevelScene extends GameScene {
 
     @Override
     public void update(long now) {
-        this.actions.update(now);
+        this.timers.update(now);
         this.statusOverlay.update(now);
         if (this.levelDone || this.levelPaused) {
             return;
@@ -364,15 +364,15 @@ public final class LevelScene extends GameScene {
      * Applies the specified power-up action and replaces the existing
      * tracked power-up action if it already exists to avoid conflicts.
      * @param id the power-up ID (constant).
-     * @param action a TimedAction from a power-up.
+     * @param timer an ActionTimer from a power-up.
      */
-    private void replacePowerupAction(int id, TimedAction action) {
-        TimedAction previousAction = this.powerupsAction[id];
+    private void replacePowerupTimer(int id, ActionTimer timer) {
+        ActionTimer previousAction = this.powerupTimers[id];
         // Close the previous same power-up action if it still exists.
         if (previousAction != null) {
             previousAction.close();
         }
-        this.powerupsAction[id] = action;
+        this.powerupTimers[id] = timer;
     }
 
     /**
@@ -380,8 +380,8 @@ public final class LevelScene extends GameScene {
      * @param powerupTimeout duration of the power-up's effect.
      */
     public void applyImmortality(long powerupTimeout) {
-        replacePowerupAction(HayPowerup.ID,
-                actions.add(powerupTimeout, false, new Callable<Boolean>() {
+        replacePowerupTimer(HayPowerup.ID,
+                timers.add(powerupTimeout, false, new Callable<Boolean>() {
                     @Override
                     public Boolean call() {
                         getOutlaw().setImmortal(false);
@@ -396,8 +396,8 @@ public final class LevelScene extends GameScene {
      * @param powerupTimeout duration of the power-up's effect.
      */
     public void applySlowMobSpeed(long powerupTimeout) {
-        replacePowerupAction(WheelPowerup.ID,
-                actions.add(powerupTimeout, false, new Callable<Boolean>() {
+        replacePowerupTimer(WheelPowerup.ID,
+                timers.add(powerupTimeout, false, new Callable<Boolean>() {
                     @Override
                     public Boolean call() {
                         slowSpeed = false;
@@ -412,8 +412,8 @@ public final class LevelScene extends GameScene {
      * @param powerupTimeout duration of the power-up's effect.
      */
     public void applyZeroMobSpeed(long powerupTimeout) {
-        replacePowerupAction(SnakeOilPowerup.ID,
-                actions.add(powerupTimeout, false, new Callable<Boolean>() {
+        replacePowerupTimer(SnakeOilPowerup.ID,
+                timers.add(powerupTimeout, false, new Callable<Boolean>() {
                     @Override
                     public Boolean call() {
                         zeroSpeed = false;
@@ -432,7 +432,7 @@ public final class LevelScene extends GameScene {
             return;
         }
 
-        this.powerupsCount[id]++;
+        this.powerupCount[id]++;
     }
 
     /**
@@ -440,9 +440,9 @@ public final class LevelScene extends GameScene {
      */
     public void togglePaused() {
         if (!levelPaused) {
-            getActions().stopAll();
+            getTimers().stopAll();
         } else {
-            getActions().startAll();
+            getTimers().startAll();
         }
         statusOverlay.togglePausedVisibility();
         levelPaused = !levelPaused;
@@ -557,7 +557,7 @@ public final class LevelScene extends GameScene {
             return -1;
         }
 
-        return this.powerupsCount[id];
+        return this.powerupCount[id];
     }
 
     /**
@@ -615,7 +615,7 @@ public final class LevelScene extends GameScene {
         if (this.levelDone) {
             return;
         }
-        this.getActions().removeAll();
+        this.getTimers().removeAll();
         this.removePauseHandler();
         if (Game.getHighScoreIndex(score) != -1) {
             this.statusOverlay.toggleNameInputVisibility();

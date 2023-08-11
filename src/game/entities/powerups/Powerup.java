@@ -35,7 +35,7 @@ public abstract class Powerup extends Entity {
     public Powerup(int x, int y, LevelScene parent) {
         super(x, y, parent);
 
-        parent.getActions().add(POWERUP_TIMEOUT, false, new Callable<Boolean>() {
+        parent.getTimers().add(POWERUP_TIMEOUT, false, new Callable<Boolean>() {
             @Override
             public Boolean call() {
                 collected = true;

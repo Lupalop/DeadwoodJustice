@@ -120,7 +120,7 @@ public final class HighScoresScene extends GameScene {
     @Override
     public void update(long now) {
         this.levelMap.update(now);
-        this.actions.update(now);
+        this.timers.update(now);
 
         headerProp.update(now);
         backButton.update(now);

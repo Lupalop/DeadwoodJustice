@@ -148,7 +148,7 @@ public final class MainMenuScene extends GameScene {
         });
 
         // Change the background level map every X seconds.
-        this.actions.add(MAP_SWITCH_INTERVAL, true, new Callable<Boolean>() {
+        this.timers.add(MAP_SWITCH_INTERVAL, true, new Callable<Boolean>() {
             @Override
             public Boolean call() {
                 levelMap.generate(true);
@@ -194,7 +194,7 @@ public final class MainMenuScene extends GameScene {
     @Override
     public void update(long now) {
         this.levelMap.update(now);
-        this.actions.update(now);
+        this.timers.update(now);
     }
 
     @Override

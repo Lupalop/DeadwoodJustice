@@ -7,7 +7,7 @@ import java.util.concurrent.Callable;
  * or more than one time in a set interval.
  * @author Francis Dominic Fajardo
  */
-public class TimedAction {
+public class ActionTimer {
 
     /** Time elapsed before the set interval. */
     private long elapsedTime;
@@ -22,17 +22,17 @@ public class TimedAction {
     /** The task to be invoked when time is up. */
     private Callable<Boolean> elapsed;
     /** The manager owning this timer. */
-    private TimedActionManager owner;
+    private ActionTimerManager owner;
 
     /**
-     * Constructs an instance of TimedAction.
+     * Constructs an instance of ActionTimer.
      * @param interval the time to wait before the task is invoked.
      * @param autoReset determines if the timer should reset after completion.
      * @param elapsed task invoked when time is up.
      * @param owner the manager owning this timer.
      */
-    public TimedAction(long interval, boolean autoReset,
-            Callable<Boolean> elapsed, TimedActionManager owner) {
+    public ActionTimer(long interval, boolean autoReset,
+            Callable<Boolean> elapsed, ActionTimerManager owner) {
         this.elapsedTime = 0;
         this.interval = interval;
         this.autoReset = autoReset;
@@ -43,7 +43,7 @@ public class TimedAction {
     }
 
     /**
-     * Updates the state of this timed action.
+     * Updates the state of this timer.
      * @param deltaTime time difference between update calls.
      */
     void update(long deltaTime) {
@@ -66,7 +66,7 @@ public class TimedAction {
                 if (Game.DEBUG_MODE) {
                     e.printStackTrace();
                 }
-                // Just remove the timed action if we encounter an exception.
+                // Just remove the action timer if we encounter an exception.
                 removeOrReset = true;
             }
 
@@ -83,14 +83,14 @@ public class TimedAction {
     }
 
     /**
-     * Starts the timed action.
+     * Starts the timer.
      */
     public void start() {
         this.enabled = true;
     }
 
     /**
-     * Stops the timed action.
+     * Stops the timer.
      */
     public void stop() {
         this.enabled = false;
@@ -105,7 +105,7 @@ public class TimedAction {
     }
 
     /**
-     * Closes the timed action and prevents it from running again.
+     * Closes the timer and prevents it from running again.
      */
     public void close() {
         if (this.closed) {

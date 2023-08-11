@@ -123,7 +123,7 @@ public final class Mote extends Sprite {
      * @param level the LevelScene object containing this mote.
      */
     public void show(LevelScene level) {
-        level.getActions().add(MOTE_POPUP_INTERVAL, false, new Callable<Boolean>() {
+        level.getTimers().add(MOTE_POPUP_INTERVAL, false, new Callable<Boolean>() {
             @Override
             public Boolean call() {
                 // Schedule the removal of this mote once we're fully
@@ -145,7 +145,7 @@ public final class Mote extends Sprite {
      * @param level the LevelScene object containing this mote.
      */
     private void kill(LevelScene level) {
-        level.getActions().add(MOTE_DEATH_INTERVAL, false, new Callable<Boolean>() {
+        level.getTimers().add(MOTE_DEATH_INTERVAL, false, new Callable<Boolean>() {
             @Override
             public Boolean call() {
                 remove();

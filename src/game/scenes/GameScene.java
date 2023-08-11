@@ -1,8 +1,8 @@
 package game.scenes;
 
+import game.ActionTimerManager;
 import game.Game;
 import game.LevelMap;
-import game.TimedActionManager;
 import game.UIUtils;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -25,8 +25,8 @@ public abstract class GameScene {
     protected Canvas canvas;
     /** JFX: graphics context from the main canvas. */
     protected GraphicsContext gc;
-    /** Timed action manager for actions associated with this scene. */
-    protected TimedActionManager actions;
+    /** Action timer manager for timers associated with this scene. */
+    protected ActionTimerManager timers;
     /** The game level map. */
     protected LevelMap levelMap;
 
@@ -52,7 +52,7 @@ public abstract class GameScene {
         this.gc = canvas.getGraphicsContext2D();
         this.gc.setImageSmoothing(false);
 
-        this.actions = new TimedActionManager();
+        this.timers = new ActionTimerManager();
         this.levelMap = new LevelMap(excludeProps);
         this.levelMap.generate();
         this.levelMap.generateProps();
@@ -87,11 +87,11 @@ public abstract class GameScene {
     }
 
     /**
-     * Retrieves the timed action manager associated with this scene.
-     * @return a TimedActionManager object.
+     * Retrieves the action timer manager associated with this scene.
+     * @return an ActionTimerManager object.
      */
-    public TimedActionManager getActions() {
-        return this.actions;
+    public ActionTimerManager getTimers() {
+        return this.timers;
     }
 
     /**
