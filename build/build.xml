@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project name="javafx-build" default="do-deploy">
+    <!-- Application Details -->
+    <property name="app.vendor" value="Lupálop Games"/>
+    <property name="app.title" value="Deadwood Justice"/>
+    <property name="app.version" value="1.0.0"/>
+    <property name="app.mainClass" value="game.Main"/>
+    <property name="app.outJar" value="dwjustice.jar"/>
+
+    <!-- Packaging -->
+    <property name="app.package.license" value="../LICENSE"/>
+    <property name="app.package.icon" value="ICON.ico"/>
+    <property name="app.package.flags.win"
+        value="--win-dir-chooser --win-menu --win-per-user-install --win-shortcut --win-menu-group &quot;${app.title}&quot;"/>
+    <property name="app.package.type.win" value="msi"/>
+    <property name="app.package.type.unix" value=""/>
+    <property name="app.package.type.mac" value=""/>
+
+    <!-- Directories -->
+    <property name="dir.sdk.javafx" value="C:\dev\java\jfx20"/>
+    <property name="dir.bin" value="../bin"/>
+    <property name="dir.dist" value="dist"/>
+    <property name="dir.dist.jar" value="${dir.dist}/jar"/>
+    <property name="dir.dist.jmods" value="${dir.dist}/jmods"/>
+    <property name="dir.dist.runtime" value="${dir.dist}/rt-image"/>
+    <property name="dir.dist.package" value="${dir.dist}/package"/>
+
+    <!-- Conditional properties -->
+    <condition property="app.package.license.arg"
+               value=""
+               else="--license-file ${app.package.license}">
+        <or>
+            <equals arg1="${app.package.license}" arg2=""/>
+            <not>
+                <isset property="app.package.license"/>
+            </not>
+       </or>
+    </condition>
+    <condition property="app.package.icon.arg"
+               value=""
+               else="--icon ${app.package.icon}">
+        <or>
+            <equals arg1="${app.package.icon}" arg2=""/>
+            <not>
+                <isset property="app.package.icon"/>
+            </not>
+        </or>
+    </condition>
+    <condition property="app.package.flags.win.arg"
+               value=""
+               else="${app.package.flags.win}">
+        <or>
+            <equals arg1="${app.package.flags.win}" arg2=""/>
+            <not>
+                <isset property="app.package.flags.win"/>
+            </not>
+            <not>
+                <os family="windows"/>
+            </not>
+        </or>
+    </condition>
+    <condition property="app.package.type.arg"
+               value="--type ${app.package.type.win}">
+        <and>
+            <not>
+                <equals arg1="${app.package.type.win}" arg2=""/>
+            </not>
+            <os family="windows"/>
+       </and>
+    </condition>
+    <condition property="app.package.type.arg"
+               value="--type ${app.package.type.unix}">
+        <and>
+            <not>
+                <equals arg1="${app.package.type.unix}" arg2=""/>
+            </not>
+            <os family="unix"/>
+       </and>
+    </condition>
+    <condition property="app.package.type.arg"
+               value="--type ${app.package.type.mac}">
+        <and>
+            <not>
+                <equals arg1="${app.package.type.mac}" arg2=""/>
+            </not>
+            <os family="mac"/>
+       </and>
+    </condition>
+    <!-- Fallback -->
+    <property name="app.package.type.arg" value=""/>
+
+    <!-- Targets -->
+	<target name="do-jar">
+        <delete dir="${dir.dist.jar}"/>
+        <jar destfile="${dir.dist.jar}/${app.outJar}">
+            <manifest>
+                <attribute name="Main-Class" value="${app.mainClass}"/>
+                <attribute name="Class-Path" value="."/>
+				<attribute name="Implementation-Vendor" value="${app.vendor}"/>
+				<attribute name="Implementation-Title" value="${app.title}"/>
+				<attribute name="Implementation-Version" value="${app.version}"/>
+            </manifest>
+            <fileset dir="${dir.bin}"/>
+        </jar>
+    </target>
+    <target name="do-staging">
+		<copy todir="${dir.dist.jmods}">
+			<fileset dir="${dir.sdk.javafx}/jmods">
+				<include name="*"/>
+			</fileset>
+		</copy>
+        <delete dir="${dir.dist.runtime}"/>
+        <exec executable="jlink" failonerror="true">
+            <arg line="--strip-native-commands"/>
+            <arg line="--no-header-files"/>
+            <arg line="--no-man-pages"/>
+            <arg line="--compress=2"/>
+            <arg line="--strip-debug"/>
+            <arg line="--module-path ${dir.dist.jmods}"/>
+            <arg line="--add-modules ALL-MODULE-PATH"/>
+            <arg line="--output ${dir.dist.runtime}"/>
+        </exec>
+    </target>
+    <target name="do-package">
+        <delete dir="${dir.dist.package}"/>
+        <exec executable="jpackage" failonerror="true">
+            <arg line="${app.package.type.arg}"/>
+            <arg line="--dest ${dir.dist.package}"/>
+            <arg line="--input ${dir.dist.jar}"/>
+            <arg line="--main-class ${app.mainClass}"/>
+            <arg line="--main-jar ${app.outJar}"/>
+            <arg line="--runtime-image ${dir.dist.runtime}"/>
+            <arg line="--name &quot;${app.title}&quot;"/>
+            <arg line="--app-version &quot;${app.version}&quot;"/>
+            <arg line="--vendor &quot;${app.vendor}&quot;"/>
+            <arg line="${app.package.flags.win.arg}"/>
+        	<arg line="${app.package.license.arg}"/>
+    		<arg line="${app.package.icon.arg}"/>
+        </exec>
+    </target>
+    <target name="do-deploy" depends="do-jar, do-staging, do-package">
+    </target>
+    <target name="do-deploy-legacy" depends="do-jar">
+        <delete dir="${dir.dist.jar}/bin"/>
+        <mkdir dir="${dir.dist.jar}/bin"/>
+		<copy todir="${dir.dist.jar}/bin">
+			<fileset dir="${dir.sdk.javafx}/bin">
+				<include name="*"/>
+			</fileset>
+		</copy>
+        <delete dir="${dir.dist.jar}/lib"/>
+        <mkdir dir="${dir.dist.jar}/lib"/>
+		<copy todir="${dir.dist.jar}/lib">
+			<fileset dir="${dir.sdk.javafx}/lib">
+				<include name="*"/>
+			</fileset>
+		</copy>
+        <copy file="run.bat" todir="${dir.dist.jar}"/>
+    </target>
+</project>
